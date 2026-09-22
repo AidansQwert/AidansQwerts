@@ -4,222 +4,286 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>sharp — crystalsharps</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%2312121c%22/><text x=%2250%22 y=%2266%22 font-size=%2258%22 text-anchor=%22middle%22 fill=%22%23a48bff%22 font-family=%22monospace%22>&gt;</text></svg>">
+<meta name="description" content="Sharp / crystalsharps — builder of AetherBox, a container runtime for Android and Linux.">
+<meta name="theme-color" content="#0d0c14">
+<meta property="og:title" content="Sharp — crystalsharps">
+<meta property="og:description" content="Builder of AetherBox, a container runtime for Android and Linux. Debian 13 · XFCE.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://opengraph.githubassets.com/1/AidansQwert/AetherBox">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sharp — crystalsharps">
+<meta name="twitter:description" content="Builder of AetherBox, a container runtime for Android and Linux.">
+<meta name="twitter:image" content="https://opengraph.githubassets.com/1/AidansQwert/AetherBox">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%230d0c14%22/><text x=%2250%22 y=%2266%22 font-size=%2258%22 text-anchor=%22middle%22 fill=%22%23a48bff%22 font-family=%22monospace%22>&gt;</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #100f17;
-    --bg-2: #16141f;
-    --panel: #1a1826;
-    --panel-line: #2b283b;
-    --ink: #ede9f7;
-    --ink-dim: #8f8aa6;
-    --ink-faint: #625d78;
-    --violet: #a48bff;
+    --bg: #0d0c14;
+    --bg-2: #141220;
+    --panel: #17151f;
+    --panel-2: #1c1a28;
+    --line: #2a2738;
+    --line-soft: #221f2e;
+    --ink: #efecf9;
+    --ink-dim: #938da8;
+    --ink-faint: #5d5871;
+    --violet: #ab90ff;
+    --violet-soft: rgba(171,144,255,0.12);
     --violet-dim: #6f5fb0;
-    --green: #4fd68c;
-    --amber: #e3b968;
+    --green: #52dd93;
+    --amber: #e6bd6e;
     --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
     --head: 'Space Grotesk', sans-serif;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
-  *{ box-sizing: border-box; }
-  html{ scroll-padding-top: env(safe-area-inset-top, 0px); }
-  html,body{
-    background: var(--bg);
-    color: var(--ink);
-    margin:0;
-    min-height:100%;
+  :root[data-theme="light"]{
+    --bg: #f6f4fb;
+    --bg-2: #ffffff;
+    --panel: #ffffff;
+    --panel-2: #f0edf9;
+    --line: #e1dcf0;
+    --line-soft: #ebe7f6;
+    --ink: #241f33;
+    --ink-dim: #635c7a;
+    --ink-faint: #948da8;
+    --violet: #7a5fe0;
+    --violet-soft: rgba(122,95,224,0.10);
+    --violet-dim: #b3a3ec;
+    --green: #159a5f;
   }
+  :root[data-theme="light"] body{
+    background-color: #f3f0fb;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 15% 10%, rgba(171,144,255,0.28), transparent 60%),
+      radial-gradient(ellipse 50% 35% at 90% 5%, rgba(255,150,215,0.20), transparent 60%),
+      radial-gradient(ellipse 55% 45% at 70% 85%, rgba(120,210,255,0.20), transparent 60%),
+      radial-gradient(ellipse 40% 30% at 5% 90%, rgba(82,221,147,0.10), transparent 60%);
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  }
+  :root[data-theme="light"] .term{
+    background: rgba(255,255,255,0.68);
+    border-color: rgba(122,95,224,0.20);
+  }
+  :root[data-theme="light"] .topbar{
+    background: rgba(246,244,251,0.7);
+    border-bottom-color: rgba(122,95,224,0.15);
+  }
+  html{ scroll-behavior: smooth; scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 70px); }
+  html,body{ background: #05040c; color: var(--ink); margin:0; min-height:100%; }
   body{
     font-family: var(--mono);
     font-size: 15px;
-    line-height: 1.6;
-    background:
-      radial-gradient(circle at 12% 0%, rgba(164,139,255,0.10), transparent 45%),
-      radial-gradient(circle at 90% 15%, rgba(79,214,140,0.06), transparent 40%),
-      var(--bg);
+    line-height: 1.65;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background-color: #05040c;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 15% 10%, rgba(171,144,255,0.30), transparent 60%),
+      radial-gradient(ellipse 50% 35% at 90% 5%, rgba(255,120,210,0.16), transparent 60%),
+      radial-gradient(ellipse 55% 45% at 70% 85%, rgba(90,200,255,0.14), transparent 60%),
+      radial-gradient(ellipse 40% 30% at 5% 90%, rgba(82,221,147,0.08), transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='18' cy='24' r='1' fill='white' fill-opacity='0.9'/%3E%3Ccircle cx='96' cy='12' r='0.6' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='150' cy='55' r='1.3' fill='white' fill-opacity='0.8'/%3E%3Ccircle cx='40' cy='120' r='0.7' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='170' cy='150' r='1' fill='white' fill-opacity='0.7'/%3E%3Ccircle cx='115' cy='185' r='0.6' fill='white' fill-opacity='0.4'/%3E%3Ccircle cx='60' cy='205' r='1.1' fill='white' fill-opacity='0.85'/%3E%3Ccircle cx='210' cy='95' r='0.5' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='210' cy='210' r='0.8' fill='white' fill-opacity='0.6'/%3E%3Ccircle cx='5' cy='170' r='0.5' fill='white' fill-opacity='0.4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+    background-size: auto, auto, auto, auto, 240px 240px;
   }
   ::selection{ background: var(--violet); color: #0d0c14; }
-
-  a{ color: var(--violet); text-decoration: none; border-bottom: 1px solid var(--violet-dim); }
-  a:hover{ color: #c6b8ff; border-color: #c6b8ff; }
+  a{ color: var(--violet); text-decoration: none; border-bottom: 1px solid var(--violet-dim); transition: color .15s, border-color .15s; }
+  a:hover{ color: #cabbff; border-color: #cabbff; }
   a:focus-visible, button:focus-visible{ outline: 2px solid var(--violet); outline-offset: 3px; }
+  img{ max-width:100%; }
 
-  .wrap{
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 56px 20px 90px;
-  }
-
-  /* ---- top prompt bar ---- */
-  .promptbar{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    color: var(--ink-faint);
+  /* ---- boot overlay ---- */
+  #boot{
+    position: fixed; inset:0; z-index: 50;
+    background: var(--bg);
+    color: var(--green);
     font-size: 13px;
-    margin-bottom: 34px;
+    padding: 24px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    transition: opacity .5s ease, visibility .5s ease;
   }
+  #boot.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  #boot .line{ opacity:0; white-space:pre-wrap; margin-bottom: 2px; }
+  #boot .line.show{ opacity:1; }
+  #boot .line .ok{ color: var(--green); }
+  #boot .line .path{ color: var(--ink-dim); }
+
+  /* ---- shell chrome ---- */
+  .topbar{
+    position: sticky; top:0; z-index: 10;
+    backdrop-filter: blur(14px);
+    background: rgba(5,4,12,0.55);
+    border-bottom: 1px solid rgba(171,144,255,0.12);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .topbar-inner{
+    max-width: 760px; margin: 0 auto;
+    padding: 13px 20px;
+    display:flex; align-items:center; gap: 14px;
+    font-size: 12.5px; color: var(--ink-faint);
+  }
+  .live{ display:flex; align-items:center; gap:7px; color: var(--ink-dim); }
+  .theme-btn{
+    background: transparent; border: 1px solid var(--line); color: var(--ink-dim);
+    width: 28px; height: 28px; border-radius: 7px; cursor: pointer;
+    font-size: 14px; line-height: 1; display:flex; align-items:center; justify-content:center;
+    transition: border-color .15s, color .15s;
+  }
+  .theme-btn:hover{ color: var(--violet); border-color: var(--violet-dim); }
   .dot{ width:7px; height:7px; border-radius:50%; background: var(--green); box-shadow: 0 0 8px var(--green); flex-shrink:0; }
-  .promptbar .path{ color: var(--ink-dim); }
+  .topbar nav{ margin-left:auto; display:flex; gap:8px; }
+  .topbar nav a{ color: var(--ink-faint); border:0; font-size:12.5px; padding: 5px 12px; border-radius: 999px; border: 1px solid transparent; }
+  .topbar nav a:hover{ color: var(--ink); }
+  .topbar nav a.active{ color: var(--green); background: rgba(82,221,147,0.10); border-color: rgba(82,221,147,0.35); }
 
-  /* ---- terminal card ---- */
+  .wrap{ max-width: 760px; margin: 0 auto; padding: 44px 20px 90px; }
+
+  /* ---- hero / fetch block ---- */
   .term{
-    background: var(--panel);
-    border: 1px solid var(--panel-line);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .term-head{
-    display:flex;
-    align-items:center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--panel-line);
-    color: var(--ink-faint);
-    font-size: 12px;
-  }
-  .term-body{ padding: 28px 26px 30px; }
-
-  /* ---- fetch block (hero) ---- */
-  .fetch{
-    display:grid;
-    grid-template-columns: auto 1fr;
-    gap: 30px;
-    align-items: start;
-  }
-  @media (max-width: 520px){
-    .fetch{ grid-template-columns: 1fr; }
-  }
-  .avatar{
-    width: 96px; height: 96px;
-    border-radius: 14px;
-    background: linear-gradient(155deg, #241f36, #171522);
-    border: 1px solid var(--panel-line);
-    display:flex; align-items:center; justify-content:center;
+    background: rgba(23,21,31,0.62);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(171,144,255,0.18);
+    border-radius: 16px; overflow: hidden;
+    box-shadow: 0 30px 70px -30px rgba(0,0,0,0.75), 0 0 0 1px rgba(171,144,255,0.05);
     position: relative;
   }
-  .avatar span{
-    font-family: var(--head);
-    font-weight: 700;
-    font-size: 40px;
-    color: var(--violet);
+  .term::before{
+    content:"";
+    position:absolute; inset:0; pointer-events:none;
+    background-image: radial-gradient(rgba(171,144,255,0.06) 1px, transparent 1px);
+    background-size: 18px 18px;
+    mask-image: linear-gradient(to bottom, black, transparent 70%);
   }
-  .avatar .status{
-    position:absolute; right:-3px; bottom:-3px;
-    width:20px; height:20px; border-radius:50%;
-    background: var(--green);
-    border: 3px solid var(--panel);
+  .term-head{ display:flex; align-items:center; justify-content: space-between; padding: 11px 18px; border-bottom: 1px solid var(--line-soft); color: var(--ink-faint); font-size: 12px; }
+  .term-body{ padding: 30px 26px 32px; }
+
+  .fetch{ display:grid; grid-template-columns: auto 1fr; gap: 30px; align-items: start; }
+  @media (max-width: 520px){
+    .fetch{ grid-template-columns: 1fr; text-align: center; }
+    .avatar{ margin: 0 auto; }
+    .kv{ grid-template-columns: max-content 1fr; text-align: left; margin-top: 4px; }
+    .tags{ justify-content: center; }
+    .idline, .handle{ text-align: center; }
   }
-  .idline{ color: var(--ink-dim); }
+
+  .avatar{
+    width: 100px; height: 100px; border-radius: 50%;
+    background: linear-gradient(155deg, #2a2440, #171522);
+    border: 2px solid var(--violet-dim);
+    display:flex; align-items:center; justify-content:center;
+    position: relative; flex-shrink:0;
+    box-shadow: 0 0 0 4px rgba(171,144,255,0.08), 0 0 24px rgba(171,144,255,0.25);
+  }
+  .avatar::before{
+    content:"✦"; position:absolute; top:-10px; left:-6px; color: var(--green);
+    font-size: 13px; animation: twinkle 2.6s ease-in-out infinite;
+  }
+  .avatar::after{
+    content:"✦"; position:absolute; bottom:2px; right:-12px; color: var(--violet);
+    font-size: 10px; animation: twinkle 2.6s ease-in-out infinite .8s;
+  }
+  @keyframes twinkle{ 0%,100%{ opacity:.25; transform: scale(.8); } 50%{ opacity:1; transform: scale(1.15); } }
+  .avatar svg{ width: 52px; height:52px; }
+  .avatar .status{ position:absolute; right:0px; bottom:2px; width:20px; height:20px; border-radius:50%; background: var(--green); border: 3px solid var(--panel); box-shadow: 0 0 10px rgba(82,221,147,0.6); }
+
+  .idline{ color: var(--ink-dim); font-size: 13px; }
   .idline b{ color: var(--ink); font-weight: 600; }
   .name{
-    font-family: var(--head);
-    font-weight: 700;
-    font-size: 34px;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    margin: 2px 0 4px;
+    font-family: var(--head); font-weight: 700; font-size: 36px; letter-spacing: -0.01em;
+    margin: 4px 0 3px;
+    background: linear-gradient(100deg, var(--ink) 30%, var(--violet) 65%, var(--green) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .handle{ color: var(--violet); margin-bottom: 18px; }
+  .handle{ color: var(--violet); margin-bottom: 16px; font-size: 14px; }
   .handle::before{ content: "@"; color: var(--ink-faint); }
 
-  .kv{ display:grid; grid-template-columns: max-content 1fr; row-gap: 7px; column-gap: 14px; font-size: 14px; }
+  .kv{ display:grid; grid-template-columns: max-content 1fr; row-gap: 8px; column-gap: 16px; font-size: 13.5px; }
   .kv dt{ color: var(--ink-faint); }
   .kv dd{ margin:0; color: var(--ink); }
-  .kv dd .tag{ color: var(--amber); }
   .kv dd .accent{ color: var(--green); }
+  .kv dd .amber{ color: var(--amber); }
+  #uptime{ font-variant-numeric: tabular-nums; }
 
-  .rule{ height:1px; background: var(--panel-line); margin: 30px 0; border:0; }
+  .tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 16px; }
+  .tags span{ font-size: 11.5px; padding: 4px 10px; border-radius: 5px; background: var(--bg-2); border: 1px solid var(--line); color: var(--ink-dim); }
 
-  /* ---- section heading as a prompt ---- */
-  h2{
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--ink-dim);
-    margin: 0 0 16px;
-  }
+  .rule{ height:1px; background: var(--line-soft); margin: 32px 0; border:0; }
+
+  h2{ font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--ink-dim); margin: 0 0 16px; scroll-margin-top: 90px; }
   h2::before{ content: "~/" attr(data-path) " $ "; color: var(--ink-faint); }
   h2 .cmd{ color: var(--ink); }
 
-  section{ margin-bottom: 42px; }
+  section{ margin-bottom: 44px; }
   section:last-of-type{ margin-bottom: 0; }
 
   p{ margin: 0 0 12px; color: var(--ink); }
   p.dim{ color: var(--ink-dim); }
-  .prose{ max-width: 62ch; }
-
-  .tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 14px; }
-  .tags span{
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 5px;
-    background: var(--bg-2);
-    border: 1px solid var(--panel-line);
-    color: var(--ink-dim);
-  }
+  .prose{ max-width: 60ch; }
 
   /* ---- project card ---- */
-  .card{
-    background: var(--bg-2);
-    border: 1px solid var(--panel-line);
-    border-radius: 8px;
-    padding: 20px 22px;
-  }
+  .card{ background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; transition: border-color .15s, box-shadow .15s; }
+  .card:hover{ border-color: var(--violet-dim); box-shadow: 0 0 0 1px rgba(171,144,255,0.08), 0 18px 40px -28px rgba(171,144,255,0.35); }
   .card-top{ display:flex; align-items:baseline; justify-content:space-between; gap: 10px; flex-wrap: wrap; }
-  .card-title{ font-family: var(--head); font-weight: 600; font-size: 18px; color: var(--ink); }
+  .card-title{ font-family: var(--head); font-weight: 600; font-size: 19px; color: var(--ink); }
   .card-title a{ color: inherit; border-bottom: none; }
   .card-title a:hover{ color: var(--violet); }
-  .badge{ font-size: 11px; color: var(--green); border: 1px solid rgba(79,214,140,0.35); padding: 2px 8px; border-radius: 999px; }
-  .card p{ margin-top: 10px; }
-  .feat{ list-style:none; margin: 14px 0 0; padding:0; display:grid; gap:7px; font-size: 13.5px; color: var(--ink-dim); }
+  .badge{ font-size: 11px; color: var(--green); border: 1px solid rgba(82,221,147,0.35); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .badge-off{ color: var(--ink-dim); border-color: var(--line); background: rgba(255,255,255,0.03); }
+  .card.muted{ margin-top: 16px; opacity: 0.85; }
+  .card p{ margin-top: 12px; }
+  .stats{ display:flex; gap: 18px; margin-top: 14px; font-size: 12px; color: var(--ink-faint); }
+  .stats b{ color: var(--ink-dim); font-weight: 600; }
+  .feat{ list-style:none; margin: 16px 0 0; padding:0; display:grid; gap:8px; font-size: 13.5px; color: var(--ink-dim); }
   .feat li::before{ content: "› "; color: var(--violet-dim); }
-  .card-links{ margin-top: 16px; display:flex; gap: 18px; font-size: 13px; }
+  .card-links{ margin-top: 18px; display:flex; gap: 20px; font-size: 13px; flex-wrap: wrap; }
 
   /* ---- links list ---- */
   .linklist{ display:grid; gap: 10px; }
   .linklist a{
-    display:flex; align-items:center; justify-content:space-between;
-    border: 1px solid var(--panel-line);
-    border-bottom: 1px solid var(--panel-line);
-    background: var(--bg-2);
-    padding: 12px 16px;
-    border-radius: 8px;
-    color: var(--ink);
+    display:flex; align-items:center; justify-content:space-between; gap: 10px;
+    border: 1px solid var(--line); background: var(--bg-2);
+    padding: 13px 18px; border-radius: 9px; color: var(--ink); border-bottom: 1px solid var(--line);
   }
-  .linklist a:hover{ border-color: var(--violet-dim); color: var(--violet); }
+  .linklist a:hover{ border-color: var(--violet-dim); color: var(--violet); background: var(--violet-soft); }
   .linklist small{ color: var(--ink-faint); font-weight: normal; }
 
-  footer{
-    margin-top: 50px;
-    padding-top: 22px;
-    border-top: 1px solid var(--panel-line);
-    color: var(--ink-faint);
-    font-size: 12.5px;
-    display:flex; justify-content:space-between; flex-wrap: wrap; gap: 8px;
-  }
+  footer{ margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--line-soft); color: var(--ink-faint); font-size: 12px; display:flex; justify-content:space-between; flex-wrap: wrap; gap: 8px; }
 
   .cursor{ display:inline-block; width:8px; height:1em; background:var(--violet); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
   @keyframes blink{ 50%{ opacity:0; } }
 
   @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
     .cursor{ animation: none; }
+    #boot{ display:none; }
   }
 </style>
 </head>
 <body>
 
-<div class="wrap">
+<div id="boot" aria-hidden="true">
+  <div class="line"><span class="ok">[ ok ]</span> starting <span class="path">sharp.session</span></div>
+  <div class="line"><span class="ok">[ ok ]</span> mounted <span class="path">/home/crystalsharps</span></div>
+  <div class="line"><span class="ok">[ ok ]</span> loading rootfs: <span class="path">debian-13-trixie-xfce.img</span></div>
+  <div class="line"><span class="ok">[ ok ]</span> container <span class="path">aetherbox</span> is up</div>
+  <div class="line">welcome back.</div>
+</div>
 
-  <div class="promptbar">
-    <span class="dot"></span>
-    <span class="path">sharp@debian</span><span>:~$</span>&nbsp;<span id="typed"></span><span class="cursor"></span>
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="live"><span class="dot"></span> online</span>
+    <nav>
+      <a href="#about">about</a>
+      <a href="#projects">projects</a>
+      <a href="#links">links</a>
+    </nav>
+    <button id="theme-toggle" class="theme-btn" type="button" aria-label="Toggle light and dark theme">◐</button>
   </div>
+</div>
+
+<div class="wrap">
 
   <div class="term">
     <div class="term-head">
@@ -230,7 +294,10 @@
 
       <div class="fetch">
         <div class="avatar" aria-hidden="true">
-          <span>S</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ab90ff" stroke-width="1.4">
+            <path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke-linecap="round"/>
+            <circle cx="12" cy="8" r="4.2"/>
+          </svg>
           <div class="status" title="online"></div>
         </div>
         <div>
@@ -241,8 +308,10 @@
           <dl class="kv">
             <dt>os</dt><dd>Debian 13 GNU/Linux (Trixie) — XFCE</dd>
             <dt>status</dt><dd><span class="accent">● online</span></dd>
+            <dt>uptime</dt><dd id="uptime">374:48:41</dd>
+            <dt>last commit</dt><dd id="lastCommit">syncing…</dd>
             <dt>build</dt><dd>containers, rootfs, and whatever else breaks nicely</dd>
-            <dt>currently</dt><dd><span class="tag">shipping AetherBox v1.4.0</span></dd>
+            <dt>currently</dt><dd><span class="accent">shipping AetherBox v1.4.0</span></dd>
           </dl>
 
           <div class="tags">
@@ -253,7 +322,7 @@
 
       <hr class="rule">
 
-      <section aria-labelledby="about-h">
+      <section id="about" aria-labelledby="about-h">
         <h2 id="about-h" data-path="about"><span class="cmd">cat</span> bio.txt</h2>
         <div class="prose">
           <p>Boy, not a girl. Lesbian ("bi").</p>
@@ -261,15 +330,20 @@
         </div>
       </section>
 
-      <section aria-labelledby="projects-h">
+      <section id="projects" aria-labelledby="projects-h">
         <h2 id="projects-h" data-path="projects"><span class="cmd">ls</span> -la</h2>
 
         <div class="card">
           <div class="card-top">
             <div class="card-title"><a href="https://github.com/AidansQwert/AetherBox" target="_blank" rel="noopener">AetherBox</a></div>
-            <span class="badge">v1.4.0 · latest</span>
+            <span class="badge" id="badge-version">v1.4.0 · latest</span>
           </div>
           <p class="dim">A lightweight, LXC-like container runtime for Android and Linux — a community fork of <a href="https://github.com/ravindu644/Droidspaces-OSS" target="_blank" rel="noopener">Droidspaces</a>. Full Linux distributions run natively, with zero performance penalty, from a single static binary under 400KB.</p>
+          <div class="stats">
+            <span id="stat-stars"><b>1</b> stars</span>
+            <span><b>GPL-3.0</b> license</span>
+            <span><b>5</b> architectures</span>
+          </div>
           <ul class="feat">
             <li>Full init system support — systemd, OpenRC, runit, s6</li>
             <li>Native on Android <em>and</em> Linux desktop from the same musl binary</li>
@@ -282,12 +356,29 @@
             <a href="https://t.me/Droidspaces" target="_blank" rel="noopener">telegram →</a>
           </div>
         </div>
+
+        <div class="card muted">
+          <div class="card-top">
+            <div class="card-title"><a href="https://github.com/AidansQwert/AetherBox-Lite" target="_blank" rel="noopener">AetherBox Lite</a></div>
+            <span class="badge badge-off">discontinued</span>
+          </div>
+          <p class="dim">The no-root companion to AetherBox — same Home / Distros / Panel shape, running on Termux + PRoot instead of native namespaces, for devices without Magisk or KernelSU.</p>
+          <ul class="feat">
+            <li>CLI path via proot-distro: Ubuntu, Debian, Alpine, Arch, Fedora</li>
+            <li>Omarchy path: full Hyprland desktop over Termux:X11</li>
+            <li>Rootfs feeds and native containers still live in the main AetherBox repo</li>
+          </ul>
+          <div class="card-links">
+            <a href="https://github.com/AidansQwert/AetherBox-Lite" target="_blank" rel="noopener">source →</a>
+          </div>
+        </div>
       </section>
 
-      <section aria-labelledby="links-h">
+      <section id="links" aria-labelledby="links-h">
         <h2 id="links-h" data-path="links"><span class="cmd">cat</span> links.txt</h2>
         <div class="linklist">
           <a href="https://github.com/AidansQwert" target="_blank" rel="noopener">github/AidansQwert <small>code &amp; releases</small></a>
+          <a href="https://t.me/CrystalSharps" target="_blank" rel="noopener">t.me/CrystalSharps <small>telegram</small></a>
           <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp <small>bio card</small></a>
         </div>
       </section>
@@ -303,19 +394,112 @@
 </div>
 
 <script>
+  // boot sequence
   (function(){
-    var el = document.getElementById('typed');
-    var text = 'whoami';
+    var boot = document.getElementById('boot');
+    var lines = boot.querySelectorAll('.line');
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced || !el) { el.textContent = text; return; }
-    var i = 0;
-    (function tick(){
-      if (i <= text.length) {
-        el.textContent = text.slice(0, i);
-        i++;
-        setTimeout(tick, 70);
-      }
-    })();
+    if (reduced) { boot.classList.add('hide'); return; }
+    lines.forEach(function(l, i){
+      setTimeout(function(){ l.classList.add('show'); }, 160 * i);
+    });
+    setTimeout(function(){ boot.classList.add('hide'); }, 160 * lines.length + 550);
+  })();
+
+  // live uptime ticker, starting from the base shown in the fetch block
+  (function(){
+    var el = document.getElementById('uptime');
+    if (!el) return;
+    var base = 374 * 3600 + 48 * 60 + 41;
+    var start = Date.now();
+    function fmt(totalSeconds){
+      var h = Math.floor(totalSeconds / 3600);
+      var m = Math.floor((totalSeconds % 3600) / 60);
+      var s = Math.floor(totalSeconds % 60);
+      function pad(n){ return String(n).padStart(2, '0'); }
+      return pad(h) + ':' + pad(m) + ':' + pad(s);
+    }
+    function tick(){
+      var elapsed = (Date.now() - start) / 1000;
+      el.textContent = fmt(base + elapsed);
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+
+  // pull the latest real commit from AetherBox — falls back quietly if offline/rate-limited
+  (function(){
+    var el = document.getElementById('lastCommit');
+    if (!el) return;
+    fetch('https://api.github.com/repos/AidansQwert/AetherBox/commits/main')
+      .then(function(r){ if(!r.ok) throw new Error('bad response'); return r.json(); })
+      .then(function(data){
+        var msg = (data.commit && data.commit.message ? data.commit.message : '').split('\n')[0];
+        if (!msg) throw new Error('no message');
+        if (msg.length > 44) msg = msg.slice(0, 43) + '…';
+        el.textContent = msg;
+        el.title = 'on AetherBox main';
+      })
+      .catch(function(){ el.textContent = 'unavailable'; });
+  })();
+
+  // nav active state — mirrors the filled-pill "selected filter" feel from the AetherBox app
+  (function(){
+    var links = document.querySelectorAll('.topbar nav a');
+    var sections = Array.prototype.map.call(links, function(l){
+      return document.querySelector(l.getAttribute('href'));
+    });
+    if (!sections.length || !('IntersectionObserver' in window)) return;
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (!entry.isIntersecting) return;
+        links.forEach(function(l){ l.classList.remove('active'); });
+        var idx = sections.indexOf(entry.target);
+        if (idx > -1) links[idx].classList.add('active');
+      });
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    sections.forEach(function(s){ if (s) observer.observe(s); });
+  })();
+
+  // live repo stats — stars + latest release tag, straight from the GitHub API
+  (function(){
+    var starsEl = document.getElementById('stat-stars');
+    var versionEl = document.getElementById('badge-version');
+
+    if (starsEl) {
+      fetch('https://api.github.com/repos/AidansQwert/AetherBox')
+        .then(function(r){ if(!r.ok) throw new Error('bad response'); return r.json(); })
+        .then(function(data){
+          var n = data.stargazers_count;
+          if (typeof n !== 'number') throw new Error('no count');
+          starsEl.innerHTML = '<b>' + n + '</b> star' + (n === 1 ? '' : 's');
+        })
+        .catch(function(){ /* keep the static fallback already in the markup */ });
+    }
+
+    if (versionEl) {
+      fetch('https://api.github.com/repos/AidansQwert/AetherBox/releases/latest')
+        .then(function(r){ if(!r.ok) throw new Error('bad response'); return r.json(); })
+        .then(function(data){
+          if (!data.tag_name) throw new Error('no tag');
+          versionEl.textContent = data.tag_name + ' · latest';
+        })
+        .catch(function(){ /* keep the static fallback already in the markup */ });
+    }
+  })();
+
+  // theme toggle — remembers choice, defaults to the visitor's system preference
+  (function(){
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    var stored = localStorage.getItem('theme');
+    if (stored) document.documentElement.setAttribute('data-theme', stored);
+    btn.addEventListener('click', function(){
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
   })();
 </script>
 
