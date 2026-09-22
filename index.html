@@ -2,506 +2,714 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>sharp — crystalsharps</title>
-<meta name="description" content="Sharp / crystalsharps — builder of AetherBox, a container runtime for Android and Linux.">
-<meta name="theme-color" content="#0d0c14">
-<meta property="og:title" content="Sharp — crystalsharps">
-<meta property="og:description" content="Builder of AetherBox, a container runtime for Android and Linux. Debian 13 · XFCE.">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://opengraph.githubassets.com/1/AidansQwert/AetherBox">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Sharp — crystalsharps">
-<meta name="twitter:description" content="Builder of AetherBox, a container runtime for Android and Linux.">
-<meta name="twitter:image" content="https://opengraph.githubassets.com/1/AidansQwert/AetherBox">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%230d0c14%22/><text x=%2250%22 y=%2266%22 font-size=%2258%22 text-anchor=%22middle%22 fill=%22%23a48bff%22 font-family=%22monospace%22>&gt;</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SHARP — crystalsharps. developer & linux tinkerer. AetherBox: run Linux natively on Android.">
+<title>SHARP — crystalsharps</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg: #0d0c14;
-    --bg-2: #141220;
-    --panel: #17151f;
-    --panel-2: #1c1a28;
-    --line: #2a2738;
-    --line-soft: #221f2e;
-    --ink: #efecf9;
-    --ink-dim: #938da8;
-    --ink-faint: #5d5871;
-    --violet: #ab90ff;
-    --violet-soft: rgba(171,144,255,0.12);
-    --violet-dim: #6f5fb0;
-    --green: #52dd93;
-    --amber: #e6bd6e;
-    --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
-    --head: 'Space Grotesk', sans-serif;
-  }
-  :root[data-theme="light"]{
-    --bg: #f6f4fb;
-    --bg-2: #ffffff;
-    --panel: #ffffff;
-    --panel-2: #f0edf9;
-    --line: #e1dcf0;
-    --line-soft: #ebe7f6;
-    --ink: #241f33;
-    --ink-dim: #635c7a;
-    --ink-faint: #948da8;
-    --violet: #7a5fe0;
-    --violet-soft: rgba(122,95,224,0.10);
-    --violet-dim: #b3a3ec;
-    --green: #159a5f;
-  }
-  :root[data-theme="light"] body{
-    background-color: #f3f0fb;
-    background-image:
-      radial-gradient(ellipse 60% 40% at 15% 10%, rgba(171,144,255,0.28), transparent 60%),
-      radial-gradient(ellipse 50% 35% at 90% 5%, rgba(255,150,215,0.20), transparent 60%),
-      radial-gradient(ellipse 55% 45% at 70% 85%, rgba(120,210,255,0.20), transparent 60%),
-      radial-gradient(ellipse 40% 30% at 5% 90%, rgba(82,221,147,0.10), transparent 60%);
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
-  }
-  :root[data-theme="light"] .term{
-    background: rgba(255,255,255,0.68);
-    border-color: rgba(122,95,224,0.20);
-  }
-  :root[data-theme="light"] .topbar{
-    background: rgba(246,244,251,0.7);
-    border-bottom-color: rgba(122,95,224,0.15);
-  }
-  html{ scroll-behavior: smooth; scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 70px); }
-  html,body{ background: #05040c; color: var(--ink); margin:0; min-height:100%; }
-  body{
-    font-family: var(--mono);
-    font-size: 15px;
-    line-height: 1.65;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    background-color: #05040c;
-    background-image:
-      radial-gradient(ellipse 60% 40% at 15% 10%, rgba(171,144,255,0.30), transparent 60%),
-      radial-gradient(ellipse 50% 35% at 90% 5%, rgba(255,120,210,0.16), transparent 60%),
-      radial-gradient(ellipse 55% 45% at 70% 85%, rgba(90,200,255,0.14), transparent 60%),
-      radial-gradient(ellipse 40% 30% at 5% 90%, rgba(82,221,147,0.08), transparent 60%),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='18' cy='24' r='1' fill='white' fill-opacity='0.9'/%3E%3Ccircle cx='96' cy='12' r='0.6' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='150' cy='55' r='1.3' fill='white' fill-opacity='0.8'/%3E%3Ccircle cx='40' cy='120' r='0.7' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='170' cy='150' r='1' fill='white' fill-opacity='0.7'/%3E%3Ccircle cx='115' cy='185' r='0.6' fill='white' fill-opacity='0.4'/%3E%3Ccircle cx='60' cy='205' r='1.1' fill='white' fill-opacity='0.85'/%3E%3Ccircle cx='210' cy='95' r='0.5' fill='white' fill-opacity='0.5'/%3E%3Ccircle cx='210' cy='210' r='0.8' fill='white' fill-opacity='0.6'/%3E%3Ccircle cx='5' cy='170' r='0.5' fill='white' fill-opacity='0.4'/%3E%3C/svg%3E");
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
-    background-size: auto, auto, auto, auto, 240px 240px;
-  }
-  ::selection{ background: var(--violet); color: #0d0c14; }
-  a{ color: var(--violet); text-decoration: none; border-bottom: 1px solid var(--violet-dim); transition: color .15s, border-color .15s; }
-  a:hover{ color: #cabbff; border-color: #cabbff; }
-  a:focus-visible, button:focus-visible{ outline: 2px solid var(--violet); outline-offset: 3px; }
-  img{ max-width:100%; }
+/* ============================================================
+   SHRP_ v4 — "monochrome terminal" edition, refined
+   vibe: minimal / brutalist / mono — aksen violet-cyan
+   ============================================================ */
+:root{
+  --bg:#08080a; --bg2:#0d0d10; --panel:#101014;
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+  --txt:#ececf1; --dim:#83838f; --faint:#4c4c56;
+  --vio:#8b5cf6; --cyn:#22d3ee; --pnk:#f472b6;
+  --mono:'JetBrains Mono',monospace; --sans:'Space Grotesk',sans-serif;
+  --ease:cubic-bezier(.19,1,.22,1);
+  --mx:50vw; --my:40vh;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{background-color:transparent;color:var(--txt);font-family:var(--mono);overflow-x:hidden;
+  font-size:14px;line-height:1.7;
+  background-image:radial-gradient(ellipse 70% 45% at 85% -10%, rgba(139,92,246,.07), transparent),
+  radial-gradient(ellipse 55% 35% at 5% 105%, rgba(34,211,238,.05), transparent);}
+/* scanline halus */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.5;
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.12) 3px 4px);}
+/* vignette */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:3;
+  background:radial-gradient(ellipse 120% 100% at 50% 40%, transparent 55%, rgba(0,0,0,.5));}
+::selection{background:var(--vio);color:#fff}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--cyn);outline-offset:3px;border-radius:2px}
+::-webkit-scrollbar{width:9px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#26262e;border-radius:99px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:var(--vio)}
 
-  /* ---- boot overlay ---- */
-  #boot{
-    position: fixed; inset:0; z-index: 50;
-    background: var(--bg);
-    color: var(--green);
-    font-size: 13px;
-    padding: 24px;
-    display:flex; flex-direction:column; justify-content:flex-end;
-    transition: opacity .5s ease, visibility .5s ease;
-  }
-  #boot.hide{ opacity:0; visibility:hidden; pointer-events:none; }
-  #boot .line{ opacity:0; white-space:pre-wrap; margin-bottom: 2px; }
-  #boot .line.show{ opacity:1; }
-  #boot .line .ok{ color: var(--green); }
-  #boot .line .path{ color: var(--ink-dim); }
+body{-webkit-tap-highlight-color:transparent}
+/* user-select:none dihapus — semua teks bisa diseleksi & dicopy */
+/* grain halus di atas semuanya */
+.grain{position:fixed;inset:-100px;pointer-events:none;z-index:4;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");}
+/* spotlight ngikutin kursor */
+.spot{position:fixed;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(560px circle at var(--mx) var(--my), rgba(139,92,246,.09), transparent 65%);}
 
-  /* ---- shell chrome ---- */
-  .topbar{
-    position: sticky; top:0; z-index: 10;
-    backdrop-filter: blur(14px);
-    background: rgba(5,4,12,0.55);
-    border-bottom: 1px solid rgba(171,144,255,0.12);
-    padding-top: env(safe-area-inset-top, 0px);
-  }
-  .topbar-inner{
-    max-width: 760px; margin: 0 auto;
-    padding: 13px 20px;
-    display:flex; align-items:center; gap: 14px;
-    font-size: 12.5px; color: var(--ink-faint);
-  }
-  .live{ display:flex; align-items:center; gap:7px; color: var(--ink-dim); }
-  .theme-btn{
-    background: transparent; border: 1px solid var(--line); color: var(--ink-dim);
-    width: 28px; height: 28px; border-radius: 7px; cursor: pointer;
-    font-size: 14px; line-height: 1; display:flex; align-items:center; justify-content:center;
-    transition: border-color .15s, color .15s;
-  }
-  .theme-btn:hover{ color: var(--violet); border-color: var(--violet-dim); }
-  .dot{ width:7px; height:7px; border-radius:50%; background: var(--green); box-shadow: 0 0 8px var(--green); flex-shrink:0; }
-  .topbar nav{ margin-left:auto; display:flex; gap:8px; }
-  .topbar nav a{ color: var(--ink-faint); border:0; font-size:12.5px; padding: 5px 12px; border-radius: 999px; border: 1px solid transparent; }
-  .topbar nav a:hover{ color: var(--ink); }
-  .topbar nav a.active{ color: var(--green); background: rgba(82,221,147,0.10); border-color: rgba(82,221,147,0.35); }
+canvas#dust{position:fixed;inset:0;z-index:1;pointer-events:none}
+main{position:relative;z-index:2}
 
-  .wrap{ max-width: 760px; margin: 0 auto; padding: 44px 20px 90px; }
+#progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:70;
+  background:linear-gradient(90deg,var(--vio),var(--cyn));box-shadow:0 0 12px rgba(139,92,246,.6)}
 
-  /* ---- hero / fetch block ---- */
-  .term{
-    background: rgba(23,21,31,0.62);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(171,144,255,0.18);
-    border-radius: 16px; overflow: hidden;
-    box-shadow: 0 30px 70px -30px rgba(0,0,0,0.75), 0 0 0 1px rgba(171,144,255,0.05);
-    position: relative;
-  }
-  .term::before{
-    content:"";
-    position:absolute; inset:0; pointer-events:none;
-    background-image: radial-gradient(rgba(171,144,255,0.06) 1px, transparent 1px);
-    background-size: 18px 18px;
-    mask-image: linear-gradient(to bottom, black, transparent 70%);
-  }
-  .term-head{ display:flex; align-items:center; justify-content: space-between; padding: 11px 18px; border-bottom: 1px solid var(--line-soft); color: var(--ink-faint); font-size: 12px; }
-  .term-body{ padding: 30px 26px 32px; }
+/* ---------- preloader / boot ---------- */
+#loader{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;
+  transition:transform .7s var(--ease),opacity .5s .2s;}
+#loader.done{transform:translateY(-100%);opacity:0;pointer-events:none}
+#loader .boot{font-size:12px;letter-spacing:.12em;color:var(--dim);width:min(420px,86vw)}
+#loader .boot .lg{font-size:34px;letter-spacing:.18em;color:var(--txt);font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:12px}
+#loader .boot .lg .sq{width:10px;height:10px;background:var(--cyn);animation:blink 1s steps(2) infinite}
+#loader .boot .ln{opacity:0;transform:translateX(-6px);transition:opacity .3s,transform .3s;white-space:nowrap;overflow:hidden}
+#loader .boot .ln.on{opacity:1;transform:none}
+#loader .boot .ln .ok{color:var(--cyn)}
+#loader .boot .ln:last-child{color:var(--pnk);font-weight:700;letter-spacing:.3em;margin-top:14px}
+@keyframes blink{50%{opacity:.2}}
 
-  .fetch{ display:grid; grid-template-columns: auto 1fr; gap: 30px; align-items: start; }
-  @media (max-width: 520px){
-    .fetch{ grid-template-columns: 1fr; text-align: center; }
-    .avatar{ margin: 0 auto; }
-    .kv{ grid-template-columns: max-content 1fr; text-align: left; margin-top: 4px; }
-    .tags{ justify-content: center; }
-    .idline, .handle{ text-align: center; }
-  }
+/* ---------- nav ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:18px 32px;font-size:12px;letter-spacing:.18em;color:var(--dim);
+  transition:background .35s,border-color .35s,padding .35s;border-bottom:1px solid transparent;}
+nav.scrolled{background:rgba(8,8,10,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line);padding:13px 32px}
+nav .logo{font-weight:700;font-size:17px;color:var(--txt);letter-spacing:.12em;display:flex;align-items:center;gap:10px}
+nav .logo .sq{width:8px;height:8px;background:var(--cyn);animation:blink 1.4s steps(2) infinite}
+nav .links{display:flex;gap:26px}
+nav .links a{position:relative;padding:4px 0;transition:color .2s}
+nav .links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--cyn);transition:width .3s var(--ease)}
+nav .links a:hover,nav .links a.active{color:var(--txt)}
+nav .links a:hover::after,nav .links a.active::after{width:100%}
+@media(max-width:640px){nav{padding:14px 18px}nav .links{gap:14px;font-size:10px;letter-spacing:.1em}}
+@media(max-width:640px){
+  .row-item{flex-direction:column;align-items:flex-start;gap:6px;padding:20px 4px}
+  .row-item:hover{padding-left:4px}
+  .row-item .v{text-align:left;font-size:clamp(19px,5.8vw,26px)}
+  .dl-card .btn{width:100%}
+  .bio{padding:22px;font-size:12.5px}
+  #loader .boot{font-size:11px}
+}
 
-  .avatar{
-    width: 100px; height: 100px; border-radius: 50%;
-    background: linear-gradient(155deg, #2a2440, #171522);
-    border: 2px solid var(--violet-dim);
-    display:flex; align-items:center; justify-content:center;
-    position: relative; flex-shrink:0;
-    box-shadow: 0 0 0 4px rgba(171,144,255,0.08), 0 0 24px rgba(171,144,255,0.25);
-  }
-  .avatar::before{
-    content:"✦"; position:absolute; top:-10px; left:-6px; color: var(--green);
-    font-size: 13px; animation: twinkle 2.6s ease-in-out infinite;
-  }
-  .avatar::after{
-    content:"✦"; position:absolute; bottom:2px; right:-12px; color: var(--violet);
-    font-size: 10px; animation: twinkle 2.6s ease-in-out infinite .8s;
-  }
-  @keyframes twinkle{ 0%,100%{ opacity:.25; transform: scale(.8); } 50%{ opacity:1; transform: scale(1.15); } }
-  .avatar svg{ width: 52px; height:52px; }
-  .avatar .status{ position:absolute; right:0px; bottom:2px; width:20px; height:20px; border-radius:50%; background: var(--green); border: 3px solid var(--panel); box-shadow: 0 0 10px rgba(82,221,147,0.6); }
+/* ---------- hero ---------- */
+.hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:130px 32px 80px;max-width:1240px;margin:0 auto;position:relative}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px 28px;font-size:12px;letter-spacing:.16em;color:var(--dim);margin-bottom:8px}
+.hero .meta b{color:var(--txt);font-weight:500}
+.hero .meta .live{color:var(--cyn);display:inline-flex;align-items:center;gap:7px}
+.hero .meta .live::before{content:"";width:7px;height:7px;border-radius:99px;background:var(--cyn);animation:blink 1.6s steps(2) infinite;box-shadow:0 0 10px var(--cyn)}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(56px,15vw,220px);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;margin:22px 0 8px}
+.hero h1 .row{display:block;overflow:hidden}
+.hero h1 .row span{display:inline-block;transform:translateY(110%);transition:transform 1.1s var(--ease)}
+body.ready .hero h1 .row span{transform:none}
+.hero h1 .row:nth-child(2) span{transition-delay:.12s;
+  background:linear-gradient(100deg,#fff 30%,var(--vio) 70%,var(--cyn));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{font-size:12px;letter-spacing:.2em;color:var(--dim);margin-top:26px;display:flex;flex-wrap:wrap;gap:8px 26px}
+.hero .sub i{font-style:normal;color:var(--faint)}
+.hero .term{margin-top:30px;font-size:12.5px;color:var(--dim);letter-spacing:.04em;min-height:1.7em}
+.hero .term .ps1{color:var(--pnk)}
+.hero .term .cur{display:inline-block;width:8px;height:15px;background:var(--cyn);vertical-align:-2px;animation:blink 1s steps(2) infinite}
+.hero .quote{margin-top:44px;font-size:13px;color:var(--dim);max-width:430px;line-height:2;border-left:1px solid var(--line2);padding-left:18px}
+.hero .quote em{color:var(--txt);font-style:normal}
+.scrollhint{position:absolute;bottom:26px;left:32px;right:32px;display:flex;justify-content:space-between;gap:16px;font-size:11px;letter-spacing:.3em;color:var(--faint)}
+.scrollhint .d::after{content:"↓";display:block;text-align:center;margin-top:6px;color:var(--dim);animation:bob 1.6s var(--ease) infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
-  .idline{ color: var(--ink-dim); font-size: 13px; }
-  .idline b{ color: var(--ink); font-weight: 600; }
-  .name{
-    font-family: var(--head); font-weight: 700; font-size: 36px; letter-spacing: -0.01em;
-    margin: 4px 0 3px;
-    background: linear-gradient(100deg, var(--ink) 30%, var(--violet) 65%, var(--green) 100%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .handle{ color: var(--violet); margin-bottom: 16px; font-size: 14px; }
-  .handle::before{ content: "@"; color: var(--ink-faint); }
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 30% 40%,#000 25%,transparent 78%);
+  mask-image:radial-gradient(ellipse 80% 70% at 30% 40%,#000 25%,transparent 78%);}
+.hero>*{position:relative;z-index:1}
+/* ---------- ticker ---------- */
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;background:var(--bg2);padding:13px 0;position:relative;z-index:2}
+.ticker::before,.ticker::after{content:"";position:absolute;top:0;bottom:0;width:70px;z-index:2;pointer-events:none}
+.ticker::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent)}
+.ticker::after{right:0;background:linear-gradient(-90deg,var(--bg2),transparent)}
+.ticker-track{display:flex;width:max-content;font-size:12px;letter-spacing:.22em;color:var(--dim);animation:tick 30s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-track span{padding-right:54px;white-space:nowrap}
+.ticker-track b{color:var(--pnk);font-weight:400}
+.ticker-track i{color:var(--cyn);font-style:normal}
+@keyframes tick{to{transform:translateX(-50%)}}
 
-  .kv{ display:grid; grid-template-columns: max-content 1fr; row-gap: 8px; column-gap: 16px; font-size: 13.5px; }
-  .kv dt{ color: var(--ink-faint); }
-  .kv dd{ margin:0; color: var(--ink); }
-  .kv dd .accent{ color: var(--green); }
-  .kv dd .amber{ color: var(--amber); }
-  #uptime{ font-variant-numeric: tabular-nums; }
+/* ---------- sections ---------- */
+section{max-width:1240px;margin:0 auto;padding:110px 32px;position:relative}
+.sec-num{font-size:11px;letter-spacing:.3em;color:var(--faint);margin-right:12px}
+.sec-label{font-size:12px;letter-spacing:.34em;color:var(--dim);margin-bottom:16px;display:flex;align-items:baseline}
+.sec-title{font-family:var(--sans);font-weight:700;font-size:clamp(38px,7vw,74px);line-height:1;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:56px}
+.sec-title em{font-style:normal;color:transparent;-webkit-text-stroke:1.5px var(--dim)}
 
-  .tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 16px; }
-  .tags span{ font-size: 11.5px; padding: 4px 10px; border-radius: 5px; background: var(--bg-2); border: 1px solid var(--line); color: var(--ink-dim); }
+/* glitch reveal saat scroll */
+.gl{position:relative;display:inline-block}
+.gl.fx{animation:gshift .5s steps(2) 1}
+.gl.fx::before,.gl.fx::after{content:attr(data-t);position:absolute;inset:0;pointer-events:none}
+.gl.fx::before{color:var(--pnk);animation:gslice .5s steps(3) 1 forwards}
+.gl.fx::after{color:var(--cyn);animation:gslice2 .5s steps(3) 1 forwards}
+@keyframes gshift{0%{transform:translateX(-6px)}40%{transform:translateX(4px)}100%{transform:none}}
+@keyframes gslice{0%{clip-path:inset(10% 0 60% 0);transform:translateX(-8px)}50%{clip-path:inset(50% 0 20% 0);transform:translateX(6px)}100%{clip-path:inset(0 0 0 0);opacity:0}}
+@keyframes gslice2{0%{clip-path:inset(60% 0 5% 0);transform:translateX(8px)}50%{clip-path:inset(20% 0 55% 0);transform:translateX(-6px)}100%{clip-path:inset(0 0 0 0);opacity:0}}
 
-  .rule{ height:1px; background: var(--line-soft); margin: 32px 0; border:0; }
+/* scroll reveal */
+[data-rv]{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0s)}
+[data-rv].in{opacity:1;transform:none}
+.dl-card[data-rv].in{transition:opacity .9s var(--ease),transform .18s ease-out,border-color .25s}
 
-  h2{ font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--ink-dim); margin: 0 0 16px; scroll-margin-top: 90px; }
-  h2::before{ content: "~/" attr(data-path) " $ "; color: var(--ink-faint); }
-  h2 .cmd{ color: var(--ink); }
+/* ---------- about ---------- */
+.rows{border-top:1px solid var(--line)}
+.row-item{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:26px 6px;border-bottom:1px solid var(--line);transition:background .25s,padding-left .25s;flex-wrap:wrap}
+.row-item:hover{background:rgba(255,255,255,.02);padding-left:16px}
+.row-item .k{font-size:11px;letter-spacing:.3em;color:var(--faint)}
+.row-item .v{font-family:var(--sans);font-weight:700;font-size:clamp(20px,3.6vw,34px);letter-spacing:-.01em;text-align:right}
+.row-item .v small{display:block;font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.14em;color:var(--dim);margin-top:6px}
+.bio{margin-top:26px;border:1px solid var(--line);background:var(--panel);padding:28px;font-size:13px;line-height:2.1;color:var(--txt);position:relative}
+.bio a{color:var(--cyn);border-bottom:1px dashed rgba(34,211,238,.45)}
+.bio .hl{color:var(--pnk)}
+.bio::before{content:"~/sharp $ cat bio.txt";display:block;font-size:11px;letter-spacing:.2em;color:var(--faint);margin-bottom:14px}
 
-  section{ margin-bottom: 44px; }
-  section:last-of-type{ margin-bottom: 0; }
+/* ---------- aetherbox ---------- */
+.aether-intro{font-size:13px;color:var(--dim);max-width:660px;line-height:2.1;margin-bottom:44px}
+.aether-intro b{color:var(--txt);font-weight:500}
+.aether-intro .root{color:var(--pnk)}
+.dl-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;perspective:1200px}
+@media(max-width:760px){.dl-cards{grid-template-columns:1fr}}
+.dl-card{border:1px solid var(--line);background:var(--panel);padding:28px;display:flex;flex-direction:column;gap:16px;position:relative;transition:border-color .25s;transform-style:preserve-3d;will-change:transform}
+.dl-card::before{content:"";position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--vio),var(--cyn));transition:width .4s var(--ease)}
+.dl-card:hover{border-color:var(--line2)}
+.dl-card i[class^="c-"]{position:absolute;width:14px;height:14px;pointer-events:none;opacity:0;transition:opacity .3s}
+.c-tl{top:-1px;left:-1px;border-top:1px solid var(--cyn);border-left:1px solid var(--cyn)}
+.c-br{bottom:-1px;right:-1px;border-bottom:1px solid var(--vio);border-right:1px solid var(--vio)}
+.dl-card:hover i[class^="c-"]{opacity:1}
+.dl-card:hover::before{width:100%}
+.dl-card h4{font-family:var(--sans);font-size:21px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{font-size:10px;letter-spacing:.16em;padding:4px 11px;border:1px solid var(--line2);color:var(--dim)}
+.badge.root{color:var(--pnk);border-color:rgba(244,114,182,.4)}
+.badge.lite{color:var(--cyn);border-color:rgba(34,211,238,.4)}
+.badge.mine{color:#c4b5fd;border-color:rgba(139,92,246,.45)}
+.ver{font-size:12px;color:var(--dim);letter-spacing:.06em;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ver b{color:var(--cyn);font-weight:700}
+.ver .st{font-size:9px;letter-spacing:.14em;padding:2px 8px;border-radius:99px}
+.ver .st.live{color:var(--cyn);border:1px solid rgba(34,211,238,.35)}
+.ver .st.cached{color:var(--pnk);border:1px solid rgba(244,114,182,.35)}
+.ver .st.live::before{content:"";display:inline-block;width:5px;height:5px;border-radius:99px;background:var(--cyn);margin-right:6px;vertical-align:1px;animation:blink 1.4s steps(2) infinite}
+.dl-card ul{list-style:none;font-size:12px;color:var(--dim);display:grid;gap:9px}
+.dl-card ul li::before{content:"// ";color:var(--faint)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--mono);font-size:12px;
+  letter-spacing:.14em;font-weight:700;padding:15px 22px;transition:transform .18s var(--ease),background .2s,color .2s,border-color .2s,box-shadow .2s;cursor:pointer;border:1px solid var(--txt);will-change:transform}
+.btn.solid{background:var(--txt);color:#0a0a0c}
+.btn.solid:hover{box-shadow:0 10px 30px rgba(139,92,246,.28);border-color:var(--vio)}
+.btn.ghost{border-color:var(--line2);color:var(--txt);background:transparent}
+.btn.ghost:hover{border-color:var(--cyn);color:var(--cyn)}
+.cmp-wrap{margin-top:22px;overflow-x:auto;border:1px solid var(--line);-webkit-overflow-scrolling:touch}
+.cmp{width:100%;min-width:560px;border-collapse:collapse;font-size:12px;background:var(--panel)}
+.cmp th,.cmp td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--line)}
+.cmp th{font-size:10px;letter-spacing:.24em;color:var(--dim);font-weight:400;background:rgba(255,255,255,.02);white-space:nowrap}
+.cmp td{color:var(--dim)}
+.cmp td:first-child{color:var(--txt)}
+.cmp .ok{color:var(--cyn)}.cmp .no{color:var(--pnk)}
+.cmp tbody tr{transition:background .2s}
+.cmp tbody tr:hover{background:rgba(139,92,246,.05)}
+.cmp tr:last-child td{border-bottom:none}
+.note{margin-top:16px;font-size:11px;color:var(--faint);letter-spacing:.08em}
+.note i{color:var(--cyn);font-style:normal}
 
-  p{ margin: 0 0 12px; color: var(--ink); }
-  p.dim{ color: var(--ink-dim); }
-  .prose{ max-width: 60ch; }
+/* ---------- social ---------- */
+.socs{border-top:1px solid var(--line)}
+.soc{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:26px 6px;border-bottom:1px solid var(--line);transition:background .25s,padding-left .25s}
+.soc:hover{background:rgba(255,255,255,.02);padding-left:16px}
+.soc .l{display:flex;align-items:center;gap:20px;min-width:0}
+.soc .idx{font-size:11px;color:var(--faint);letter-spacing:.2em}
+.soc b{font-family:var(--sans);font-size:clamp(17px,2.6vw,22px);font-weight:700;display:block}
+.soc small{display:block;font-size:11px;color:var(--dim);letter-spacing:.16em;margin-top:5px}
+.soc .arrow{font-size:16px;color:var(--faint);transition:color .2s,transform .25s var(--ease)}
+.soc:hover .arrow{color:var(--cyn);transform:translate(4px,-4px)}
+.chip{margin-top:18px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;padding:10px 20px;border:1px solid var(--line2);background:transparent;color:var(--dim);cursor:pointer;transition:color .2s,border-color .2s,transform .2s}
+.chip:hover{color:var(--cyn);border-color:var(--cyn);transform:translateY(-2px)}
+.chip.ok{color:var(--cyn);border-color:rgba(34,211,238,.5)}
 
-  /* ---- project card ---- */
-  .card{ background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; transition: border-color .15s, box-shadow .15s; }
-  .card:hover{ border-color: var(--violet-dim); box-shadow: 0 0 0 1px rgba(171,144,255,0.08), 0 18px 40px -28px rgba(171,144,255,0.35); }
-  .card-top{ display:flex; align-items:baseline; justify-content:space-between; gap: 10px; flex-wrap: wrap; }
-  .card-title{ font-family: var(--head); font-weight: 600; font-size: 19px; color: var(--ink); }
-  .card-title a{ color: inherit; border-bottom: none; }
-  .card-title a:hover{ color: var(--violet); }
-  .badge{ font-size: 11px; color: var(--green); border: 1px solid rgba(82,221,147,0.35); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
-  .badge-off{ color: var(--ink-dim); border-color: var(--line); background: rgba(255,255,255,0.03); }
-  .card.muted{ margin-top: 16px; opacity: 0.85; }
-  .card p{ margin-top: 12px; }
-  .stats{ display:flex; gap: 18px; margin-top: 14px; font-size: 12px; color: var(--ink-faint); }
-  .stats b{ color: var(--ink-dim); font-weight: 600; }
-  .feat{ list-style:none; margin: 16px 0 0; padding:0; display:grid; gap:8px; font-size: 13.5px; color: var(--ink-dim); }
-  .feat li::before{ content: "› "; color: var(--violet-dim); }
-  .card-links{ margin-top: 18px; display:flex; gap: 20px; font-size: 13px; flex-wrap: wrap; }
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);margin-top:80px;padding:70px 32px 50px;text-align:center;position:relative;z-index:2}
+footer .motto{font-family:var(--sans);font-weight:700;font-size:clamp(22px,4.5vw,36px);letter-spacing:-.01em;margin-bottom:22px}
+footer .motto i{font-style:normal;background:linear-gradient(100deg,#fff,var(--vio),var(--cyn));-webkit-background-clip:text;background-clip:text;color:transparent}
+footer .fine{font-size:11px;letter-spacing:.14em;color:var(--faint);line-height:2.2}
+footer .fine b{color:var(--dim);font-weight:400}
+footer a{color:var(--dim);border-bottom:1px solid var(--line2);transition:color .2s,border-color .2s}
+footer a:hover{color:var(--cyn);border-color:var(--cyn)}
+footer .top{display:inline-block;margin-top:26px;padding:10px 22px;border:1px solid var(--line2);border-radius:99px;font-size:11px;letter-spacing:.2em;transition:border-color .2s,color .2s,transform .2s}
+footer .top:hover{border-color:var(--cyn);color:var(--cyn);transform:translateY(-2px)}
 
-  /* ---- links list ---- */
-  .linklist{ display:grid; gap: 10px; }
-  .linklist a{
-    display:flex; align-items:center; justify-content:space-between; gap: 10px;
-    border: 1px solid var(--line); background: var(--bg-2);
-    padding: 13px 18px; border-radius: 9px; color: var(--ink); border-bottom: 1px solid var(--line);
-  }
-  .linklist a:hover{ border-color: var(--violet-dim); color: var(--violet); background: var(--violet-soft); }
-  .linklist small{ color: var(--ink-faint); font-weight: normal; }
+@media(max-width:640px){section{padding:80px 20px}.hero{padding:110px 20px 90px}.scrollhint{left:20px;right:20px;font-size:9px;letter-spacing:.2em}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .hero h1 .row span{transform:none}
+  [data-rv]{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
 
-  footer{ margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--line-soft); color: var(--ink-faint); font-size: 12px; display:flex; justify-content:space-between; flex-wrap: wrap; gap: 8px; }
+/* ============================================================
+   v7 — UI UPGRADE : aurora, gradient cards, cursor glow, shimmer
+   ============================================================ */
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;border-radius:50%;filter:blur(90px)}
+.aurora i:nth-child(1){width:44vw;height:44vw;left:-12vw;top:-14vw;background:#8b5cf6;opacity:.15;animation:aur1 26s ease-in-out infinite alternate}
+.aurora i:nth-child(2){width:38vw;height:38vw;right:-10vw;top:22vh;background:#22d3ee;opacity:.10;animation:aur2 32s ease-in-out infinite alternate}
+.aurora i:nth-child(3){width:30vw;height:30vw;left:24vw;bottom:-16vw;background:#f472b6;opacity:.07;animation:aur3 38s ease-in-out infinite alternate}
+@keyframes aur1{to{transform:translate(9vw,7vh) scale(1.15)}}
+@keyframes aur2{to{transform:translate(-8vw,-6vh) scale(.9)}}
+@keyframes aur3{to{transform:translate(6vw,-8vh) scale(1.2)}}
 
-  .cursor{ display:inline-block; width:8px; height:1em; background:var(--violet); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
-  @keyframes blink{ 50%{ opacity:0; } }
+/* judul section: teks gradasi bergerak halus */
+.sec-title{background:linear-gradient(100deg,#fff 20%,var(--vio) 45%,var(--cyn) 65%,#fff 85%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shine 7s linear infinite}
+@keyframes shine{to{background-position:-220% 0}}
+.sec-label::after{content:"";flex:1;height:1px;margin-left:18px;transform:scaleX(0);transform-origin:left;
+  background:linear-gradient(90deg,var(--line2),transparent);transition:transform .9s var(--ease)}
+.sec-label.in::after{transform:none}
 
-  @media (prefers-reduced-motion: reduce){
-    html{ scroll-behavior: auto; }
-    .cursor{ animation: none; }
-    #boot{ display:none; }
-  }
+/* download cards: gradient border + glow saat hover */
+.dl-card{border-color:transparent;
+  background:linear-gradient(var(--panel),var(--panel)) padding-box,
+  linear-gradient(135deg,rgba(139,92,246,.45),rgba(255,255,255,.07) 45%,rgba(34,211,238,.45)) border-box;
+  box-shadow:0 0 0 rgba(139,92,246,0);transition:border-color .25s,box-shadow .35s}
+.dl-card:hover{box-shadow:0 14px 44px rgba(139,92,246,.16),0 0 24px rgba(34,211,238,.06)}
+/* spotlight ngikutin kursor di dalam card & bio */
+.dl-card::after,.bio::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;border-radius:inherit;
+  background:radial-gradient(320px circle at var(--gx,50%) var(--gy,50%),rgba(139,92,246,.13),transparent 65%)}
+.dl-card:hover::after,.bio:hover::after{opacity:1}
+.bio{border-color:transparent;border-radius:6px;
+  background:linear-gradient(var(--panel),var(--panel)) padding-box,
+  linear-gradient(120deg,rgba(139,92,246,.4),rgba(34,211,238,.35)) border-box}
+
+/* bio perlu posisi relative utk ::after */
+.bio{position:relative;overflow:hidden}
+
+/* baris about/social: sapuan gradasi halus saat hover */
+.row-item,.soc{position:relative;overflow:hidden}
+.row-item::before,.soc::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(139,92,246,.09),transparent 55%);
+  transform:translateX(-101%);transition:transform .5s var(--ease)}
+.row-item:hover::before,.soc:hover::before{transform:none}
+.row-item:hover .v{color:var(--cyn)}
+.row-item .v{transition:color .3s}
+.soc:hover small{color:var(--cyn)}
+.soc small{transition:color .3s}
+
+/* tombol solid: isi gradasi menyapu dari kiri */
+.btn{position:relative;isolation:isolate;overflow:hidden}
+.btn.solid::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(100deg,var(--vio),var(--cyn));
+  transform:translateX(-101%);transition:transform .35s var(--ease)}
+.btn.solid:hover::before{transform:none}
+.btn.solid:hover{color:#fff;border-color:transparent}
+.btn.ghost:hover{background:rgba(34,211,238,.07)}
+/* magnetic butuh transform tetap smooth */
+.btn{transition:transform .18s var(--ease),background .2s,color .2s,border-color .2s,box-shadow .2s}
+
+/* nav: garis bawah glow pas scroll */
+nav.scrolled{box-shadow:0 1px 0 rgba(139,92,246,.28),0 12px 40px rgba(0,0,0,.4)}
+
+/* footer motto ikut shimmer */
+footer .motto i{background-size:220% 100%;animation:shine 6s linear infinite}
+
+/* scrollbar gradasi */
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--vio),var(--cyn))}
+
+@media(prefers-reduced-motion:reduce){.aurora i,.sec-title,footer .motto i{animation:none!important}}
 </style>
 </head>
 <body>
 
-<div id="boot" aria-hidden="true">
-  <div class="line"><span class="ok">[ ok ]</span> starting <span class="path">sharp.session</span></div>
-  <div class="line"><span class="ok">[ ok ]</span> mounted <span class="path">/home/crystalsharps</span></div>
-  <div class="line"><span class="ok">[ ok ]</span> loading rootfs: <span class="path">debian-13-trixie-xfce.img</span></div>
-  <div class="line"><span class="ok">[ ok ]</span> container <span class="path">aetherbox</span> is up</div>
-  <div class="line">welcome back.</div>
-</div>
-
-<div class="topbar">
-  <div class="topbar-inner">
-    <span class="live"><span class="dot"></span> online</span>
-    <nav>
-      <a href="#about">about</a>
-      <a href="#projects">projects</a>
-      <a href="#links">links</a>
-    </nav>
-    <button id="theme-toggle" class="theme-btn" type="button" aria-label="Toggle light and dark theme">◐</button>
+<div id="loader" aria-hidden="true">
+  <div class="boot">
+    <div class="lg"><span class="sq"></span>SHRP_</div>
+    <div class="ln">> mounting /dev/crystal ......... <span class="ok">ok</span></div>
+    <div class="ln">> starting aetherd .............. <span class="ok">ok</span></div>
+    <div class="ln">> loading ui: monochrome ........ <span class="ok">ok</span></div>
+    <div class="ln">WELCOME_</div>
   </div>
 </div>
 
-<div class="wrap">
+<canvas id="dust" aria-hidden="true"></canvas>
+<div class="spot" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div id="progress"></div>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<main>
 
-  <div class="term">
-    <div class="term-head">
-      <span>fastfetch — sharp</span>
-      <span>debian 13 (trixie) · xfce</span>
+<nav id="nav">
+  <div class="logo"><span class="sq"></span>SHRP_</div>
+  <div class="links">
+    <a href="#home" class="active">HOME</a><a href="#about">ABOUT</a><a href="#aether">AETHERBOX</a><a href="#social">SOCIAL</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="home">
+  <div class="meta">
+    <span class="live">ONLINE</span>
+    <span>SYS&gt; <b>Debian 13 (Trixie) · XFCE</b></span>
+    <span>UPTIME&gt; <b id="uptime">…</b></span>
+    <span>LOC&gt; <b>UTC+7</b></span>
+  </div>
+  <h1>
+    <span class="row"><span>SHARP</span></span>
+    <span class="row"><span>CRYSTAL</span></span>
+  </h1>
+  <div class="sub">
+    <span>USR&gt; <b>crystalsharps</b></span><i>/</i>
+    <span>ROLE&gt; <b>developer &amp; linux tinkerer</b></span><i>/</i>
+    <span>PRJ&gt; <b>AetherBox</b></span>
+  </div>
+  <div class="term" aria-hidden="true"><span class="ps1">sharp@aether:~$ </span><span id="typer"></span><span class="cur"></span></div>
+  <div class="quote">"<em>running full linux on a phone</em> shouldn't feel like magic — but it kinda does."</div>
+  <div class="scrollhint"><span>.000 — HOME</span><span class="d"><span id="pct">0%</span></span><span>aarch…<b style="color:var(--vio)">arm64</b></span></div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track">
+    <span>BOY <b>✧</b> NOT A GIRL</span><span>LESBIAN <i>"BI"</i></span><span>WOLF PACK <b>■</b></span>
+    <span>DISTRO HOPPING</span><span>CRYSTAL &lt;3</span><span>SHARP :3</span><span>LINUX ON ANDROID</span><span>AETHERBOX — BY ME</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec-label" data-rv><span class="sec-num">.001</span> // IDENTITY</div>
+  <h2 class="sec-title"><span class="gl" data-t="ABOUT">ABOUT</span> <em>ME</em></h2>
+  <div class="rows">
+    <div class="row-item" data-rv style="--d:.0s"><span class="k">ALIAS</span><span class="v">Sharp<small>a.k.a crystalsharps · AidansQwert on GitHub</small></span></div>
+    <div class="row-item" data-rv style="--d:.06s"><span class="k">GENDER</span><span class="v">boy ✧<small>not a girls · lesbian "bi"</small></span></div>
+    <div class="row-item" data-rv style="--d:.12s"><span class="k">CURRENT SETUP</span><span class="v">Debian 13 · XFCE<small>GNU/Linux (Trixie)</small></span></div>
+    <div class="row-item" data-rv style="--d:.18s"><span class="k">MEMBER SINCE</span><span class="v">2022<small>Feb 10 — still going strong</small></span></div>
+  </div>
+  <div class="bio" data-rv style="--d:.1s">hey. i'm <span class="hl">Sharp</span>. i distro-hop, tinker with linux on android, build my own
+  environments, and develop <span class="hl">AetherBox</span>. full bio &amp; all my links live at
+  <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp</a> — one link, everything.
+  <span class="hl">wolf pack 🐺</span>, crystal &lt;3 ▊</div>
+</section>
+
+<!-- AETHERBOX -->
+<section id="aether">
+  <div class="sec-label" data-rv><span class="sec-num">.002</span> // MY PROJECT</div>
+  <h2 class="sec-title">AETHER<em>BOX</em></h2>
+
+  <p class="aether-intro" data-rv><b>AetherBox is my own project</b> — an official fork of Droidspaces (by ravindu644;
+  credit where credit is due). A tiny (&lt;400KB, statically compiled against musl libc) container runtime that
+  runs full Linux distros on top of Android with native performance and zero dependencies.
+  <span class="root">The full app needs root (Magisk / KernelSU / APatch).</span> No root? grab Lite instead.</p>
+
+  <div class="dl-cards">
+    <div class="dl-card" data-rv>
+      <i class="c-tl"></i><i class="c-br"></i>
+      <h4>AetherBox <span class="badge root">ROOT</span> <span class="badge mine">MINE</span></h4>
+      <div class="ver">latest: <b id="ver-root">v1.4.0</b> · <span id="date-root">—</span> · <span class="st" id="st-root">SYNCING</span></div>
+      <ul>
+        <li>Native containers via the droidspaces binary</li>
+        <li>Full init systems: systemd / OpenRC / runit / s6</li>
+        <li>Curated Rootfs Repository + theme builder</li>
+        <li>aarch64 · armhf · x86_64 · x86 · riscv64</li>
+        <li>Works even on kernel 4.x (auto Cgroup V1 fallback)</li>
+      </ul>
+      <a class="btn solid" id="dl-root" href="https://github.com/AidansQwert/AetherBox/releases/latest" target="_blank" rel="noopener">↓ DOWNLOAD APK</a>
+      <a class="btn ghost" href="https://github.com/AidansQwert/AetherBox" target="_blank" rel="noopener">GITHUB REPO →</a>
     </div>
-    <div class="term-body">
-
-      <div class="fetch">
-        <div class="avatar" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#ab90ff" stroke-width="1.4">
-            <path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke-linecap="round"/>
-            <circle cx="12" cy="8" r="4.2"/>
-          </svg>
-          <div class="status" title="online"></div>
-        </div>
-        <div>
-          <div class="idline">member of <b>WOLF</b> since <b>Feb 10, 2022</b></div>
-          <div class="name">Sharp</div>
-          <div class="handle">crystalsharps</div>
-
-          <dl class="kv">
-            <dt>os</dt><dd>Debian 13 GNU/Linux (Trixie) — XFCE</dd>
-            <dt>status</dt><dd><span class="accent">● online</span></dd>
-            <dt>uptime</dt><dd id="uptime">374:48:41</dd>
-            <dt>last commit</dt><dd id="lastCommit">syncing…</dd>
-            <dt>build</dt><dd>containers, rootfs, and whatever else breaks nicely</dd>
-            <dt>currently</dt><dd><span class="accent">shipping AetherBox v1.4.0</span></dd>
-          </dl>
-
-          <div class="tags">
-            <span>Kotlin</span><span>C</span><span>Shell</span><span>Nix</span><span>musl</span>
-          </div>
-        </div>
-      </div>
-
-      <hr class="rule">
-
-      <section id="about" aria-labelledby="about-h">
-        <h2 id="about-h" data-path="about"><span class="cmd">cat</span> bio.txt</h2>
-        <div class="prose">
-          <p>Boy, not a girl. Lesbian ("bi").</p>
-          <p class="dim">Runs Linux on things that were never supposed to run Linux, and gets a little too attached to uptime counters.</p>
-        </div>
-      </section>
-
-      <section id="projects" aria-labelledby="projects-h">
-        <h2 id="projects-h" data-path="projects"><span class="cmd">ls</span> -la</h2>
-
-        <div class="card">
-          <div class="card-top">
-            <div class="card-title"><a href="https://github.com/AidansQwert/AetherBox" target="_blank" rel="noopener">AetherBox</a></div>
-            <span class="badge" id="badge-version">v1.4.0 · latest</span>
-          </div>
-          <p class="dim">A lightweight, LXC-like container runtime for Android and Linux — a community fork of <a href="https://github.com/ravindu644/Droidspaces-OSS" target="_blank" rel="noopener">Droidspaces</a>. Full Linux distributions run natively, with zero performance penalty, from a single static binary under 400KB.</p>
-          <div class="stats">
-            <span id="stat-stars"><b>1</b> stars</span>
-            <span><b>GPL-3.0</b> license</span>
-            <span><b>5</b> architectures</span>
-          </div>
-          <ul class="feat">
-            <li>Full init system support — systemd, OpenRC, runit, s6</li>
-            <li>Native on Android <em>and</em> Linux desktop from the same musl binary</li>
-            <li>Redesigned Android app: curated Rootfs Repository, custom theming</li>
-            <li>Runs in minimal environments too, including Android recovery/ramdisk</li>
-          </ul>
-          <div class="card-links">
-            <a href="https://github.com/AidansQwert/AetherBox" target="_blank" rel="noopener">source →</a>
-            <a href="https://github.com/AidansQwert/AetherBox/releases/latest" target="_blank" rel="noopener">releases →</a>
-            <a href="https://t.me/Droidspaces" target="_blank" rel="noopener">telegram →</a>
-          </div>
-        </div>
-
-        <div class="card muted">
-          <div class="card-top">
-            <div class="card-title"><a href="https://github.com/AidansQwert/AetherBox-Lite" target="_blank" rel="noopener">AetherBox Lite</a></div>
-            <span class="badge badge-off">discontinued</span>
-          </div>
-          <p class="dim">The no-root companion to AetherBox — same Home / Distros / Panel shape, running on Termux + PRoot instead of native namespaces, for devices without Magisk or KernelSU.</p>
-          <ul class="feat">
-            <li>CLI path via proot-distro: Ubuntu, Debian, Alpine, Arch, Fedora</li>
-            <li>Omarchy path: full Hyprland desktop over Termux:X11</li>
-            <li>Rootfs feeds and native containers still live in the main AetherBox repo</li>
-          </ul>
-          <div class="card-links">
-            <a href="https://github.com/AidansQwert/AetherBox-Lite" target="_blank" rel="noopener">source →</a>
-          </div>
-        </div>
-      </section>
-
-      <section id="links" aria-labelledby="links-h">
-        <h2 id="links-h" data-path="links"><span class="cmd">cat</span> links.txt</h2>
-        <div class="linklist">
-          <a href="https://github.com/AidansQwert" target="_blank" rel="noopener">github/AidansQwert <small>code &amp; releases</small></a>
-          <a href="https://t.me/CrystalSharps" target="_blank" rel="noopener">t.me/CrystalSharps <small>telegram</small></a>
-          <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp <small>bio card</small></a>
-        </div>
-      </section>
-
+    <div class="dl-card" data-rv style="--d:.08s">
+      <i class="c-tl"></i><i class="c-br"></i>
+      <h4>AetherBox Lite <span class="badge lite">NO-ROOT</span> <span class="badge mine">MINE</span></h4>
+      <div class="ver">latest: <b id="ver-lite">v0.1.5</b> · <span id="date-lite">—</span> · <span class="st" id="st-lite">SYNCING</span></div>
+      <ul>
+        <li>Companion app for devices without root</li>
+        <li>Installs via Termux — proot-distro or Omarchy</li>
+        <li>Same UI shape: Home · Distros · Panel</li>
+        <li>Theme palettes: Aether / Nebula / Ocean / Graphite / Forest</li>
+        <li>Omarchy desktop needs ~8GB free storage</li>
+      </ul>
+      <a class="btn solid" id="dl-lite" href="https://github.com/AidansQwert/AetherBox-Lite/releases/latest" target="_blank" rel="noopener">↓ DOWNLOAD LITE APK</a>
+      <a class="btn ghost" href="https://github.com/AidansQwert/AetherBox-Lite" target="_blank" rel="noopener">GITHUB REPO →</a>
     </div>
   </div>
 
-  <footer>
-    <span>sharp — crystalsharps</span>
-    <span>rendered from a terminal that never sleeps</span>
-  </footer>
+  <div class="cmp-wrap" data-rv>
+    <table class="cmp">
+      <thead>
+        <tr><th>FEATURE</th><th>AETHERBOX (ROOT)</th><th>LITE (NO-ROOT)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Native containers (namespaces)</td><td class="ok">YES — droidspaces binary</td><td class="no">NO — PRoot only</td></tr>
+        <tr><td>Requirement</td><td class="no">Magisk / KernelSU / APatch</td><td class="ok">Termux, no root</td></tr>
+        <tr><td>Init system (systemd etc.)</td><td class="ok">YES, full support</td><td class="no">limited inside PRoot</td></tr>
+        <tr><td>Desktop (Hyprland via X11)</td><td class="ok">YES</td><td class="ok">YES — via Omarchy (heavy)</td></tr>
+        <tr><td>Project status</td><td class="ok">active</td><td class="no">discontinued</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">↻ versions &amp; download buttons <i>auto-update</i> from the GitHub releases API, cached locally — set and forget.</div>
+</section>
 
-</div>
+<!-- SOCIAL -->
+<section id="social">
+  <div class="sec-label" data-rv><span class="sec-num">.003</span> // FIND ME</div>
+  <h2 class="sec-title">SOCIAL <em>PROFILES</em></h2>
+  <div class="socs">
+    <a class="soc" href="https://guns.lol/crystalsharp" target="_blank" rel="noopener" data-rv>
+      <div class="l"><span class="idx">.01</span><div><b>guns.lol</b><small>ALL LINKS IN ONE — /crystalsharp</small></div></div>
+      <span class="arrow">↗</span>
+    </a>
+    <a class="soc" href="https://github.com/AidansQwert/AetherBox" target="_blank" rel="noopener" data-rv style="--d:.06s">
+      <div class="l"><span class="idx">.02</span><div><b>GitHub — AetherBox</b><small>RUN LINUX NATIVELY ON ANDROID · ROOT</small></div></div>
+      <span class="arrow">↗</span>
+    </a>
+    <a class="soc" href="https://github.com/AidansQwert/AetherBox-Lite" target="_blank" rel="noopener" data-rv style="--d:.12s">
+      <div class="l"><span class="idx">.03</span><div><b>GitHub — AetherBox Lite</b><small>NO-ROOT COMPANION · TERMUX/PROOT</small></div></div>
+      <span class="arrow">↗</span>
+    </a>
+  </div>
+  <button class="chip" id="copy-link" type="button">⧉ COPY GUNS.LOL LINK</button>
+</section>
 
+<footer>
+  <div class="motto">"sharp as crystal, <i>soft as linux</i>"</div>
+  <div class="fine">
+    SHARP / CRYSTALSHARPS — © <span id="yr">2026</span> — hand-built, no frameworks.<br>
+    aetherbox &amp; aetherbox-lite by <b>me (AidansQwert)</b> · fork of droidspaces by ravindu644.<br>
+    <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp</a>
+  </div>
+  <a class="top" href="#home">↑ BACK TO TOP</a>
+</footer>
+
+</main>
 <script>
-  // boot sequence
-  (function(){
-    var boot = document.getElementById('boot');
-    var lines = boot.querySelectorAll('.line');
-    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) { boot.classList.add('hide'); return; }
-    lines.forEach(function(l, i){
-      setTimeout(function(){ l.classList.add('show'); }, 160 * i);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = s => document.querySelector(s);
+
+/* ---------- preloader: boot sequence, baru reveal hero ---------- */
+(function(){
+  const loader = $('#loader'), lns = [...loader.querySelectorAll('.ln')];
+  let fb = null;
+  function finish(){
+    clearTimeout(fb);
+    loader.classList.add('done');
+    document.body.classList.add('ready');   // hero title naik SETELAH loader hilang
+  }
+  if (reduced){ finish(); return; }
+  let i = 0;
+  (function next(){
+    if (i >= lns.length){ setTimeout(finish, 420); return; }
+    lns[i++].classList.add('on');
+    setTimeout(next, i === 1 ? 350 : 300);
+  })();
+  fb = setTimeout(finish, 4000); // fallback kalau apa pun gagal
+})();
+
+/* ---------- uptime counter (sejak Feb 10 2022) ---------- */
+(function(){
+  const el = $('#uptime'), t0 = new Date('2022-02-10T00:00:00+07:00');
+  function tick(){
+    const d = Math.floor((Date.now() - t0) / 864e5);
+    el.textContent = d.toLocaleString('en-US') + ' DAYS';
+  }
+  tick(); setInterval(tick, 60000);
+})();
+
+/* ---------- typewriter terminal di hero ---------- */
+(function(){
+  const el = $('#typer');
+  const lines = [
+    'uname -a → Linux aether 6.6-aether aarch64 GNU/Linux',
+    'aetherbox --version → checking releases…',
+    'whoami → sharp (boy ✧, not a girl)',
+    'cat /etc/motd → stay sharp, stay crystal. wolf pack 🐺'
+  ];
+  if (reduced){ el.textContent = lines[0]; return; }
+  let li = 0, ci = 0, del = false;
+  (function type(){
+    const s = lines[li];
+    el.textContent = s.slice(0, ci);
+    if (!del){
+      ci++;
+      if (ci > s.length){ del = true; return setTimeout(type, 2400); }
+      return setTimeout(type, 26 + Math.random()*40);
+    } else {
+      ci -= 3;
+      if (ci <= 0){ ci = 0; del = false; li = (li+1) % lines.length; }
+      return setTimeout(type, 12);
+    }
+  })();
+})();
+
+/* ---------- ticker: klon konten biar -50% SELALU pas ---------- */
+(function(){
+  const t = $('#ticker-track');
+  t.innerHTML += t.innerHTML; // exact 2x copy → loop mulus, anti "melompat"
+})();
+
+/* ---------- dust particles ---------- */
+const c = $('#dust'), x = c.getContext('2d'); let W, H, P = [];
+function rs(){
+  W = c.width = innerWidth; H = c.height = innerHeight;
+  const n = Math.max(35, Math.min(90, Math.round(W*H/22000)));
+  P = Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.4,
+    vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,o:Math.random()*.45+.1,
+    tw:Math.random()*Math.PI*2}));
+}
+rs(); addEventListener('resize', () => { rs(); if (reduced) drawStatic(); });
+function drawStatic(){
+  x.clearRect(0,0,W,H); x.globalAlpha = 1;
+  for(const p of P){ x.globalAlpha = p.o; x.fillStyle = '#cfcfd8';
+    x.beginPath(); x.arc(p.x,p.y,p.r,0,7); x.fill(); }
+  x.globalAlpha = 1;
+}
+if (!reduced){
+  (function loop(){
+    x.clearRect(0,0,W,H);
+    for(const p of P){
+      p.x += p.vx; p.y += p.vy; p.tw += .02;
+      if(p.x<-4)p.x=W+4; if(p.x>W+4)p.x=-4; if(p.y<-4)p.y=H+4; if(p.y>H+4)p.y=-4;
+      x.globalAlpha = p.o*(0.7+0.3*Math.sin(p.tw));
+      x.fillStyle = '#cfcfd8'; x.beginPath(); x.arc(p.x,p.y,p.r,0,7); x.fill();
+    }
+    x.globalAlpha = 1;
+    requestAnimationFrame(loop);
+  })();
+} else drawStatic();
+
+/* ---------- spotlight ngikutin kursor ---------- */
+if (!reduced && matchMedia('(pointer:fine)').matches){
+  let raf = null;
+  addEventListener('pointermove', e => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+      document.documentElement.style.setProperty('--my', e.clientY + 'px');
+      raf = null;
     });
-    setTimeout(function(){ boot.classList.add('hide'); }, 160 * lines.length + 550);
-  })();
+  }, {passive:true});
+}
 
-  // live uptime ticker, starting from the base shown in the fetch block
-  (function(){
-    var el = document.getElementById('uptime');
-    if (!el) return;
-    var base = 374 * 3600 + 48 * 60 + 41;
-    var start = Date.now();
-    function fmt(totalSeconds){
-      var h = Math.floor(totalSeconds / 3600);
-      var m = Math.floor((totalSeconds % 3600) / 60);
-      var s = Math.floor(totalSeconds % 60);
-      function pad(n){ return String(n).padStart(2, '0'); }
-      return pad(h) + ':' + pad(m) + ':' + pad(s);
-    }
-    function tick(){
-      var elapsed = (Date.now() - start) / 1000;
-      el.textContent = fmt(base + elapsed);
-    }
-    tick();
-    setInterval(tick, 1000);
-  })();
+/* ---------- scroll progress + nav state ---------- */
+const prog = $('#progress'), nav = $('#nav'), pctEl = $('#pct');
+addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  const pct = max > 0 ? Math.round(h.scrollTop / max * 100) : 0;
+  prog.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  nav.classList.toggle('scrolled', scrollY > 40);
+}, {passive:true});
 
-  // pull the latest real commit from AetherBox — falls back quietly if offline/rate-limited
-  (function(){
-    var el = document.getElementById('lastCommit');
-    if (!el) return;
-    fetch('https://api.github.com/repos/AidansQwert/AetherBox/commits/main')
-      .then(function(r){ if(!r.ok) throw new Error('bad response'); return r.json(); })
-      .then(function(data){
-        var msg = (data.commit && data.commit.message ? data.commit.message : '').split('\n')[0];
-        if (!msg) throw new Error('no message');
-        if (msg.length > 44) msg = msg.slice(0, 43) + '…';
-        el.textContent = msg;
-        el.title = 'on AetherBox main';
-      })
-      .catch(function(){ el.textContent = 'unavailable'; });
-  })();
+/* ---------- glitch reveal pas masuk viewport ---------- */
+const gio = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting){ e.target.classList.add('fx'); gio.unobserve(e.target); }
+}), {threshold:.4});
+document.querySelectorAll('.gl').forEach(el => gio.observe(el));
 
-  // nav active state — mirrors the filled-pill "selected filter" feel from the AetherBox app
-  (function(){
-    var links = document.querySelectorAll('.topbar nav a');
-    var sections = Array.prototype.map.call(links, function(l){
-      return document.querySelector(l.getAttribute('href'));
+/* ---------- scroll reveal umum ---------- */
+const rio = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); }
+}), {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('[data-rv]').forEach(el => rio.observe(el));
+
+/* ---------- nav active link ---------- */
+const secs = [...document.querySelectorAll('section, header.hero')];
+const links = [...document.querySelectorAll('nav .links a')];
+addEventListener('scroll', () => {
+  let cur = 'home';
+  for (const s of secs){ if (scrollY >= s.offsetTop - 140) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}, {passive:true});
+
+/* ---------- magnetic buttons ---------- */
+if (!reduced && matchMedia('(pointer:fine)').matches){
+  document.querySelectorAll('.btn').forEach(b => {
+    b.addEventListener('pointermove', e => {
+      const r = b.getBoundingClientRect();
+      b.style.transform = `translate(${(e.clientX-r.left-r.width/2)*.12}px, ${(e.clientY-r.top-r.height/2)*.2}px)`;
     });
-    if (!sections.length || !('IntersectionObserver' in window)) return;
-    var observer = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (!entry.isIntersecting) return;
-        links.forEach(function(l){ l.classList.remove('active'); });
-        var idx = sections.indexOf(entry.target);
-        if (idx > -1) links[idx].classList.add('active');
-      });
-    }, { rootMargin: '-45% 0px -45% 0px' });
-    sections.forEach(function(s){ if (s) observer.observe(s); });
-  })();
+    b.addEventListener('pointerleave', () => { b.style.transform = ''; });
+  });
+}
 
-  // live repo stats — stars + latest release tag, straight from the GitHub API
-  (function(){
-    var starsEl = document.getElementById('stat-stars');
-    var versionEl = document.getElementById('badge-version');
-
-    if (starsEl) {
-      fetch('https://api.github.com/repos/AidansQwert/AetherBox')
-        .then(function(r){ if(!r.ok) throw new Error('bad response'); return r.json(); })
-        .then(function(data){
-          var n = data.stargazers_count;
-          if (typeof n !== 'number') throw new Error('no count');
-          starsEl.innerHTML = '<b>' + n + '</b> star' + (n === 1 ? '' : 's');
-        })
-        .catch(function(){ /* keep the static fallback already in the markup */ });
-    }
-
-    if (versionEl) {
-      fetch('https://api.github.com/repos/AidansQwert/AetherBox/releases/latest')
-        .then(function(r){ if(!r.ok) throw new Error('bad response'); return r.json(); })
-        .then(function(data){
-          if (!data.tag_name) throw new Error('no tag');
-          versionEl.textContent = data.tag_name + ' · latest';
-        })
-        .catch(function(){ /* keep the static fallback already in the markup */ });
-    }
-  })();
-
-  // theme toggle — remembers choice, defaults to the visitor's system preference
-  (function(){
-    var btn = document.getElementById('theme-toggle');
-    if (!btn) return;
-    var stored = localStorage.getItem('theme');
-    if (stored) document.documentElement.setAttribute('data-theme', stored);
-    btn.addEventListener('click', function(){
-      var current = document.documentElement.getAttribute('data-theme');
-      var next = current === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+/* ---------- tilt halus di download cards ---------- */
+if (!reduced && matchMedia('(pointer:fine)').matches){
+  document.querySelectorAll('.dl-card').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      const rx = ((e.clientY - r.top) / r.height - .5) * -5;
+      const ry = ((e.clientX - r.left) / r.width - .5) * 5;
+      card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
     });
-  })();
+    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+  });
+}
+
+/* ---------- auto-update versi dari GitHub API + cache ---------- */
+async function syncRelease(repo, verEl, dateEl, btnEl, stEl){
+  const key = 'ab_rel_' + repo;
+  const apply = (d, cached) => {
+    if (d.tag){ verEl.textContent = 'v' + d.tag.replace(/^v/i,''); }
+    if (d.date){ dateEl.textContent = new Date(d.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
+    if (d.apk){ btnEl.href = d.apk; }
+    else if (d.url){ btnEl.href = d.url; }
+    stEl.textContent = cached ? 'CACHED' : 'LIVE';
+    stEl.classList.toggle('cached', cached);
+    stEl.classList.toggle('live', !cached);
+  };
+  try {
+    const r = await fetch(`https://api.github.com/repos/AidansQwert/${repo}/releases/latest`);
+    if (!r.ok) throw 0;
+    const j = await r.json();
+    const apk = (j.assets || []).find(a => /\.apk$/i.test(a.name));
+    const data = {
+      tag: j.tag_name || '',
+      date: j.published_at || '',
+      apk: apk ? apk.browser_download_url : '',
+      url: j.html_url || ''
+    };
+    try { localStorage.setItem(key, JSON.stringify({...data, ts: Date.now()})); } catch(_){}
+    apply(data, false);
+  } catch(e) {
+    try {
+      const old = JSON.parse(localStorage.getItem(key) || 'null');
+      if (old) apply(old, true);            // fallback: data cache, bukan "—" selamanya
+      else { stEl.textContent = 'OFFLINE'; stEl.classList.add('cached'); }
+    } catch(_){ stEl.textContent = 'OFFLINE'; stEl.classList.add('cached'); }
+  }
+}
+syncRelease('AetherBox',     $('#ver-root'), $('#date-root'), $('#dl-root'), $('#st-root'));
+syncRelease('AetherBox-Lite',$('#ver-lite'), $('#date-lite'), $('#dl-lite'), $('#st-lite'));
+
+/* ---------- copy guns.lol link ---------- */
+(function(){
+  const chip = $('#copy-link');
+  if (!chip) return;
+  chip.addEventListener('click', async () => {
+    const url = 'https://guns.lol/crystalsharp';
+    try { await navigator.clipboard.writeText(url); }
+    catch(e){
+      const t = document.createElement('textarea');
+      t.value = url; document.body.appendChild(t); t.select();
+      document.execCommand('copy'); t.remove();
+    }
+    chip.textContent = '✓ COPIED'; chip.classList.add('ok');
+    setTimeout(() => { chip.textContent = '⧉ COPY GUNS.LOL LINK'; chip.classList.remove('ok'); }, 1600);
+  });
+})();
+
+/* ---------- cursor glow di cards & bio ---------- */
+if (matchMedia('(pointer:fine)').matches){
+  document.querySelectorAll('.dl-card,.bio').forEach(el => {
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--gx', (e.clientX - r.left) + 'px');
+      el.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+    });
+  });
+}
+
+/* ---------- tahun footer ---------- */
+$('#yr').textContent = new Date().getFullYear();
 </script>
-
 </body>
 </html>
