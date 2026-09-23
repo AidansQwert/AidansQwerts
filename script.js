@@ -70,36 +70,179 @@ document.addEventListener('dragstart', e => e.preventDefault());
   t.innerHTML += t.innerHTML;
 })();
 
-/* ---------- dust particles (lebih sedikit di HP) ---------- */
-const c = $('#dust'), x = c.getContext('2d'); let W, H, P = [];
-function rs(){
-  W = c.width = innerWidth; H = c.height = innerHeight;
-  const isMobile = Math.min(W, H) < 768;
-  const n = isMobile ? 30 : Math.max(35, Math.min(90, Math.round(W*H/22000)));
-  P = Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.4,
-    vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,o:Math.random()*.45+.1,
-    tw:Math.random()*Math.PI*2}));
+/* ============================================================
+   GALAXY ENGINE — starfield + rasi bintang DRACO (garis IAU)
+   data: RA/Dec J2000, asterism IAU/Sky&Tel
+   ============================================================ */
+const c = $('#dust'), x = c.getContext('2d'); let W, H;
+
+/* DRACO: [raDeg, decDeg, mag, nama] — urutan node & garis dari data IAU */
+const DRACO = {
+  nodes: [
+    [268.382, 56.873, 3.8, 'GRUMIUM'],   // ξ — kepala
+    [269.152, 51.489, 2.2, 'ELTANIN'],   // γ — mata naga (paling terang)
+    [262.608, 52.301, 2.8, 'RASTABAN'],  // β — mata naga
+    [263.067, 55.173, 4.9, 'KUMA'],      // ν
+    [288.139, 67.662, 3.1, 'ALTAIS'],    // δ
+    [275.189, 71.338, 4.2, ''],          // φ
+    [257.197, 65.715, 3.2, 'ALDHIBAH'],  // ζ
+    [245.998, 61.514, 2.7, 'ATHEBYNE'],  // η
+    [240.472, 58.565, 4.1, ''],          // θ
+    [231.232, 58.966, 3.3, 'EDASICH'],   // ι
+    [211.097, 64.376, 3.7, 'THUBAN'],    // α — mantan bintang kutub
+    [188.371, 69.788, 3.9, ''],          // κ
+    [172.851, 69.331, 4.0, 'GIAUSAR'],   // λ — ujung ekor
+    [275.264, 72.733, 4.6, ''],
+    [297.043, 70.268, 4.7, '']
+  ],
+  lines: [[0,1,2,3,0,4,5,6,7,8,9,10,11,12],[5,13],[4,14]]
+};
+
+/* proyeksi sederahkan RA/Dec → layar */
+const DRA = { ra: 235, dec: 62, k: Math.cos(62 * Math.PI / 180) };
+function dracoScale(){
+  const s = Math.min(W / 72, H / 40);
+  return (Math.min(W, H) < 768) ? s * 1.8 : s;
 }
-rs(); addEventListener('resize', () => { rs(); if (reduced) drawStatic(); });
-function drawStatic(){
-  x.clearRect(0,0,W,H); x.globalAlpha = 1;
-  for(const p of P){ x.globalAlpha = p.o; x.fillStyle = '#cfcfd8';
-    x.beginPath(); x.arc(p.x,p.y,p.r,0,7); x.fill(); }
-  x.globalAlpha = 1;
+function project(node){
+  const s = dracoScale();
+  const cx = W * (Math.min(W,H) < 768 ? .5 : .5);
+  const cy = H * (Math.min(W,H) < 768 ? .26 : .38);
+  const parX = (DRA.mx || 0), parY = (DRA.my || 0) + (DRA.sy || 0);
+  return [
+    cx + (node[0] - DRA.ra) * DRA.k * s + parX,
+    cy - (node[1] - DRA.dec) * s + parY
+  ];
 }
-if (!reduced){
-  (function loop(){
-    x.clearRect(0,0,W,H);
-    for(const p of P){
-      p.x += p.vx; p.y += p.vy; p.tw += .02;
-      if(p.x<-4)p.x=W+4; if(p.x>W+4)p.x=-4; if(p.y<-4)p.y=H+4; if(p.y>H+4)p.y=-4;
-      x.globalAlpha = p.o*(0.7+0.3*Math.sin(p.tw));
-      x.fillStyle = '#cfcfd8'; x.beginPath(); x.arc(p.x,p.y,p.r,0,7); x.fill();
+
+/* bintang ambient */
+let STARS = [];
+function makeStars(){
+  const n = Math.min(W, H) < 768 ? 110 : 220;
+  STARS = Array.from({length: n}, () => ({
+    x: Math.random() * W, y: Math.random() * H,
+    r: Math.random() * 1.2 + .3,
+    o: Math.random() * .5 + .12,
+    tw: Math.random() * Math.PI * 2,
+    sp: Math.random() * .015 + .004,
+    hue: Math.random() < .12 ? (Math.random() < .5 ? '139,92,246' : '34,211,238') : '220,222,235'
+  }));
+}
+
+/* meteor */
+let meteors = [], nextMeteor = 4000 + Math.random() * 5000;
+function spawnMeteor(){
+  const fromX = Math.random() * W * .8 + W * .1;
+  meteors.push({ x: fromX, y: -10, vx: (Math.random() - .5) * 3, vy: 5 + Math.random() * 4, life: 1 });
+}
+
+function drawDraco(t){
+  /* garis rasi */
+  x.lineJoin = 'round';
+  for (const line of DRACO.lines){
+    /* glow lebar tipis */
+    x.beginPath();
+    line.forEach((ni, i) => { const p = project(DRACO.nodes[ni]); i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); });
+    x.strokeStyle = 'rgba(139,92,246,.07)';
+    x.lineWidth = 5;
+    x.stroke();
+    /* garis utama */
+    x.beginPath();
+    line.forEach((ni, i) => { const p = project(DRACO.nodes[ni]); i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); });
+    const shimmer = .24 + .08 * Math.sin(t / 1400);
+    x.strokeStyle = 'rgba(178,168,255,' + shimmer + ')';
+    x.lineWidth = 1.1;
+    x.stroke();
+  }
+  /* bintang2 rasi */
+  const showLabels = W > 700;
+  x.font = '9px "JetBrains Mono", monospace';
+  for (const node of DRACO.nodes){
+    const p = project(node);
+    if (p[0] < -60 || p[0] > W + 60 || p[1] < -60 || p[1] > H + 60) continue;
+    const r = Math.max((5.4 - node[2]) * .85, 1.1);
+    const tw = .75 + .25 * Math.sin(t / 700 + node[0]);
+    /* halo */
+    x.globalAlpha = .14 * tw;
+    x.fillStyle = '#b9a8ff';
+    x.beginPath(); x.arc(p[0], p[1], r * 3.2, 0, 7); x.fill();
+    /* inti */
+    x.globalAlpha = .95 * tw;
+    x.fillStyle = '#f2f0ff';
+    x.beginPath(); x.arc(p[0], p[1], r, 0, 7); x.fill();
+    /* flare utk bintang terang */
+    if (node[2] < 3.3){
+      x.globalAlpha = .35 * tw;
+      x.strokeStyle = '#cfc4ff'; x.lineWidth = .8;
+      x.beginPath();
+      x.moveTo(p[0] - r * 4, p[1]); x.lineTo(p[0] + r * 4, p[1]);
+      x.moveTo(p[0], p[1] - r * 4); x.lineTo(p[0], p[1] + r * 4);
+      x.stroke();
+    }
+    /* label nama */
+    if (showLabels && node[3]){
+      x.globalAlpha = .4;
+      x.fillStyle = '#9d97b8';
+      x.fillText(node[3], p[0] + 9, p[1] - 7);
     }
     x.globalAlpha = 1;
+  }
+}
+
+function drawScene(t){
+  x.clearRect(0, 0, W, H);
+  /* ambient stars */
+  for (const s of STARS){
+    s.tw += s.sp;
+    x.globalAlpha = s.o * (.6 + .4 * Math.sin(s.tw));
+    x.fillStyle = 'rgb(' + s.hue + ')';
+    x.beginPath(); x.arc(s.x, s.y, s.r, 0, 7); x.fill();
+  }
+  x.globalAlpha = 1;
+  drawDraco(t);
+  /* meteor */
+  for (const m of meteors){
+    const g = x.createLinearGradient(m.x, m.y, m.x - m.vx * 14, m.y - m.vy * 14);
+    g.addColorStop(0, 'rgba(230,228,255,' + (.7 * m.life) + ')');
+    g.addColorStop(1, 'rgba(139,92,246,0)');
+    x.strokeStyle = g; x.lineWidth = 1.4;
+    x.beginPath(); x.moveTo(m.x, m.y); x.lineTo(m.x - m.vx * 14, m.y - m.vy * 14); x.stroke();
+  }
+}
+
+function rs(){
+  W = c.width = innerWidth; H = c.height = innerHeight;
+  makeStars();
+}
+rs();
+addEventListener('resize', () => { rs(); if (reduced) drawScene(0); });
+
+/* parallax: kursor (desktop) + scroll */
+DRA.mx = 0; DRA.my = 0; DRA.sy = 0;
+if (!reduced && matchMedia('(pointer:fine)').matches){
+  addEventListener('pointermove', e => {
+    DRA.mx = (e.clientX / W - .5) * -14;
+    DRA.my = (e.clientY / H - .5) * -10;
+  }, {passive: true});
+}
+addEventListener('scroll', () => { DRA.sy = Math.min(scrollY * .045, H * .18); }, {passive: true});
+
+if (!reduced){
+  let last = performance.now();
+  (function loop(now){
+    const dt = Math.min((now - last) / 16.7, 3); last = now;
+    /* update meteor */
+    nextMeteor -= dt * 16.7;
+    if (nextMeteor <= 0){ spawnMeteor(); nextMeteor = 8000 + Math.random() * 9000; }
+    for (let i = meteors.length - 1; i >= 0; i--){
+      const m = meteors[i];
+      m.x += m.vx * dt; m.y += m.vy * dt; m.life -= .018 * dt;
+      if (m.life <= 0 || m.y > H + 40) meteors.splice(i, 1);
+    }
+    drawScene(now);
     requestAnimationFrame(loop);
-  })();
-} else drawStatic();
+  })(performance.now());
+} else drawScene(0);
 
 /* ---------- GLITCH ENGINE: burst random tiap 2,5–5 detik ---------- */
 (function(){
@@ -268,11 +411,14 @@ function toast(msg){
 /* ---------- burger / mobile menu ---------- */
 (function(){
   const b = $('#burger'), l = $('#nav-links'); if (!b) return;
-  b.addEventListener('click', () => {
-    const open = l.classList.toggle('open');
+  function setOpen(open){
+    l.classList.toggle('open', open);
     b.classList.toggle('open', open);
     b.setAttribute('aria-expanded', open);
-  });
+    document.body.classList.toggle('no-scroll', open);
+  }
+  b.addEventListener('click', () => setOpen(!l.classList.contains('open')));
+  addEventListener('scroll', () => { if (l.classList.contains('open')) setOpen(false); }, {passive:true});
   l.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
     l.classList.remove('open'); b.classList.remove('open');
     b.setAttribute('aria-expanded', 'false');

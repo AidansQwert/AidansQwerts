@@ -506,3 +506,17 @@ nav.scrolled{background:rgba(7,7,12,.6)}
 @media(prefers-reduced-motion:reduce){
   .sm-track{animation:none}
 }
+
+/* ============================================================
+   v10 — GALAXY THEME : milky way + fix drawer
+   ============================================================ */
+.milkyway{position:fixed;inset:-35%;z-index:0;pointer-events:none;
+  background:linear-gradient(118deg,transparent 32%,rgba(190,180,255,.05) 43%,rgba(150,130,230,.075) 50%,rgba(120,200,255,.05) 57%,transparent 68%);
+  filter:blur(14px);transform:rotate(-6deg)}
+
+/* drawer: lebih solid, konten nggak tembus */
+@media(max-width:640px){
+  #nav-links{background:rgba(7,7,12,.97);border-left:1px solid var(--line2);
+    box-shadow:-30px 0 80px rgba(0,0,0,.6);justify-content:flex-start}
+}
+body.no-scroll{overflow:hidden}
