@@ -745,3 +745,86 @@ if (!reduced) (function(){
     io.observe(n);
   });
 })();
+
+/* ============================================================
+   v16 — SMOOTH MOTION: stagger reveal, magnetic button,
+   spotlight kursor, dan smooth anchor scroll.
+   ============================================================ */
+(function(){
+  if (reduced) return;
+
+  /* stagger: tiap grid mengisi delay anaknya */
+  document.querySelectorAll('.repo-grid, .dl-cards, .tool-grid, .socs, .rows, .facts').forEach(grid => {
+    grid.classList.add('anim-stag');
+    [...grid.children].forEach((child, i) => child.style.setProperty('--sd', (i * 70) + 'ms'));
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      grid.classList.add('in');
+      io.unobserve(grid);
+    }), {threshold:.15});
+    io.observe(grid);
+  });
+
+  /* label section ikut reveal */
+  const lio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    lio.unobserve(e.target);
+  }), {threshold:.4});
+  document.querySelectorAll('.sec-label').forEach(el => lio.observe(el));
+
+  /* magnetic hover untuk tombol (pointer halus saja) */
+  if (matchMedia('(pointer:fine)').matches){
+    document.querySelectorAll('.btn, .chip, #totop').forEach(btn => {
+      btn.classList.add('mag');
+      btn.addEventListener('pointermove', e => {
+        const r = btn.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+        const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+        btn.style.setProperty('--mgx', (dx * 10).toFixed(1) + 'px');
+        btn.style.setProperty('--mgy', (dy * 8).toFixed(1) + 'px');
+      });
+      btn.addEventListener('pointerleave', () => {
+        btn.style.setProperty('--mgx', '0px');
+        btn.style.setProperty('--mgy', '0px');
+      });
+    });
+
+    /* spotlight lembut di kartu */
+    document.querySelectorAll('.dl-card, .repo, .soc, .dc-card, .bio').forEach(card => {
+      card.classList.add('glow16');
+      card.addEventListener('pointermove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--sx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+        card.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+      });
+    });
+  }
+
+  /* anchor scroll dengan easing sendiri (lebih halus dari default) */
+  const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (!id || id === '#') return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      const start = scrollY;
+      const end = target.getBoundingClientRect().top + start - 70;
+      const dur = Math.min(900, Math.max(450, Math.abs(end - start) * .55));
+      let t0 = 0;
+      requestAnimationFrame(function step(ts){
+        if (!t0) t0 = ts;
+        const p = Math.min((ts - t0) / dur, 1);
+        scrollTo(0, start + (end - start) * easeInOut(p));
+        if (p < 1) requestAnimationFrame(step);
+      });
+      history.replaceState(null, '', id);
+    });
+  });
+})();
+
+/* jaring pengaman: halaman selalu tampil walau loader gagal */
+setTimeout(() => document.body.classList.add('loaded'), 2200);
+addEventListener('load', () => document.body.classList.add('loaded'));
