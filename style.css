@@ -520,83 +520,525 @@ nav.scrolled{background:rgba(7,7,12,.6)}
     box-shadow:-30px 0 80px rgba(0,0,0,.6);justify-content:flex-start}
 }
 body.no-scroll{overflow:hidden}
-
 /* ============================================================
-   v11 — ANIMATION UPGRADE + MOBILE PERFORMANCE PASS
+   v11 — UI REFINEMENT : side rail, dots nav, facts, tools grid,
+   live repo cards, nicer hero & nav. inspired by aarchfel.my.id
    ============================================================ */
-
-/* ---------- entrance choreography (plays once page is ready) ---------- */
-@keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes dropIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
-
-nav{opacity:0;animation:dropIn .7s var(--ease) .15s both}
-body.ready .hero .meta{opacity:0;animation:riseIn .8s var(--ease) .35s both}
-body.ready .hero .sub{opacity:0;animation:riseIn .8s var(--ease) .5s both}
-body.ready .hero .term{opacity:0;animation:riseIn .8s var(--ease) .62s both}
-body.ready .hero .quote{opacity:0;animation:riseIn .8s var(--ease) .74s both}
-body.ready .scrollhint{opacity:0;animation:riseIn .8s var(--ease) .9s both}
-
-/* ---------- refined scroll reveal: add a touch of scale + smoother out ---------- */
-[data-rv]{transform:translateY(30px) scale(.985)}
-[data-rv].in{transform:none}
-[data-rv].in{will-change:auto}
-
-/* ---------- nav active link: glowing animated underline ---------- */
-nav .links a::after{background:linear-gradient(90deg,var(--vio),var(--cyn));box-shadow:0 0 8px rgba(34,211,238,.5)}
-nav .links a.active{color:#fff}
-
-/* ---------- download / ghost buttons: arrow + sheen nudge ---------- */
-.btn.solid{transition:transform .18s var(--ease),color .2s,border-color .2s,box-shadow .25s}
-.btn:active{transform:scale(.97)}
-.soc:hover .arrow{transform:translate(5px,-5px) scale(1.15)}
-
-/* ---------- discord: gentle avatar float + online pulse ring ---------- */
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.dc-top img{animation:floaty 5s ease-in-out infinite}
-.dc-dot.online::after{content:"";position:absolute;inset:-4px;border-radius:99px;border:1px solid rgba(35,165,90,.6);animation:ring 2.2s ease-out infinite}
-.dc-dot{position:relative}
-@keyframes ring{0%{transform:scale(.8);opacity:.9}100%{transform:scale(2.1);opacity:0}}
-
-/* ---------- badges: subtle breathing highlight ---------- */
-@keyframes breathe{0%,100%{opacity:.75}50%{opacity:1}}
-.badge.mine{animation:breathe 3.4s ease-in-out infinite}
-
-/* ---------- section titles reveal a hair more dramatically ---------- */
-.sec-title{will-change:auto}
-
-/* ============================================================
-   MOBILE PERFORMANCE + ERGONOMICS
-   ============================================================ */
-/* kill tap delay + smoother momentum scroll */
-a,button,.chip,.btn,.soc,.row-item{touch-action:manipulation}
-
-@media(max-width:768px){
-  /* backdrop-blur is the biggest mobile GPU cost — dial it down */
-  .dl-card,.bio,.cmp,.dc-card{-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
-  .ticker,.stack-marquee{-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
-  .milkyway{filter:blur(10px)}
-  /* pause the always-on shimmer sweeps that repaint large text off-screen */
-  footer .motto i{animation-duration:9s}
+:root{
+  --r:10px;
+  --gap:20px;
+  --shell:min(1240px,100%);
 }
+
+/* ---------- nav: pill links + sliding indicator ---------- */
+nav .links{align-items:center}
+nav .links a{padding:8px 14px;border-radius:99px;border:1px solid transparent;transition:color .2s,border-color .25s,background .25s}
+nav .links a::after{display:none}
+nav .links a:hover{border-color:var(--line);background:rgba(255,255,255,.03)}
+nav .links a.active{color:var(--txt);border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.07)}
+nav.scrolled{padding-top:11px;padding-bottom:11px}
+
+/* ---------- fixed side rail ---------- */
+.rail{position:fixed;left:22px;bottom:0;z-index:45;display:flex;flex-direction:column;align-items:center;gap:16px;
+  opacity:0;transform:translateY(14px);transition:opacity .8s .6s var(--ease),transform .8s .6s var(--ease)}
+body.ready .rail{opacity:1;transform:none}
+.rail-ico{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;
+  color:var(--faint);background:rgba(13,13,18,.5);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  transition:color .25s,border-color .25s,transform .25s var(--ease),box-shadow .25s}
+.rail-ico svg{width:16px;height:16px;pointer-events:none}
+.rail-ico:hover{color:var(--cyn);border-color:rgba(34,211,238,.5);transform:translateY(-3px);box-shadow:0 8px 24px rgba(34,211,238,.14)}
+.rail-line{width:1px;height:76px;background:linear-gradient(var(--line2),transparent)}
+.rail-idx{writing-mode:vertical-rl;font-size:10px;letter-spacing:.3em;color:var(--faint);padding-bottom:22px}
+@media(max-width:980px){.rail{display:none}}
+
+/* ---------- section dots ---------- */
+.dots{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:45;display:flex;flex-direction:column;gap:14px;align-items:flex-end}
+.dots a{display:flex;align-items:center;gap:10px;font-size:9px;letter-spacing:.24em;color:var(--faint);transition:color .25s}
+.dots a i{display:block;width:7px;height:7px;border:1px solid var(--line2);border-radius:50%;transition:background .25s,border-color .25s,transform .25s var(--ease)}
+.dots a span{opacity:0;transform:translateX(6px);transition:opacity .25s,transform .25s var(--ease)}
+.dots a:hover span{opacity:1;transform:none}
+.dots a:hover,.dots a.on{color:var(--cyn)}
+.dots a.on i{background:var(--cyn);border-color:var(--cyn);transform:scale(1.25);box-shadow:0 0 12px rgba(34,211,238,.6)}
+@media(max-width:980px){.dots{display:none}}
+
+/* ---------- hero CTA ---------- */
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:38px}
+.hero-cta .btn{padding:14px 26px}
+@media(max-width:480px){.hero-cta .btn{flex:1 1 100%}}
+
+/* ---------- facts strip ---------- */
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:34px;
+  border:1px solid var(--line);background:var(--line);border-radius:var(--r);overflow:hidden}
+.fact{background:rgba(13,13,18,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  padding:22px 18px;display:flex;flex-direction:column;gap:8px;transition:background .25s}
+.fact:hover{background:rgba(139,92,246,.09)}
+.fact .n{font-family:var(--sans);font-weight:700;font-size:clamp(26px,4vw,40px);line-height:1;
+  background:linear-gradient(120deg,#fff,var(--cyn));-webkit-background-clip:text;background-clip:text;color:transparent}
+.fact .l{font-size:10px;letter-spacing:.22em;color:var(--faint)}
+@media(max-width:700px){.facts{grid-template-columns:1fr 1fr}}
+
+/* ---------- tools & technologies grid ---------- */
+.tools{margin-top:26px}
+.tools-head{font-size:11px;letter-spacing:.3em;color:var(--faint);margin-bottom:14px}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1px;
+  border:1px solid var(--line);background:var(--line);border-radius:var(--r);overflow:hidden}
+.tool{background:rgba(13,13,18,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  padding:16px 18px;display:flex;flex-direction:column;gap:6px;position:relative;transition:background .25s}
+.tool::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(var(--vio),var(--cyn));
+  transform:scaleY(0);transform-origin:top;transition:transform .3s var(--ease)}
+.tool:hover{background:rgba(255,255,255,.035)}
+.tool:hover::before{transform:none}
+.tool .tk{font-size:9.5px;letter-spacing:.26em;color:var(--faint)}
+.tool .tv{font-size:12.5px;color:var(--txt);letter-spacing:.04em}
+
+/* ---------- repositories ---------- */
+.repo-intro{font-size:13px;color:var(--dim);max-width:620px;line-height:2.1;margin-bottom:38px}
+.repo-intro a{color:var(--cyn);border-bottom:1px dashed rgba(34,211,238,.45)}
+.repo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--gap)}
+.repo{position:relative;display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:var(--r);
+  border:1px solid transparent;overflow:hidden;min-height:168px;
+  background:linear-gradient(rgba(14,14,20,.55),rgba(14,14,20,.55)) padding-box,
+  linear-gradient(140deg,rgba(139,92,246,.35),rgba(255,255,255,.06) 50%,rgba(34,211,238,.35)) border-box;
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  transition:transform .25s var(--ease),box-shadow .3s}
+.repo:hover{transform:translateY(-4px);box-shadow:0 16px 44px rgba(139,92,246,.16)}
+.repo .rname{font-family:var(--sans);font-weight:700;font-size:17px;display:flex;align-items:center;gap:9px}
+.repo .rname .ar{margin-left:auto;color:var(--faint);transition:color .2s,transform .25s var(--ease)}
+.repo:hover .rname .ar{color:var(--cyn);transform:translate(3px,-3px)}
+.repo .rdesc{font-size:12px;color:var(--dim);line-height:1.9;flex:1}
+.repo .rmeta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:10.5px;letter-spacing:.14em;color:var(--faint)}
+.repo .rmeta .lang{display:inline-flex;align-items:center;gap:7px;color:var(--dim)}
+.repo .rmeta .lang::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--vio)}
+.repo .rtopics{display:flex;flex-wrap:wrap;gap:6px}
+.repo .rtopics span{font-size:9.5px;letter-spacing:.14em;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:3px 9px}
+.repo.skel{background:rgba(14,14,20,.45);border:1px solid var(--line);
+  background-image:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.05) 45%,transparent 70%);
+  background-size:220% 100%;animation:skel 1.5s linear infinite}
+@keyframes skel{to{background-position:-220% 0}}
+.repo-err{font-size:12px;color:var(--dim);border:1px dashed var(--line2);border-radius:var(--r);padding:22px;grid-column:1/-1}
+.repo-err a{color:var(--cyn)}
+
+/* ---------- misc polish ---------- */
+.sec-label{text-transform:uppercase}
+.soc,.row-item{border-radius:2px}
+.dl-card,.bio,.dc-card{border-radius:var(--r)}
+.cmp-wrap{border-radius:var(--r)}
+.btn{border-radius:99px}
+.chip{border-radius:99px}
+footer{margin-top:60px}
 
 @media(max-width:640px){
-  /* comfortable 44px+ tap targets */
-  nav .links a{padding:14px 0}
-  .chip{padding:13px 22px;min-height:44px;display:inline-flex;align-items:center}
-  .btn{padding:16px 22px}
-  #totop{width:46px;height:46px}
-  /* drawer links: full-width hit area */
-  #nav-links a{display:block}
+  .facts{margin-top:26px}
+  .repo-intro{margin-bottom:26px}
+}
+@media(prefers-reduced-motion:reduce){
+  .repo.skel{animation:none}
+  .rail{opacity:1;transform:none}
 }
 
-/* new entrance animations must also honor reduced-motion */
-@media(prefers-reduced-motion:reduce){
-  nav,
-  body.ready .hero .meta,
-  body.ready .hero .sub,
-  body.ready .hero .term,
-  body.ready .hero .quote,
-  body.ready .scrollhint{animation:none!important;opacity:1!important}
-  .dc-top img,.dc-dot.online::after,.badge.mine{animation:none!important}
-  [data-rv]{transform:none}
+/* ---------- layout breathing room for rail & dots ---------- */
+@media(min-width:981px){
+  nav{padding-left:88px;padding-right:88px}
+  .hero,section{padding-left:88px;padding-right:88px}
+  footer{padding-left:88px;padding-right:88px}
+  .scrollhint{left:88px;right:88px}
 }
+.hero{padding-bottom:64px}
+.hero .quote{margin-top:34px}
+.hero-cta{margin-top:30px}
+/* scrollhint ikut alur biar gak numpuk sama tombol di layar pendek */
+.scrollhint{position:static;margin-top:clamp(34px,7vh,70px)}
+@media(min-width:981px){.scrollhint{padding:0}}
+
+/* ===================== v12 — MOTION LAYER ===================== */
+
+/* stagger anak-anak grid pas section masuk viewport */
+.tool, .repo, .soc, .fact{--stag:0ms}
+.anim-stag>*{opacity:0;transform:translateY(22px) scale(.985);
+  transition:opacity .7s var(--ease),transform .7s var(--ease);transition-delay:var(--stag)}
+.anim-stag.in>*{opacity:1;transform:none}
+
+/* tilt 3d halus untuk kartu */
+.tilt{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);
+  transition:transform .35s var(--ease)}
+.tilt.live{transition:transform .08s linear}
+
+/* kilau yang ngikut kursor di atas kartu */
+.sheen{position:relative;overflow:hidden}
+.sheen::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;
+  transition:opacity .35s ease;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.07),transparent 65%)}
+.sheen:hover::after{opacity:1}
+
+/* judul section: sweep cahaya sekali pas muncul */
+.sec-title{position:relative}
+.sec-title::after{content:'';position:absolute;top:0;left:-30%;width:30%;height:100%;
+  pointer-events:none;opacity:0;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.14),transparent)}
+.sec-title.swept::after{animation:sweep 1.5s var(--ease) .15s 1}
+@keyframes sweep{0%{opacity:1;left:-30%}100%{opacity:0;left:115%}}
+
+/* ripple pas tombol diklik */
+.btn,.dl-card>a,.dc-actions a,.dc-actions button{position:relative;overflow:hidden}
+.rip{position:absolute;border-radius:50%;transform:translate(-50%,-50%) scale(0);
+  background:rgba(34,211,238,.28);pointer-events:none;animation:rip .6s ease-out forwards}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+
+/* parallax hero + rail/dots masuk pelan */
+.hero .quote,.hero-cta,.scrollhint{will-change:transform}
+.rail,.dots{animation:railIn .9s var(--ease) .5s both}
+@keyframes railIn{from{opacity:0;transform:translateY(18px)}to{opacity:1}}
+.dots{animation-name:dotsIn}
+@keyframes dotsIn{from{opacity:0;transform:translate(14px,-50%)}to{opacity:1;transform:translateY(-50%)}}
+
+/* dot aktif berdenyut pelan */
+.dots a.on i{animation:dotPulse 2.4s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 12px rgba(34,211,238,.6)}50%{box-shadow:0 0 20px rgba(34,211,238,.95)}}
+
+/* ikon rail: naik dikit + halo pas hover */
+.rail-ico{transition:transform .28s var(--ease),color .2s,border-color .25s,background .25s}
+.rail-ico:hover{transform:translateY(-4px) scale(1.08)}
+
+/* garis bawah nav yang menyapu */
+nav .links a{position:relative}
+nav .links a::after{content:'';position:absolute;left:14px;right:14px;bottom:4px;height:1px;
+  background:var(--cyn);transform:scaleX(0);transform-origin:right;
+  transition:transform .35s var(--ease)}
+nav .links a:hover::after{transform:scaleX(1);transform-origin:left}
+nav .links a.active::after{transform:scaleX(0)}
+
+/* angka fact sedikit "pop" pas selesai menghitung */
+.fact .n.done{animation:pop .5s var(--ease)}
+@keyframes pop{0%{transform:none}40%{transform:translateY(-4px) scale(1.06)}100%{transform:none}}
+
+/* kartu repo & tool ikut naik pas hover */
+.repo,.tool{transition:transform .3s var(--ease),border-color .25s,background .25s}
+.repo:hover{transform:translateY(-6px)}
+.tool:hover{transform:translateY(-3px)}
+
+@media(prefers-reduced-motion:reduce){
+  .anim-stag>*{opacity:1;transform:none;transition:none}
+  .tilt{transform:none!important}
+  .sec-title.swept::after,.dots a.on i,.fact .n.done{animation:none}
+  .rail,.dots{animation:none}
+  .rip{display:none}
+}
+
+/* ===================== v13 — POLISH: LAYOUT & DETAIL ===================== */
+
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* scrollbar senada tema */
+*{scrollbar-width:thin;scrollbar-color:rgba(124,92,255,.5) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--vio),var(--cyn));border-radius:99px;
+  border:3px solid var(--bg)}
+
+/* fokus keyboard yang jelas (a11y) */
+a:focus-visible,button:focus-visible{outline:2px solid var(--cyn);outline-offset:3px;border-radius:6px}
+
+/* irama vertikal antar section + garis pemisah tipis */
+section{padding-top:clamp(72px,11vh,120px);padding-bottom:clamp(72px,11vh,120px)}
+section+section::before{content:"";position:absolute;top:0;left:32px;right:32px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--line2) 18%,var(--line2) 82%,transparent)}
+@media(min-width:981px){section+section::before{left:88px;right:88px}}
+
+/* header section: label & judul lebih terbaca */
+.sec-label{font-size:11px;letter-spacing:.38em}
+.sec-num{color:var(--cyn);opacity:.75}
+.sec-title{margin-bottom:clamp(30px,5vh,52px)}
+
+/* facts: angka gradient + kolom lebih hidup */
+.fact{padding:clamp(18px,2.4vw,26px) clamp(16px,2vw,24px);transition:background .3s}
+.fact:hover{background:rgba(255,255,255,.035)}
+.fact .n{font-family:var(--sans);font-weight:700;font-size:clamp(28px,3.4vw,42px);line-height:1;
+  background:linear-gradient(120deg,#fff,var(--cyn));-webkit-background-clip:text;background-clip:text;
+  color:transparent;font-variant-numeric:tabular-nums;display:block}
+.fact .l{display:block;margin-top:10px;font-size:9.5px;letter-spacing:.24em;color:var(--faint)}
+
+/* tools: value sedikit lebih lega */
+.tool{padding:clamp(16px,2vw,22px)}
+.tool .tv{margin-top:8px;display:block;line-height:1.7}
+
+/* kartu repo: dot bahasa + panah bulat di sudut */
+.repo .rname{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-family:var(--sans);font-weight:600;font-size:16px}
+.repo .ar{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;
+  border:1px solid var(--line);color:var(--dim);font-size:11px;
+  transition:transform .3s var(--ease),color .25s,border-color .25s}
+.repo:hover .ar{transform:translate(2px,-2px);color:var(--cyn);border-color:rgba(34,211,238,.45)}
+.repo .rdesc{line-height:1.9}
+.repo .rmeta{margin-top:auto;padding-top:6px}
+
+/* tombol: solid jadi gradient lembut */
+.btn.solid{background:linear-gradient(120deg,rgba(34,211,238,.16),rgba(124,92,255,.16));
+  border-color:rgba(34,211,238,.4)}
+.btn.solid:hover{background:linear-gradient(120deg,rgba(34,211,238,.28),rgba(124,92,255,.28))}
+
+/* social rows & discord card lebih rapi */
+.soc{transition:background .3s,border-color .25s,transform .3s var(--ease)}
+.soc:hover{background:rgba(255,255,255,.03)}
+.dc-card{border-radius:var(--r)}
+
+/* footer lebih lapang */
+footer{padding-top:clamp(56px,8vh,90px);padding-bottom:clamp(40px,6vh,70px)}
+
+/* rapikan di layar kecil */
+@media(max-width:640px){
+  .facts{grid-template-columns:1fr 1fr}
+  .fact .l{letter-spacing:.18em}
+  .sec-label{letter-spacing:.28em}
+  section+section::before{left:20px;right:20px}
+}
+
+/* ============================================================
+   v14 — UI / LAYOUT / MOTION REFINEMENT
+   fokus: keterbacaan judul, hero yang lebih rapi, kartu kaca
+   konsisten, hover & micro-interaction yang halus.
+   ============================================================ */
+
+:root{
+  --r:14px;
+  --r-sm:10px;
+  --spring:cubic-bezier(.22,1.2,.36,1);
+  --glow-vio:0 18px 50px rgba(139,92,246,.18);
+  --glow-cyn:0 18px 50px rgba(34,211,238,.14);
+  --ring:rgba(255,255,255,.08);
+}
+
+/* ---------- 1. JUDUL SECTION: solid & terbaca, sheen tetap jalan ---------- */
+.sec-title{
+  background:none;color:var(--txt);
+  -webkit-text-fill-color:var(--txt);
+  animation:none;
+  letter-spacing:-.03em;
+  text-shadow:0 0 42px rgba(139,92,246,.22);
+}
+.sec-title em{
+  color:transparent;-webkit-text-fill-color:transparent;
+  -webkit-text-stroke:1.4px rgba(236,236,241,.42);
+}
+.sec-title .glitch,.sec-title .gl{-webkit-text-fill-color:inherit}
+/* sheen: garis cahaya menyapu judul, dimasking biar cuma kena huruf */
+.sec-title::after{
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
+  mix-blend-mode:overlay;width:38%;
+}
+.sec-label{align-items:center}
+.sec-num{color:var(--cyn);opacity:.9;font-weight:500}
+
+/* ---------- 2. HERO ---------- */
+.hero{padding-top:clamp(120px,18vh,168px)}
+.hero h1{
+  font-size:clamp(52px,12.4vw,168px);
+  line-height:.86;letter-spacing:-.04em;margin:26px 0 4px;
+}
+.hero h1 .row:nth-child(1) span{
+  color:var(--txt);-webkit-text-fill-color:var(--txt);
+  text-shadow:0 0 60px rgba(255,255,255,.12);
+}
+.hero h1 .row:nth-child(2) span{
+  background:linear-gradient(100deg,#ffffff 4%,#c4b5fd 32%,var(--vio) 58%,var(--cyn) 92%);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 12px 40px rgba(139,92,246,.28));
+}
+.hero h1 .row{padding-bottom:.06em}
+
+/* meta atas jadi chip kaca */
+.hero .meta{gap:10px 12px;margin-bottom:4px}
+.hero .meta>span{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--line);border-radius:99px;padding:6px 14px;
+  background:rgba(13,13,18,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  font-size:10.5px;letter-spacing:.14em;
+  transition:border-color .25s,color .25s,transform .25s var(--spring);
+}
+.hero .meta>span:hover{border-color:rgba(34,211,238,.4);transform:translateY(-2px)}
+.hero .meta .live{border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.06)}
+
+/* sub-line: pemisah lebih halus */
+.hero .sub{margin-top:24px;gap:8px 18px;font-size:11.5px}
+.hero .sub i{opacity:.5}
+
+/* terminal mini: dibingkai seperti jendela */
+.hero .term{
+  margin-top:28px;max-width:640px;position:relative;overflow:hidden;
+  border:1px solid var(--line);border-radius:var(--r);
+  background:rgba(12,12,18,.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  padding:42px 18px 18px;font-size:12px;
+  box-shadow:0 16px 46px rgba(0,0,0,.35);
+}
+.hero .term::before{
+  content:"sharp@aether — bash";
+  position:absolute;top:0;left:0;right:0;height:32px;
+  display:flex;align-items:center;padding-left:64px;
+  font-size:10px;letter-spacing:.2em;color:var(--faint);
+  background:rgba(255,255,255,.03);border-bottom:1px solid var(--line);
+}
+.hero .term::after{
+  content:"";position:absolute;top:13px;left:16px;width:7px;height:7px;border-radius:99px;
+  background:#f472b6;box-shadow:14px 0 0 #f0b232,28px 0 0 #23a55a;
+}
+.hero .quote{
+  margin-top:30px;border-left:2px solid transparent;
+  border-image:linear-gradient(var(--vio),var(--cyn)) 1;
+  padding-left:20px;max-width:460px;
+}
+.hero-cta{margin-top:34px;gap:12px}
+.hero-cta .btn{padding:15px 28px;letter-spacing:.16em}
+
+/* scrollhint: jadi baris status tipis */
+.scrollhint{
+  border-top:1px solid var(--line);padding-top:16px;align-items:center;
+  font-size:10px;letter-spacing:.26em;
+}
+
+/* ---------- 3. NAV ---------- */
+nav{transition:padding .3s var(--ease),background .3s,box-shadow .3s}
+nav .logo .sq{border-radius:2px;box-shadow:0 0 12px rgba(34,211,238,.8)}
+nav .links a{font-size:11px;letter-spacing:.18em}
+nav .links a.active{
+  box-shadow:0 0 0 1px rgba(34,211,238,.18),0 8px 24px rgba(34,211,238,.12);
+}
+nav.scrolled{box-shadow:0 1px 0 rgba(139,92,246,.22),0 14px 44px rgba(0,0,0,.45)}
+
+/* progress bar lebih hidup */
+#progress{height:2.5px;background:linear-gradient(90deg,var(--vio),var(--cyn),var(--pnk));
+  box-shadow:0 0 14px rgba(34,211,238,.5)}
+
+/* ---------- 4. PANEL / KARTU: gaya kaca seragam ---------- */
+.dl-card,.repo,.dc-card,.bio,.cmp-wrap,.facts,.tool-grid,.stack-marquee{
+  box-shadow:0 10px 34px rgba(0,0,0,.28);
+}
+.dl-card{padding:clamp(22px,2.6vw,30px);gap:14px}
+.dl-card:hover{box-shadow:var(--glow-vio),var(--glow-cyn)}
+.dl-card h4{font-size:22px;letter-spacing:-.01em}
+.dl-card ul{gap:10px;line-height:1.6}
+.dl-card ul li{padding-left:2px;transition:color .2s}
+.dl-card ul li:hover{color:var(--txt)}
+.dl-card .btn{width:100%}
+.dl-card>a:last-of-type{margin-top:-4px}
+
+.badge{border-radius:99px;padding:4px 12px;font-weight:500}
+.badge.mine{background:rgba(139,92,246,.10)}
+.badge.root{background:rgba(244,114,182,.08)}
+.badge.lite{background:rgba(34,211,238,.08)}
+
+/* tombol: ikon/panah ikut gerak */
+.btn{letter-spacing:.16em;padding:13px 24px;font-weight:500}
+.btn.solid{color:var(--txt);border:1px solid rgba(34,211,238,.4)}
+.btn.solid:hover{box-shadow:0 12px 34px rgba(139,92,246,.26);transform:translateY(-2px)}
+.btn.ghost:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.985)}
+
+/* tabel perbandingan */
+.cmp th{background:rgba(255,255,255,.04);letter-spacing:.2em}
+.cmp th:first-child{border-top-left-radius:var(--r)}
+.cmp td{padding:15px 18px}
+.cmp .ok::before{content:"✓ ";color:var(--cyn)}
+.cmp .no::before{content:"✕ ";color:var(--pnk)}
+
+/* ---------- 5. ROWS (ABOUT) ---------- */
+.rows{border-radius:var(--r);overflow:hidden;border:1px solid var(--line);
+  background:rgba(13,13,18,.4);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.row-item{padding:24px clamp(16px,2vw,26px)}
+.row-item:last-child{border-bottom:none}
+.row-item:hover{padding-left:clamp(22px,2.4vw,34px)}
+.row-item .k{color:var(--dim);font-size:10.5px}
+.row-item .v{font-size:clamp(19px,3.2vw,30px)}
+
+/* ---------- 6. FACTS ---------- */
+.facts{border-radius:var(--r)}
+.fact{position:relative;overflow:hidden}
+.fact::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,var(--vio),var(--cyn));
+  transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
+.fact:hover::after{transform:none}
+.fact .n{background:linear-gradient(120deg,#fff 20%,var(--cyn) 90%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+.fact .l{color:var(--dim);opacity:.9}
+
+/* ---------- 7. TOOLS ---------- */
+.tool-grid{border-radius:var(--r)}
+.tools-head{color:var(--dim)}
+.tool .tk{color:var(--cyn);opacity:.7}
+.tool:hover{background:rgba(139,92,246,.07)}
+
+/* ---------- 8. REPO CARDS ---------- */
+.repo{padding:clamp(20px,2.3vw,26px);min-height:180px}
+.repo .rname{font-size:16.5px;color:var(--txt);letter-spacing:-.005em}
+.repo .rdesc{color:var(--dim)}
+.repo:hover{box-shadow:var(--glow-vio)}
+.repo .rtopics span{background:rgba(255,255,255,.03);transition:color .2s,border-color .2s}
+.repo:hover .rtopics span{border-color:rgba(34,211,238,.3);color:var(--cyn)}
+.repo .rmeta{border-top:1px solid var(--line);margin-top:auto;padding-top:14px}
+
+/* ---------- 9. SOCIAL ---------- */
+.socs{border-radius:var(--r);overflow:hidden;border:1px solid var(--line);
+  background:rgba(13,13,18,.4);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.soc{padding:24px clamp(16px,2vw,26px)}
+.soc:last-child{border-bottom:none}
+.soc .idx{color:var(--cyn);opacity:.6}
+.soc .arrow{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;
+  border:1px solid var(--line);font-size:13px}
+.soc:hover .arrow{border-color:rgba(34,211,238,.45);transform:translate(3px,-3px)}
+.dc-card{padding:clamp(20px,2.4vw,28px)}
+.dc-top img{width:62px;height:62px}
+.chip{padding:11px 22px;font-weight:500}
+
+/* ---------- 10. FOOTER ---------- */
+footer .motto{letter-spacing:-.02em}
+footer .top{padding:12px 26px}
+
+/* ---------- 11. ANIMASI TAMBAHAN ---------- */
+/* reveal lebih halus + sedikit blur-in */
+[data-rv]{transform:translateY(22px);filter:blur(6px)}
+[data-rv].in{filter:blur(0)}
+[data-rv]{transition:opacity .8s var(--ease),transform .8s var(--ease),filter .8s var(--ease)}
+
+/* stagger anak grid: tambah skala halus */
+.anim-stag>*{transform:translateY(20px) scale(.98)}
+
+/* live dot & badge shimmer */
+@keyframes sheenMove{to{background-position:200% 0}}
+.badge.mine{background-image:linear-gradient(100deg,transparent 35%,rgba(196,181,253,.18) 50%,transparent 65%);
+  background-size:200% 100%;animation:sheenMove 5s linear infinite}
+
+/* ticker & marquee: jalan lebih tenang */
+.ticker-track{animation-duration:42s}
+.sm-track{animation-duration:30s}
+
+/* rail & dots: indikator lebih jelas */
+.rail-idx{color:var(--cyn);opacity:.55}
+.dots a span{font-size:9px}
+
+/* back-to-top jadi tombol dengan cincin */
+#totop{width:46px;height:46px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#totop:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(34,211,238,.22)}
+
+/* ---------- 12. RESPONSIF ---------- */
+@media(max-width:980px){
+  .hero{padding-top:clamp(104px,16vh,140px)}
+}
+@media(max-width:640px){
+  .hero h1{font-size:clamp(46px,15vw,84px);margin-top:20px}
+  .hero .term{padding:38px 14px 16px;font-size:11px}
+  .hero .meta>span{padding:5px 11px;font-size:9.5px}
+  .row-item{padding:20px 16px}
+  .soc{padding:20px 16px}
+  .sec-title{text-shadow:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .badge.mine{animation:none}
+  [data-rv]{filter:none;transform:none}
+}
+
+/* ---------- 13. GLITCH: pastikan layer hantu hilang setelah burst ---------- */
+@keyframes gl-out{0%,92%{opacity:.9}100%{opacity:0;visibility:hidden}}
+.glitch.on::before{animation:gl-a .42s steps(5) 1, gl-out .42s linear forwards}
+.glitch.on::after{animation:gl-b .42s steps(5) 1, gl-out .42s linear forwards}
