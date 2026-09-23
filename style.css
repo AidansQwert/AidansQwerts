@@ -1270,3 +1270,97 @@ body.rainbow .sec-title,body.rainbow .hero h1{animation:huecycle 6s linear infin
 
 @media(prefers-reduced-motion:reduce){.cur-dot,.cur-ring{display:none}}
 body.no-motion .cur-dot,body.no-motion .cur-ring{display:none}
+
+/* ============================================================
+   v20 — terminal, filter repo, panel shortcut, snippet, PWA
+   ============================================================ */
+/* field bisa diketik walau anti-copy aktif */
+input,textarea{-webkit-user-select:text!important;user-select:text!important}
+
+/* ---------- blok snippet install ---------- */
+.snips{margin:34px 0 10px}
+.snips-head{color:var(--faint);font:400 10.5px var(--mono);letter-spacing:.2em;margin-bottom:14px}
+.snip{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.008))}
+.snip-top{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 14px;border-bottom:1px solid var(--line);
+  color:var(--dim);font:400 10.5px var(--mono);letter-spacing:.16em}
+.snip-copy{cursor:pointer;border:1px solid var(--line2);border-radius:8px;padding:5px 10px;
+  background:rgba(255,255,255,.03);color:rgba(236,236,241,.75);
+  font:500 10px var(--mono);letter-spacing:.14em;transition:all .25s var(--ease-soft)}
+.snip-copy:hover{color:#fff;border-color:rgba(139,92,246,.6);background:rgba(139,92,246,.18)}
+.snip-copy.ok{color:var(--cyn);border-color:rgba(34,211,238,.6)}
+.snip code{display:block;padding:14px 16px;white-space:pre-wrap;word-break:break-word;
+  color:rgba(236,236,241,.86);font:400 12px/1.85 var(--mono)}
+
+/* ---------- bar filter repositories ---------- */
+.repo-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 16px}
+.repo-bar input{flex:1 1 200px;min-width:160px;padding:11px 14px;border-radius:12px;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);
+  font:400 12px var(--mono);letter-spacing:.06em;outline:none;transition:border-color .3s}
+.repo-bar input:focus{border-color:rgba(139,92,246,.6)}
+.repo-bar input::placeholder{color:var(--faint)}
+.repo-langs,.repo-sort{display:flex;flex-wrap:wrap;gap:8px}
+.repo-langs button,.repo-sort button{cursor:pointer;border:1px solid var(--line);border-radius:999px;
+  padding:7px 13px;background:rgba(255,255,255,.02);color:rgba(236,236,241,.6);
+  font:500 10px var(--mono);letter-spacing:.14em;transition:all .25s var(--ease-soft)}
+.repo-langs button:hover,.repo-sort button:hover{color:#fff;border-color:var(--line2)}
+.repo-langs button.on,.repo-sort button.on{color:#fff;border-color:rgba(139,92,246,.7);background:rgba(139,92,246,.18)}
+
+/* ---------- bar distribusi bahasa ---------- */
+.lang-bar{margin:0 0 22px}
+.lb-track{display:flex;height:6px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.06)}
+.lb-track i{display:block;height:100%}
+.lb-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;
+  color:rgba(236,236,241,.55);font:400 10.5px var(--mono);letter-spacing:.1em}
+.lb-legend span{display:flex;align-items:center;gap:6px}
+.lb-legend b{width:8px;height:8px;border-radius:50%}
+.lb-legend em{color:var(--faint);font-style:normal}
+
+/* ---------- panel shortcut ---------- */
+#help{position:fixed;inset:0;z-index:2100;display:none;padding:12vh 18px 18px;
+  background:rgba(4,4,6,.66);backdrop-filter:blur(8px)}
+#help.open{display:block;animation:fadeIn .25s var(--ease-soft)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.help-box{max-width:520px;margin:0 auto;border:1px solid var(--line2);border-radius:16px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(18,18,24,.98),rgba(10,10,14,.98));box-shadow:0 40px 90px rgba(0,0,0,.6)}
+.help-top{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;
+  border-bottom:1px solid var(--line);color:var(--txt);font:500 12px var(--mono);letter-spacing:.2em}
+.help-x{cursor:pointer;background:none;border:0;color:var(--dim);font-size:14px}
+.help-x:hover{color:#fff}
+.help-grid{padding:10px 8px}
+.help-row{display:flex;align-items:center;gap:14px;padding:9px 12px;border-radius:10px;
+  color:rgba(236,236,241,.7);font:400 12px var(--mono);letter-spacing:.05em}
+.help-row:hover{background:rgba(139,92,246,.12);color:#fff}
+.help-row kbd{min-width:96px;padding:5px 9px;border:1px solid var(--line2);border-radius:8px;
+  background:rgba(255,255,255,.04);color:var(--cyn);font:500 10.5px var(--mono);text-align:center;letter-spacing:.08em}
+
+/* ---------- terminal interaktif ---------- */
+#term20{position:fixed;inset:0;z-index:2200;display:none;padding:10vh 18px 18px;
+  background:rgba(4,4,6,.66);backdrop-filter:blur(8px)}
+#term20.open{display:block;animation:fadeIn .25s var(--ease-soft)}
+.t-box{max-width:700px;margin:0 auto;border:1px solid var(--line2);border-radius:14px;overflow:hidden;
+  background:rgba(8,8,11,.98);box-shadow:0 40px 90px rgba(0,0,0,.65)}
+.t-top{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);
+  color:var(--dim);font:400 11px var(--mono);letter-spacing:.14em}
+.t-dots{display:flex;gap:6px}
+.t-dots i{width:9px;height:9px;border-radius:50%;background:#2a2a33}
+.t-dots i:nth-child(1){background:#f87171}.t-dots i:nth-child(2){background:#fbbf24}.t-dots i:nth-child(3){background:#34d399}
+.t-x{margin-left:auto;cursor:pointer;background:none;border:0;color:var(--dim)}
+.t-x:hover{color:#fff}
+.t-out{height:min(46vh,380px);overflow:auto;padding:14px 16px;
+  color:rgba(236,236,241,.82);font:400 12px/1.75 var(--mono)}
+.t-ln{white-space:pre-wrap;word-break:break-word}
+.t-ln.echo{color:rgba(236,236,241,.55)}
+.t-ln.err{color:#fb7185}
+.t-ln .k{color:var(--cyn)}
+.t-fetch{font:400 11.5px/1.6 var(--mono);color:rgba(236,236,241,.8)}
+.t-fetch b{color:var(--vio)}
+.t-in{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--line)}
+.t-ps1{color:var(--vio);font:500 12px var(--mono);white-space:nowrap}
+.t-in input{flex:1;background:none;border:0;outline:none;color:var(--txt);
+  font:400 12px var(--mono);letter-spacing:.04em;caret-color:var(--cyn)}
+@media(max-width:640px){#term20{padding:6vh 10px 10px}.t-out{height:52vh}}
+
+/* HUD jadi grid kalau tombolnya banyak */
+.hud{max-height:70vh;overflow:visible}

@@ -3,7 +3,10 @@ const $ = s => document.querySelector(s);
 
 /* ---------- ANTI-COPY: blokir seleksi & menu konteks ---------- */
 ['copy','cut','contextmenu','selectstart'].forEach(ev =>
-  document.addEventListener(ev, e => e.preventDefault())
+  document.addEventListener(ev, e => {
+    if (e.target.closest('input, textarea')) return; /* field tetap bisa dipakai */
+    e.preventDefault();
+  })
 );
 document.addEventListener('dragstart', e => e.preventDefault());
 
@@ -584,7 +587,7 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
 /* ---------- repositories: live dari GitHub API + cache ---------- */
 (function(){
   const grid = $('#repo-grid'); if (!grid) return;
-  const KEY = 'sh_repos_v1', MAX = 6;
+  const KEY = 'sh_repos_v2', MAX = 12;
 
   const esc = s => { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; };
   const ago = iso => {
@@ -606,7 +609,17 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
       </div>
     </a>`;
 
-  const render = list => { grid.innerHTML = list.map(card).join(''); };
+  const render = list => {
+    grid.innerHTML = list.length
+      ? list.map(card).join('')
+      : '<div class="repo-err">no repo matches that filter.</div>';
+  };
+  /* dipakai lagi oleh filter v20 */
+  window.SHRP_REPOS = { render, list: [] };
+  const publish = list => {
+    window.SHRP_REPOS.list = list;
+    dispatchEvent(new CustomEvent('repos:ready'));
+  };
 
   const SEED = [
     { name:'AetherBox', desc:'run full Linux distros natively on Android — tiny musl-static container runtime. needs root.',
@@ -621,7 +634,7 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
   ];
 
   const cached = (() => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(_){ return null; } })();
-  if (cached && cached.list) render(cached.list);
+  if (cached && cached.list){ render(cached.list); publish(cached.list); }
 
   fetch('https://api.github.com/users/AidansQwert/repos?per_page=100&sort=pushed')
     .then(r => r.ok ? r.json() : Promise.reject(0))
@@ -632,11 +645,13 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
       }));
       if (!list.length) throw 0;
       render(list);
+      publish(list);
       try { localStorage.setItem(KEY, JSON.stringify({ list, ts: Date.now() })); } catch(_){}
     })
     .catch(() => {
       if (cached && cached.list) return;
       render(SEED);
+      publish(SEED);
       grid.insertAdjacentHTML('beforeend',
         '<div class="repo-err">GitHub API unreachable — showing the pinned set. everything else lives at <a href="https://github.com/AidansQwert" target="_blank" rel="noopener">github.com/AidansQwert ↗</a></div>');
     });
@@ -905,7 +920,9 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     {ic:'[]', t:'Copy page URL', tag:'COPY', run:() => copy(location.href,'URL COPIED')},
     {ic:'↑', t:'Back to top', tag:'T', run:() => scrollTo({top:0, behavior:'smooth'})},
     {ic:'◐', t:'Toggle reduced motion', tag:'M', run:() => setMotion(!document.body.classList.contains('no-motion'))},
-    {ic:'?', t:'Keyboard shortcuts', tag:'?', run:() => showHelp()}
+    {ic:'?', t:'Keyboard shortcuts', tag:'?', run:() => showHelp()},
+    {ic:'>', t:'Open terminal', tag:'~', run:() => window.SHRP_TERM && window.SHRP_TERM()},
+    {ic:'⇪', t:'Share this page', tag:'SHARE', run:() => window.SHRP_SHARE && window.SHRP_SHARE()}
   ];
 
   const pal = document.createElement('div');
@@ -961,6 +978,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
 
   /* ---------- panel shortcut ---------- */
   function showHelp(){
+    if (typeof window.SHRP_HELP === 'function'){ window.SHRP_HELP(); return; }
     if (typeof toast === 'function')
       toast('SHORTCUTS — ctrl+k palette · 1-5 section · t top · m motion · / search');
   }
@@ -1112,5 +1130,326 @@ addEventListener('load', () => document.body.classList.add('loaded'));
       word = (word + e.key.toLowerCase()).slice(-5);
       if (word === 'sharp'){ burst(70); if (typeof toast === 'function') toast('✧ sharp as crystal, soft as linux'); word = ''; }
     }
+  });
+})();
+
+/* ============================================================
+   v20 — terminal interaktif, filter repo, panel shortcut,
+   copy snippet, share, PWA offline
+   ============================================================ */
+(function(){
+  const say = m => { if (typeof toast === 'function') toast(m); };
+  const smooth = () => document.body.classList.contains('no-motion') ? 'auto' : 'smooth';
+  const copyText = async text => {
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch(_){
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch(__){}
+      ta.remove();
+      return ok;
+    }
+  };
+
+  /* ---------- copy di blok snippet ---------- */
+  document.querySelectorAll('.snip').forEach(box => {
+    const btn = box.querySelector('.snip-copy'), code = box.querySelector('code');
+    if (!btn || !code) return;
+    btn.addEventListener('click', async () => {
+      const ok = await copyText(code.textContent.trim());
+      btn.textContent = ok ? '✓ COPIED' : '✕ FAILED';
+      btn.classList.toggle('ok', ok);
+      setTimeout(() => { btn.textContent = '⧉ COPY'; btn.classList.remove('ok'); }, 1500);
+    });
+  });
+
+  /* ---------- filter + sort repositories ---------- */
+  (function(){
+    const grid = document.getElementById('repo-grid');
+    if (!grid) return;
+    const bar = document.createElement('div');
+    bar.className = 'repo-bar';
+    bar.innerHTML = `
+      <input type="search" id="repo-q" placeholder="search repos…" aria-label="search repositories">
+      <div class="repo-langs" id="repo-langs"></div>
+      <div class="repo-sort" id="repo-sort">
+        <button data-s="pushed" class="on">RECENT</button>
+        <button data-s="stars">STARS</button>
+        <button data-s="name">A–Z</button>
+      </div>`;
+    grid.parentNode.insertBefore(bar, grid);
+
+    const langBar = document.createElement('div');
+    langBar.className = 'lang-bar';
+    grid.parentNode.insertBefore(langBar, grid);
+
+    const COLORS = {JavaScript:'#f1e05a',TypeScript:'#3178c6',Python:'#3572a5',C:'#555555','C++':'#f34b7d',
+      Shell:'#89e051',HTML:'#e34c26',CSS:'#563d7c',Java:'#b07219',Kotlin:'#a97bff',Rust:'#dea584',Go:'#00add8',
+      Dart:'#00b4ab',Makefile:'#427819',Vue:'#41b883',Ruby:'#701516'};
+    const colorOf = l => COLORS[l] || '#8b5cf6';
+
+    let query = '', lang = '', sort = 'pushed';
+
+    const apply = () => {
+      const all = (window.SHRP_REPOS && window.SHRP_REPOS.list) || [];
+      let list = all.filter(r => {
+        const hay = (r.name + ' ' + (r.desc || '') + ' ' + (r.topics || []).join(' ')).toLowerCase();
+        return (!query || hay.includes(query)) && (!lang || r.lang === lang);
+      });
+      list = list.slice().sort((a, b) =>
+        sort === 'name'  ? a.name.localeCompare(b.name) :
+        sort === 'stars' ? (Number(b.stars) || 0) - (Number(a.stars) || 0) :
+                           new Date(b.pushed) - new Date(a.pushed));
+      window.SHRP_REPOS.render(list);
+    };
+
+    const paintLangs = () => {
+      const all = (window.SHRP_REPOS && window.SHRP_REPOS.list) || [];
+      const count = {};
+      all.forEach(r => { if (r.lang) count[r.lang] = (count[r.lang] || 0) + 1; });
+      const langs = Object.entries(count).sort((a, b) => b[1] - a[1]);
+      const total = langs.reduce((a, b) => a + b[1], 0) || 1;
+
+      document.getElementById('repo-langs').innerHTML =
+        `<button data-l="" class="on">ALL</button>` +
+        langs.map(([l]) => `<button data-l="${l}">${l.toUpperCase()}</button>`).join('');
+      bar.querySelectorAll('#repo-langs button').forEach(b =>
+        b.addEventListener('click', () => {
+          lang = b.dataset.l;
+          bar.querySelectorAll('#repo-langs button').forEach(x => x.classList.toggle('on', x === b));
+          apply();
+        }));
+
+      langBar.innerHTML = langs.length ? `
+        <div class="lb-track">${langs.map(([l, n]) =>
+          `<i style="width:${(n / total * 100).toFixed(1)}%;background:${colorOf(l)}" title="${l}"></i>`).join('')}</div>
+        <div class="lb-legend">${langs.map(([l, n]) =>
+          `<span><b style="background:${colorOf(l)}"></b>${l} <em>${Math.round(n / total * 100)}%</em></span>`).join('')}</div>` : '';
+    };
+
+    bar.querySelector('#repo-q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); apply(); });
+    bar.querySelectorAll('#repo-sort button').forEach(b =>
+      b.addEventListener('click', () => {
+        sort = b.dataset.s;
+        bar.querySelectorAll('#repo-sort button').forEach(x => x.classList.toggle('on', x === b));
+        apply();
+      }));
+
+    addEventListener('repos:ready', () => { paintLangs(); apply(); });
+    if (window.SHRP_REPOS && window.SHRP_REPOS.list.length){ paintLangs(); apply(); }
+  })();
+
+  /* ---------- panel shortcut (menggantikan toast) ---------- */
+  const SHORTCUTS = [
+    ['ctrl + k', 'command palette'], ['/', 'command palette'], ['~', 'terminal interaktif'],
+    ['1 … 5', 'loncat ke section'], ['t', 'kembali ke atas'], ['m', 'reduce motion on/off'],
+    ['?', 'panel ini'], ['esc', 'tutup overlay'], ['konami', 'wolf pack mode']
+  ];
+  const help = document.createElement('div');
+  help.id = 'help';
+  help.innerHTML = `<div class="help-box">
+      <div class="help-top">KEYBOARD SHORTCUTS<button class="help-x" type="button" aria-label="close">✕</button></div>
+      <div class="help-grid">${SHORTCUTS.map(([k, d]) =>
+        `<div class="help-row"><kbd>${k}</kbd><span>${d}</span></div>`).join('')}</div>
+    </div>`;
+  document.body.appendChild(help);
+  const openHelp = () => help.classList.add('open');
+  const closeHelp = () => help.classList.remove('open');
+  help.addEventListener('click', e => { if (e.target === help || e.target.closest('.help-x')) closeHelp(); });
+  window.SHRP_HELP = openHelp;
+
+  /* ---------- terminal interaktif ---------- */
+  const term = document.createElement('div');
+  term.id = 'term20';
+  term.innerHTML = `<div class="t-box">
+      <div class="t-top"><span class="t-dots"><i></i><i></i><i></i></span>sharp@aether: ~<button class="t-x" type="button" aria-label="close">✕</button></div>
+      <div class="t-out" id="t-out"></div>
+      <div class="t-in"><span class="t-ps1">sharp@aether:~$</span><input id="t-cmd" autocomplete="off" spellcheck="false" aria-label="terminal input"></div>
+    </div>`;
+  document.body.appendChild(term);
+  const out = term.querySelector('#t-out'), cmdEl = term.querySelector('#t-cmd');
+
+  const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+  const print = (html, cls) => {
+    const ln = document.createElement('div');
+    ln.className = 't-ln' + (cls ? ' ' + cls : '');
+    ln.innerHTML = html;
+    out.appendChild(ln);
+    out.scrollTop = out.scrollHeight;
+  };
+
+  const LINKS = {
+    github:'https://github.com/AidansQwert',
+    aetherbox:'https://github.com/AidansQwert/AetherBox',
+    lite:'https://github.com/AidansQwert/AetherBox-Lite',
+    discord:'https://discord.com/users/941358133987643423',
+    guns:'https://guns.lol/crystalsharp'
+  };
+  const SECTIONS = ['home','about','aether','repos','social'];
+
+  const neofetch = () => {
+    const days = Math.floor((Date.now() - new Date('2022-02-10T00:00:00+07:00')) / 864e5);
+    const rows = [
+      ['OS', 'Debian 13 (Trixie) · XFCE'],
+      ['HOST', 'aether — android + droidspaces'],
+      ['KERNEL', '6.6-aether aarch64'],
+      ['UPTIME', days.toLocaleString('en-US') + ' days'],
+      ['SHELL', 'sh — web edition'],
+      ['PROJECT', 'AetherBox / AetherBox Lite'],
+      ['USER', 'crystalsharps (boy ✧)'],
+      ['THEME', 'monochrome terminal']
+    ];
+    print(`<pre class="t-fetch">   ▄▄▄▄▄▄
+  █ ▄▄▄  █   <b>sharp</b>@<b>aether</b>
+  █ ███  █   ─────────────────────
+  █ ▀▀▀  █   ${rows.map(r => `<span class="k">${r[0]}</span> ${esc(r[1])}`).join('\n              ')}
+   ▀▀▀▀▀▀</pre>`);
+  };
+
+  const HELP_TXT = [
+    ['help', 'daftar perintah'],
+    ['neofetch', 'info sistem'],
+    ['whoami', 'siapa aku'],
+    ['ls', 'daftar section'],
+    ['cd <section>', 'loncat ke section'],
+    ['repos', 'repo teratas'],
+    ['open <name>', 'buka link: ' + Object.keys(LINKS).join(' / ')],
+    ['copy <name>', 'copy link ke clipboard'],
+    ['accent <warna>', 'violet / ocean / ember / forest / rose'],
+    ['motion', 'reduce motion on/off'],
+    ['theme', 'daftar warna aksen'],
+    ['date', 'waktu lokal UTC+7'],
+    ['clear', 'bersihkan layar'],
+    ['exit', 'tutup terminal']
+  ];
+
+  const run = raw => {
+    const [cmd, ...args] = raw.trim().split(/\s+/);
+    const arg = (args[0] || '').toLowerCase();
+    switch ((cmd || '').toLowerCase()){
+      case '': return;
+      case 'help': case '?':
+        HELP_TXT.forEach(([c, d]) => print(`<span class="k">${esc(c.padEnd(16, ' '))}</span>${esc(d)}`));
+        return;
+      case 'neofetch': case 'fetch': return neofetch();
+      case 'whoami':
+        print('sharp — developer &amp; linux tinkerer. boy ✧, not a girl. wolf pack 🐺'); return;
+      case 'uname': print('Linux aether 6.6-aether aarch64 GNU/Linux'); return;
+      case 'ls': print(SECTIONS.map(s => `<span class="k">${s}/</span>`).join('  ')); return;
+      case 'cd': case 'goto':
+        if (!SECTIONS.includes(arg)) return print(`cd: ${esc(arg || '')}: no such section`, 'err');
+        document.getElementById(arg).scrollIntoView({behavior: smooth(), block:'start'});
+        closeTerm(); return;
+      case 'repos': {
+        const list = (window.SHRP_REPOS && window.SHRP_REPOS.list) || [];
+        if (!list.length) return print('repo list belum kebaca — coba lagi sebentar.', 'err');
+        list.slice(0, 8).forEach(r => print(`<span class="k">${esc(r.name)}</span> — ${esc(r.desc || 'no description')}`));
+        return;
+      }
+      case 'open':
+        if (!LINKS[arg]) return print(`open: unknown target. try: ${Object.keys(LINKS).join(', ')}`, 'err');
+        open(LINKS[arg], '_blank'); print('opening ' + esc(LINKS[arg]) + ' …'); return;
+      case 'copy': {
+        const url = LINKS[arg] || (arg === 'url' ? location.href : '');
+        if (!url) return print(`copy: unknown target. try: ${Object.keys(LINKS).join(', ')}, url`, 'err');
+        copyText(url).then(ok => print(ok ? '✓ copied — ' + esc(url) : '✕ copy failed', ok ? '' : 'err'));
+        return;
+      }
+      case 'theme': print('accent: violet · ocean · ember · forest · rose'); return;
+      case 'accent': {
+        const ok = ['violet','ocean','ember','forest','rose'].includes(arg);
+        if (!ok) return print('accent: pilih violet / ocean / ember / forest / rose', 'err');
+        const swatch = document.querySelector(`.acc[data-acc="${arg}"]`);
+        if (swatch) swatch.click();
+        print('accent → ' + esc(arg)); return;
+      }
+      case 'motion':
+        document.body.classList.toggle('no-motion');
+        print('reduce motion: ' + (document.body.classList.contains('no-motion') ? 'ON' : 'OFF')); return;
+      case 'date':
+        print(new Date(Date.now() + 7 * 3600e3).toISOString().replace('T', ' ').slice(0, 19) + ' UTC+7'); return;
+      case 'sudo': print('nice try. this shell has no root — grab AetherBox instead ;)', 'err'); return;
+      case 'sharp': print('✧ sharp as crystal, soft as linux'); return;
+      case 'clear': out.innerHTML = ''; return;
+      case 'exit': case 'q': closeTerm(); return;
+      default: print(`sh: ${esc(cmd)}: command not found — type "help"`, 'err');
+    }
+  };
+
+  let hist = [], hi = -1;
+  const openTerm = () => {
+    term.classList.add('open');
+    if (!out.childElementCount){
+      print('<span class="k">SHRP_ web shell</span> — type <span class="k">help</span> for commands.');
+      neofetch();
+    }
+    setTimeout(() => cmdEl.focus(), 60);
+  };
+  const closeTerm = () => term.classList.remove('open');
+  term.addEventListener('click', e => { if (e.target === term || e.target.closest('.t-x')) closeTerm(); });
+  term.querySelector('.t-box').addEventListener('click', e => { if (!e.target.closest('.t-x')) cmdEl.focus(); });
+  cmdEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter'){
+      const v = cmdEl.value;
+      print(`<span class="t-ps1">sharp@aether:~$</span> ${esc(v)}`, 'echo');
+      if (v.trim()){ hist.unshift(v); hi = -1; }
+      cmdEl.value = '';
+      run(v);
+    } else if (e.key === 'ArrowUp'){
+      e.preventDefault();
+      if (hi + 1 < hist.length){ hi++; cmdEl.value = hist[hi]; }
+    } else if (e.key === 'ArrowDown'){
+      e.preventDefault();
+      hi = Math.max(hi - 1, -1);
+      cmdEl.value = hi < 0 ? '' : hist[hi];
+    } else if (e.key === 'Escape') closeTerm();
+  });
+
+  /* ---------- share ---------- */
+  const share = async () => {
+    const data = { title: 'SHARP — crystalsharps', text: 'developer & linux tinkerer · AetherBox', url: location.href };
+    if (navigator.share){ try { await navigator.share(data); return; } catch(_){ return; } }
+    say((await copyText(location.href)) ? '✓ LINK COPIED — ' + location.host : '✕ SHARE FAILED');
+  };
+
+  window.SHRP_TERM = openTerm;
+  window.SHRP_SHARE = share;
+
+  /* ---------- HUD tambahan ---------- */
+  const hud = document.querySelector('.hud');
+  if (hud){
+    hud.insertAdjacentHTML('beforeend',
+      '<button id="hud-term" title="terminal (~)">&gt;_</button>' +
+      '<button id="hud-share" title="share page">⇪</button>');
+    hud.querySelector('#hud-term').addEventListener('click', openTerm);
+    hud.querySelector('#hud-share').addEventListener('click', share);
+  }
+
+  /* ---------- keyboard global ---------- */
+  addEventListener('keydown', e => {
+    const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
+    if (e.key === 'Escape'){ closeHelp(); closeTerm(); return; }
+    if (typing) return;
+    if (e.key === '~' || e.key === '`'){ e.preventDefault(); openTerm(); }
+  });
+
+  /* ---------- PWA: service worker + tombol install ---------- */
+  if ('serviceWorker' in navigator && location.protocol === 'https:')
+    addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+
+  let deferred = null;
+  addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); deferred = e;
+    if (!hud || document.getElementById('hud-install')) return;
+    hud.insertAdjacentHTML('afterbegin', '<button id="hud-install" title="install app">⇩</button>');
+    hud.querySelector('#hud-install').addEventListener('click', async () => {
+      if (!deferred) return;
+      deferred.prompt();
+      const r = await deferred.userChoice;
+      if (r.outcome === 'accepted'){ say('✓ INSTALLED — SHRP_ is now an app'); document.getElementById('hud-install').remove(); }
+      deferred = null;
+    });
   });
 })();
