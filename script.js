@@ -529,3 +529,112 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
 
   sync(); setInterval(sync, 30000);
 })();
+
+/* ============================================================
+   v11 — SECTION DOTS · RAIL INDEX · COUNTERS · LIVE REPOS
+   ============================================================ */
+
+/* ---------- section dots + rail index ---------- */
+(function(){
+  const wrap = $('#dots'), railIdx = $('#rail-idx');
+  const items = [...document.querySelectorAll('header.hero, section')]
+    .map((el, i) => ({ el, id: el.id, num: '.' + String(i).padStart(3, '0'), label: el.id.toUpperCase() }));
+  if (wrap){
+    wrap.innerHTML = items.map(s =>
+      `<a href="#${s.id}" data-id="${s.id}"><span>${s.num} ${s.label}</span><i></i></a>`).join('');
+  }
+  const dots = wrap ? [...wrap.querySelectorAll('a')] : [];
+  function current(){
+    let cur = items[0];
+    for (const s of items){ if (scrollY >= s.el.offsetTop - 160) cur = s; }
+    return cur;
+  }
+  function paint(){
+    const cur = current();
+    dots.forEach(a => a.classList.toggle('on', a.dataset.id === cur.id));
+    if (railIdx) railIdx.textContent = cur.num;
+  }
+  paint();
+  addEventListener('scroll', paint, {passive:true});
+})();
+
+/* ---------- count-up angka di facts strip ---------- */
+(function(){
+  const nums = [...document.querySelectorAll('.fact .n')];
+  if (!nums.length) return;
+  const run = el => {
+    const target = Number(el.dataset.count) || 0, suffix = el.dataset.suffix || '';
+    if (reduced){ el.textContent = target + suffix; return; }
+    const t0 = performance.now(), dur = 1100;
+    (function step(now){
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  };
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting){ run(e.target); io.unobserve(e.target); }
+  }), {threshold:.5});
+  nums.forEach(el => io.observe(el));
+})();
+
+/* ---------- repositories: live dari GitHub API + cache ---------- */
+(function(){
+  const grid = $('#repo-grid'); if (!grid) return;
+  const KEY = 'sh_repos_v1', MAX = 6;
+
+  const esc = s => { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; };
+  const ago = iso => {
+    const d = Math.floor((Date.now() - new Date(iso)) / 864e5);
+    if (d <= 0) return 'TODAY';
+    if (d < 30) return d + 'D AGO';
+    if (d < 365) return Math.floor(d / 30) + 'MO AGO';
+    return Math.floor(d / 365) + 'Y AGO';
+  };
+
+  const card = r => `
+    <a class="repo" href="${esc(r.url)}" target="_blank" rel="noopener">
+      <div class="rname">${esc(r.name)}<span class="ar">↗</span></div>
+      <div class="rdesc">${esc(r.desc) || 'no description yet.'}</div>
+      <div class="rtopics">${(r.topics || []).slice(0,3).map(t => `<span>${esc(t)}</span>`).join('')}</div>
+      <div class="rmeta">
+        ${r.lang ? `<span class="lang">${esc(r.lang)}</span>` : ''}
+        <span>★ ${r.stars}</span><span>⑂ ${r.forks}</span><span>↻ ${ago(r.pushed)}</span>
+      </div>
+    </a>`;
+
+  const render = list => { grid.innerHTML = list.map(card).join(''); };
+
+  const SEED = [
+    { name:'AetherBox', desc:'run full Linux distros natively on Android — tiny musl-static container runtime. needs root.',
+      url:'https://github.com/AidansQwert/AetherBox', lang:'C', stars:'—', forks:'—', pushed:new Date().toISOString(),
+      topics:['android','linux','container'] },
+    { name:'AetherBox-Lite', desc:'no-root companion — Termux + proot-distro / Omarchy, same UI shape as the full app.',
+      url:'https://github.com/AidansQwert/AetherBox-Lite', lang:'Shell', stars:'—', forks:'—', pushed:new Date().toISOString(),
+      topics:['android','termux','proot'] },
+    { name:'AidansQwerts', desc:'this website — hand-built, no frameworks, pure HTML/CSS/JS.',
+      url:'https://github.com/AidansQwert/AidansQwerts', lang:'CSS', stars:'—', forks:'—', pushed:new Date().toISOString(),
+      topics:['website','portfolio'] }
+  ];
+
+  const cached = (() => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(_){ return null; } })();
+  if (cached && cached.list) render(cached.list);
+
+  fetch('https://api.github.com/users/AidansQwert/repos?per_page=100&sort=pushed')
+    .then(r => r.ok ? r.json() : Promise.reject(0))
+    .then(j => {
+      const list = j.filter(r => !r.fork).slice(0, MAX).map(r => ({
+        name: r.name, desc: r.description, url: r.html_url, lang: r.language,
+        stars: r.stargazers_count, forks: r.forks_count, pushed: r.pushed_at, topics: r.topics
+      }));
+      if (!list.length) throw 0;
+      render(list);
+      try { localStorage.setItem(KEY, JSON.stringify({ list, ts: Date.now() })); } catch(_){}
+    })
+    .catch(() => {
+      if (cached && cached.list) return;
+      render(SEED);
+      grid.insertAdjacentHTML('beforeend',
+        '<div class="repo-err">GitHub API unreachable — showing the pinned set. everything else lives at <a href="https://github.com/AidansQwert" target="_blank" rel="noopener">github.com/AidansQwert ↗</a></div>');
+    });
+})();

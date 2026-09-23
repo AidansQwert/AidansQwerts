@@ -40,13 +40,32 @@
 <div class="grain" aria-hidden="true"></div>
 <div id="progress"></div>
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<!-- FIXED SIDE RAIL -->
+<aside class="rail" id="rail">
+  <a class="rail-ico" href="https://github.com/AidansQwert" target="_blank" rel="noopener" aria-label="GitHub">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .26.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+  </a>
+  <a class="rail-ico" href="https://discord.com/users/941358133987643423" target="_blank" rel="noopener" aria-label="Discord">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.3 5.34A16.6 16.6 0 0 0 15.2 4l-.24.47a12 12 0 0 1 3.4 1.6 11.5 11.5 0 0 0-9.9-.36l-.6.34A11.7 11.7 0 0 1 9.05 4.5L8.8 4a16.6 16.6 0 0 0-4.1 1.34C2.1 9.3 1.4 13.16 1.75 16.96A16.7 16.7 0 0 0 6.8 19.5l1-1.4a10.9 10.9 0 0 1-1.7-.82l.42-.32a11.9 11.9 0 0 0 10.96 0l.42.32c-.54.32-1.11.6-1.71.83l1 1.39a16.6 16.6 0 0 0 5.06-2.54c.42-4.4-.71-8.23-2.95-11.62ZM8.55 14.65c-.98 0-1.79-.9-1.79-2s.79-2.01 1.79-2.01 1.8.9 1.79 2.01c0 1.1-.8 2-1.79 2Zm6.6 0c-.98 0-1.79-.9-1.79-2s.79-2.01 1.79-2.01 1.8.9 1.79 2.01c0 1.1-.8 2-1.79 2Z"/></svg>
+  </a>
+  <a class="rail-ico" href="https://guns.lol/crystalsharp" target="_blank" rel="noopener" aria-label="guns.lol">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.6 13.4a4 4 0 0 0 5.66 0l2.83-2.83a4 4 0 1 0-5.66-5.66l-1.1 1.1 1.42 1.41 1.1-1.1a2 2 0 1 1 2.82 2.83l-2.82 2.83a2 2 0 0 1-2.83 0l-1.42 1.42Zm2.8-2.8a4 4 0 0 0-5.65 0l-2.83 2.83a4 4 0 1 0 5.66 5.66l1.1-1.1-1.42-1.41-1.1 1.1a2 2 0 1 1-2.82-2.83l2.82-2.83a2 2 0 0 1 2.83 0l1.42-1.42Z"/></svg>
+  </a>
+  <span class="rail-line" aria-hidden="true"></span>
+  <span class="rail-idx" id="rail-idx" aria-hidden="true">.000</span>
+</aside>
+
+<!-- SECTION DOTS -->
+<nav class="dots" id="dots" aria-label="section navigation"></nav>
+
 <main>
 
 <nav id="nav">
   <div class="logo"><span class="sq"></span>SHRP_</div>
   <button id="burger" aria-label="menu" aria-expanded="false"><i></i><i></i><i></i></button>
   <div class="links" id="nav-links">
-    <a href="#home" class="active">HOME</a><a href="#about">ABOUT</a><a href="#aether">AETHERBOX</a><a href="#social">SOCIAL</a>
+    <a href="#home" class="active">HOME</a><a href="#about">ABOUT</a><a href="#aether">AETHERBOX</a><a href="#repos">REPOS</a><a href="#social">SOCIAL</a>
   </div>
 </nav>
 
@@ -69,6 +88,10 @@
   </div>
   <div class="term" aria-hidden="true"><span class="ps1">sharp@aether:~$ </span><span id="typer"></span><span class="cur"></span></div>
   <div class="quote">"<em>running full linux on a phone</em> shouldn't feel like magic — but it kinda does."</div>
+  <div class="hero-cta">
+    <a class="btn solid" href="#aether">↓ GET AETHERBOX</a>
+    <a class="btn ghost" href="#about">EXPLORE →</a>
+  </div>
   <div class="scrollhint"><span>.000 — HOME</span><span class="d"><span id="pct">0%</span></span><span>aarch…<b style="color:var(--vio)">arm64</b></span></div>
 </header>
 
@@ -94,6 +117,27 @@
   environments, and develop <span class="hl">AetherBox</span>. full bio &amp; all my links live at
   <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp</a> — one link, everything.
   <span class="hl">wolf pack 🐺</span>, crystal &lt;3 ▊</div>
+
+  <div class="facts" data-rv style="--d:.06s">
+    <div class="fact"><span class="n" data-count="4">0</span><span class="l">YEARS TINKERING</span></div>
+    <div class="fact"><span class="n" data-count="2">0</span><span class="l">APPS SHIPPED</span></div>
+    <div class="fact"><span class="n" data-count="400" data-suffix="KB">0</span><span class="l">RUNTIME SIZE</span></div>
+    <div class="fact"><span class="n" data-count="5">0</span><span class="l">ARCHITECTURES</span></div>
+  </div>
+
+  <div class="tools" data-rv style="--d:.08s">
+    <div class="tools-head">// TOOLS &amp; TECHNOLOGIES</div>
+    <div class="tool-grid">
+      <div class="tool"><span class="tk">RUNTIME</span><span class="tv">droidspaces / PRoot</span></div>
+      <div class="tool"><span class="tk">DISTRO</span><span class="tv">Debian / Arch / Alpine</span></div>
+      <div class="tool"><span class="tk">DESKTOP</span><span class="tv">XFCE / Hyprland</span></div>
+      <div class="tool"><span class="tk">ROOT</span><span class="tv">Magisk / KernelSU / APatch</span></div>
+      <div class="tool"><span class="tk">LANGUAGE</span><span class="tv">C / Python / Shell</span></div>
+      <div class="tool"><span class="tk">ANDROID</span><span class="tv">Termux / ADB / NDK</span></div>
+      <div class="tool"><span class="tk">ARCH</span><span class="tv">aarch64 / riscv64 / x86_64</span></div>
+      <div class="tool"><span class="tk">TOOLING</span><span class="tv">Git / musl / busybox</span></div>
+    </div>
+  </div>
 
   <div class="stack-marquee" data-rv aria-hidden="true">
     <div class="sm-track" id="sm-track">
@@ -160,9 +204,21 @@
   <div class="note">↻ versions &amp; download buttons <i>auto-update</i> from the GitHub releases API, cached locally — set and forget.</div>
 </section>
 
+<!-- REPOSITORIES -->
+<section id="repos">
+  <div class="sec-label" data-rv><span class="sec-num">.003</span> // OPEN SOURCE</div>
+  <h2 class="sec-title"><span class="glitch" data-text="REPOSITORIES">REPOSITORIES</span></h2>
+  <p class="repo-intro" data-rv>live from the GitHub API — everything i build in the open, sorted by last push.
+  <a href="https://github.com/AidansQwert" target="_blank" rel="noopener">github.com/AidansQwert ↗</a></p>
+  <div class="repo-grid" id="repo-grid" data-rv>
+    <div class="repo skel"></div><div class="repo skel"></div><div class="repo skel"></div>
+    <div class="repo skel"></div><div class="repo skel"></div><div class="repo skel"></div>
+  </div>
+</section>
+
 <!-- SOCIAL -->
 <section id="social">
-  <div class="sec-label" data-rv><span class="sec-num">.003</span> // FIND ME</div>
+  <div class="sec-label" data-rv><span class="sec-num">.004</span> // FIND ME</div>
   <h2 class="sec-title"><span class="glitch" data-text="SOCIAL">SOCIAL</span> <em>PROFILES</em></h2>
   <!-- DISCORD PRESENCE -->
   <div class="dc-card" id="dc-card" data-rv>
