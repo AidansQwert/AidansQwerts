@@ -638,3 +638,107 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
         '<div class="repo-err">GitHub API unreachable — showing the pinned set. everything else lives at <a href="https://github.com/AidansQwert" target="_blank" rel="noopener">github.com/AidansQwert ↗</a></div>');
     });
 })();
+
+/* ===================== v12 — MOTION LAYER ===================== */
+const fine = !reduced && matchMedia('(pointer:fine)').matches;
+
+/* stagger anak grid + sweep judul section */
+(function(){
+  document.querySelectorAll('.facts, .tool-grid, .repo-grid, .socs').forEach(g => {
+    g.classList.add('anim-stag');
+    [...g.children].forEach((c, i) => c.style.setProperty('--stag', (i * 70) + 'ms'));
+  });
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in', 'swept');
+    io.unobserve(e.target);
+  }), {threshold:.18});
+  document.querySelectorAll('.anim-stag, .sec-title').forEach(el => io.observe(el));
+
+  /* repo-grid diisi ulang oleh loader API — pasang stagger lagi */
+  const grid = $('#repo-grid');
+  if (grid) new MutationObserver(() => {
+    [...grid.children].forEach((c, i) => c.style.setProperty('--stag', (i * 70) + 'ms'));
+    grid.classList.add('in');
+  }).observe(grid, {childList:true});
+})();
+
+/* tilt 3d + kilau ngikut kursor */
+if (fine) (function(){
+  document.querySelectorAll('.dl-card, .repo, .soc, .dc-card').forEach(card => {
+    card.classList.add('tilt', 'sheen');
+    let raf = 0;
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        card.classList.add('live');
+        card.style.setProperty('--ry', ((px - .5) * 7).toFixed(2) + 'deg');
+        card.style.setProperty('--rx', ((.5 - py) * 7).toFixed(2) + 'deg');
+        card.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+      });
+    });
+    card.addEventListener('pointerleave', () => {
+      card.classList.remove('live');
+      card.style.setProperty('--rx', '0deg');
+      card.style.setProperty('--ry', '0deg');
+    });
+  });
+})();
+
+/* tombol magnetik */
+if (fine) (function(){
+  document.querySelectorAll('.btn, .rail-ico').forEach(el => {
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+      const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+      el.style.transform = `translate(${(dx * 10).toFixed(1)}px, ${(dy * 8).toFixed(1)}px)`;
+    });
+    el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+  });
+})();
+
+/* ripple di tombol */
+if (!reduced) document.addEventListener('pointerdown', e => {
+  const t = e.target.closest('.btn, .dl-card>a, .dc-actions a, .dc-actions button');
+  if (!t) return;
+  const r = t.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2.2;
+  const s = document.createElement('span');
+  s.className = 'rip';
+  s.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX - r.left}px;top:${e.clientY - r.top}px`;
+  t.appendChild(s);
+  setTimeout(() => s.remove(), 620);
+});
+
+/* parallax lembut di hero pas scroll */
+if (!reduced) (function(){
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
+  const layers = [...hero.querySelectorAll('.quote, .hero-cta, .scrollhint')];
+  let raf = 0;
+  addEventListener('scroll', () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const y = Math.min(scrollY, innerHeight);
+      layers.forEach((el, i) => { el.style.transform = `translateY(${(y * (0.05 + i * 0.03)).toFixed(1)}px)`; });
+      hero.style.opacity = String(Math.max(1 - y / (innerHeight * 0.9), 0.25));
+    });
+  }, {passive:true});
+})();
+
+/* angka fact "pop" setelah selesai menghitung */
+(function(){
+  document.querySelectorAll('.fact .n').forEach(n => {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      io.unobserve(n);
+      setTimeout(() => n.classList.add('done'), reduced ? 0 : 1150);
+    }), {threshold:.5});
+    io.observe(n);
+  });
+})();
