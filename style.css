@@ -1150,10 +1150,8 @@ nav .links a:hover::after,nav .links a.active::after{transform:scaleX(1);transfo
 /* ============================================================
    v17 — EXTRA: grain halus, border gradient repo, fade masuk
    ============================================================ */
-body::after{
-  content:"";position:fixed;inset:-50%;z-index:999;pointer-events:none;opacity:.035;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation:grain 7s steps(6) infinite}
+/* grain bawaan dibikin hidup pelan */
+.grain{animation:grain 7s steps(6) infinite}
 @keyframes grain{
   0%{transform:translate3d(0,0,0)}20%{transform:translate3d(-3%,2%,0)}
   40%{transform:translate3d(2%,-3%,0)}60%{transform:translate3d(-2%,-2%,0)}
@@ -1171,6 +1169,104 @@ body{opacity:0;transition:opacity .7s var(--ease-out)}
 body.ready,body.loaded{opacity:1}
 
 @media(prefers-reduced-motion:reduce){
-  body::after{animation:none}
+  .grain{animation:none}
   body{opacity:1}
 }
+
+/* ============================================================
+   v18 — FITUR BARU
+   command palette (Ctrl+K), jam lokal, pemilih warna aksen,
+   panel shortcut (?), tombol reduce-motion.
+   ============================================================ */
+#pal{position:fixed;inset:0;z-index:2000;display:none;padding:14vh 18px 18px;
+  background:rgba(4,4,6,.62);backdrop-filter:blur(8px);
+  opacity:0;transition:opacity .28s var(--ease-soft)}
+#pal.open{display:block}
+#pal.show{opacity:1}
+.pal-box{max-width:620px;margin:0 auto;border:1px solid var(--line2);border-radius:16px;
+  background:linear-gradient(180deg,rgba(18,18,24,.98),rgba(10,10,14,.98));
+  box-shadow:0 40px 90px rgba(0,0,0,.6);overflow:hidden;
+  transform:translateY(-14px) scale(.98);transition:transform .35s var(--ease-out)}
+#pal.show .pal-box{transform:none}
+.pal-box input{width:100%;padding:18px 20px;background:none;border:0;border-bottom:1px solid var(--line);
+  color:var(--txt);font:500 14px/1 var(--mono);letter-spacing:.06em;outline:none}
+.pal-box input::placeholder{color:var(--faint)}
+.pal-list{max-height:52vh;overflow:auto;padding:8px}
+.pal-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;cursor:pointer;
+  color:rgba(236,236,241,.78);font:400 12.5px/1 var(--mono);letter-spacing:.05em;
+  transition:background .2s var(--ease-soft),color .2s var(--ease-soft)}
+.pal-item .ic{width:22px;color:var(--cyn);font-size:12px}
+.pal-item .tag{margin-left:auto;color:var(--faint);font-size:10.5px;letter-spacing:.12em}
+.pal-item.sel,.pal-item:hover{background:rgba(139,92,246,.16);color:#fff}
+.pal-empty{padding:22px 16px;color:var(--faint);font:400 12px var(--mono);text-align:center}
+.pal-foot{display:flex;gap:16px;padding:10px 16px;border-top:1px solid var(--line);
+  color:var(--faint);font:400 10.5px var(--mono);letter-spacing:.1em}
+
+/* jam lokal di nav */
+#clock{margin-left:auto;margin-right:16px;display:flex;align-items:center;gap:8px;
+  color:rgba(236,236,241,.6);font:500 11px var(--mono);letter-spacing:.12em;white-space:nowrap}
+#clock b{color:var(--cyn);font-weight:500}
+#clock .dot{width:5px;height:5px;border-radius:50%;background:var(--vio);box-shadow:0 0 8px var(--vio)}
+@media(max-width:900px){#clock{display:none}}
+
+/* tombol kecil kanan atas: palette + shortcut */
+.hud{position:fixed;right:20px;bottom:88px;z-index:60;display:flex;flex-direction:column;gap:10px}
+.hud button{width:42px;height:42px;border-radius:12px;cursor:pointer;
+  border:1px solid var(--line2);background:rgba(16,16,20,.72);backdrop-filter:blur(8px);
+  color:rgba(236,236,241,.72);font:500 11px var(--mono);
+  transition:transform .35s var(--spring),color .25s,border-color .25s,background .25s}
+.hud button:hover{color:#fff;border-color:rgba(139,92,246,.6);background:rgba(139,92,246,.18);transform:translateY(-2px)}
+@media(max-width:640px){.hud{right:14px;bottom:78px}.hud button{width:38px;height:38px}}
+
+/* pemilih warna aksen */
+.acc-row{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line)}
+.acc{width:22px;height:22px;border-radius:50%;cursor:pointer;border:1px solid rgba(255,255,255,.22);
+  transition:transform .3s var(--spring)}
+.acc:hover{transform:scale(1.15)}
+.acc.on{box-shadow:0 0 0 2px rgba(255,255,255,.5)}
+
+body.no-motion *{animation:none!important;transition:none!important}
+
+/* ============================================================
+   v19 — kursor custom, ring progres, statistik GitHub, easter egg
+   ============================================================ */
+@media(pointer:fine){
+  .cur-dot,.cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:1500;border-radius:50%;
+    mix-blend-mode:screen;will-change:transform}
+  .cur-dot{width:6px;height:6px;margin:-3px 0 0 -3px;background:var(--cyn);box-shadow:0 0 12px var(--cyn)}
+  .cur-ring{width:34px;height:34px;margin:-17px 0 0 -17px;border:1px solid rgba(139,92,246,.75);
+    transition:width .25s var(--ease-out),height .25s var(--ease-out),margin .25s var(--ease-out),
+               border-color .25s var(--ease-out),background .25s var(--ease-out)}
+  .cur-ring.hot{width:54px;height:54px;margin:-27px 0 0 -27px;
+    border-color:rgba(34,211,238,.85);background:rgba(34,211,238,.08)}
+}
+
+/* ring progres di tombol back-to-top */
+#totop{position:fixed}
+#totop svg.ring{position:absolute;inset:-5px;width:calc(100% + 10px);height:calc(100% + 10px);
+  transform:rotate(-90deg);pointer-events:none}
+#totop svg.ring circle{fill:none;stroke-width:2}
+#totop svg.ring .bg{stroke:rgba(255,255,255,.1)}
+#totop svg.ring .fg{stroke:url(#totop-grad);stroke-linecap:round;transition:stroke-dashoffset .12s linear}
+
+/* strip statistik GitHub */
+.gh-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 26px}
+.gh-stat{padding:16px 18px;border:1px solid var(--line);border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.008));
+  transition:border-color .35s var(--ease-soft),transform .45s var(--spring)}
+.gh-stat:hover{border-color:rgba(139,92,246,.45);transform:translateY(-3px)}
+.gh-stat b{display:block;font:700 26px/1 var(--sans);color:var(--txt);letter-spacing:-.02em}
+.gh-stat span{display:block;margin-top:8px;color:rgba(236,236,241,.55);
+  font:400 10px var(--mono);letter-spacing:.16em}
+@media(max-width:720px){.gh-stats{grid-template-columns:repeat(2,1fr)}}
+
+/* easter egg: hujan partikel */
+#egg{position:fixed;inset:0;z-index:1400;pointer-events:none}
+.egg-p{position:absolute;width:3px;height:3px;border-radius:50%;
+  background:var(--cyn);box-shadow:0 0 10px var(--vio);animation:eggfall linear forwards}
+@keyframes eggfall{to{transform:translate3d(var(--ex,0),105vh,0) rotate(360deg);opacity:0}}
+body.rainbow .sec-title,body.rainbow .hero h1{animation:huecycle 6s linear infinite}
+@keyframes huecycle{to{filter:hue-rotate(360deg)}}
+
+@media(prefers-reduced-motion:reduce){.cur-dot,.cur-ring{display:none}}
+body.no-motion .cur-dot,body.no-motion .cur-ring{display:none}

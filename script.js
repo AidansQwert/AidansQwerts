@@ -828,3 +828,289 @@ if (!reduced) (function(){
 /* jaring pengaman: halaman selalu tampil walau loader gagal */
 setTimeout(() => document.body.classList.add('loaded'), 2200);
 addEventListener('load', () => document.body.classList.add('loaded'));
+
+/* ============================================================
+   v18 — FITUR BARU
+   ============================================================ */
+(function(){
+  /* ---------- jam lokal UTC+7 ---------- */
+  const nav = document.getElementById('nav');
+  if (nav){
+    const c = document.createElement('div');
+    c.id = 'clock';
+    c.innerHTML = '<span class="dot"></span>JKT <b>--:--:--</b>';
+    nav.insertBefore(c, nav.querySelector('.links'));
+    const b = c.querySelector('b');
+    const tick = () => {
+      const d = new Date(Date.now() + 7*3600*1000);
+      b.textContent = d.toISOString().slice(11,19);
+    };
+    tick(); setInterval(tick, 1000);
+  }
+
+  /* ---------- aksen warna (tersimpan) ---------- */
+  const ACCENTS = {
+    violet:{vio:'#8b5cf6',cyn:'#22d3ee',pnk:'#f472b6'},
+    ocean :{vio:'#3b82f6',cyn:'#2dd4bf',pnk:'#60a5fa'},
+    ember :{vio:'#f97316',cyn:'#fbbf24',pnk:'#fb7185'},
+    forest:{vio:'#22c55e',cyn:'#a3e635',pnk:'#34d399'},
+    rose  :{vio:'#e879f9',cyn:'#f472b6',pnk:'#c084fc'}
+  };
+  const applyAccent = name => {
+    const a = ACCENTS[name] || ACCENTS.violet;
+    const r = document.documentElement.style;
+    r.setProperty('--vio', a.vio); r.setProperty('--cyn', a.cyn); r.setProperty('--pnk', a.pnk);
+    try { localStorage.setItem('shrp-accent', name); } catch(_){}
+    document.querySelectorAll('.acc').forEach(el => el.classList.toggle('on', el.dataset.acc === name));
+  };
+  let savedAccent = 'violet';
+  try { savedAccent = localStorage.getItem('shrp-accent') || 'violet'; } catch(_){}
+
+  /* ---------- reduce motion manual ---------- */
+  const setMotion = off => {
+    document.body.classList.toggle('no-motion', off);
+    try { localStorage.setItem('shrp-nomotion', off ? '1' : '0'); } catch(_){}
+  };
+  try { if (localStorage.getItem('shrp-nomotion') === '1') document.body.classList.add('no-motion'); } catch(_){}
+
+  /* ---------- command palette ---------- */
+  const go = sel => {
+    const t = document.querySelector(sel);
+    if (t) t.scrollIntoView({behavior: document.body.classList.contains('no-motion') ? 'auto' : 'smooth', block:'start'});
+  };
+  const copy = async (text, label) => {
+    try { await navigator.clipboard.writeText(text); }
+    catch(_){
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(__){}
+      ta.remove();
+    }
+    if (typeof toast === 'function') toast('✓ ' + label);
+  };
+
+  const items = [
+    {ic:'›', t:'Go — Home',        tag:'1', run:() => go('#home')},
+    {ic:'›', t:'Go — About',       tag:'2', run:() => go('#about')},
+    {ic:'›', t:'Go — AetherBox',   tag:'3', run:() => go('#aether')},
+    {ic:'›', t:'Go — Repositories',tag:'4', run:() => go('#repos')},
+    {ic:'›', t:'Go — Social',      tag:'5', run:() => go('#social')},
+    {ic:'↓', t:'Download AetherBox APK', tag:'LINK', run:() => open('https://github.com/AidansQwert/AetherBox/releases/latest','_blank')},
+    {ic:'↓', t:'Download AetherBox Lite APK', tag:'LINK', run:() => open('https://github.com/AidansQwert/AetherBox-Lite/releases/latest','_blank')},
+    {ic:'↗', t:'GitHub — AidansQwert', tag:'LINK', run:() => open('https://github.com/AidansQwert','_blank')},
+    {ic:'↗', t:'Discord — crystalsharps', tag:'LINK', run:() => open('https://discord.com/users/941358133987643423','_blank')},
+    {ic:'↗', t:'guns.lol/crystalsharp', tag:'LINK', run:() => open('https://guns.lol/crystalsharp','_blank')},
+    {ic:'[]', t:'Copy guns.lol link', tag:'COPY', run:() => copy('https://guns.lol/crystalsharp','LINK COPIED')},
+    {ic:'[]', t:'Copy Discord username', tag:'COPY', run:() => copy('crystalsharps','COPIED — crystalsharps')},
+    {ic:'[]', t:'Copy page URL', tag:'COPY', run:() => copy(location.href,'URL COPIED')},
+    {ic:'↑', t:'Back to top', tag:'T', run:() => scrollTo({top:0, behavior:'smooth'})},
+    {ic:'◐', t:'Toggle reduced motion', tag:'M', run:() => setMotion(!document.body.classList.contains('no-motion'))},
+    {ic:'?', t:'Keyboard shortcuts', tag:'?', run:() => showHelp()}
+  ];
+
+  const pal = document.createElement('div');
+  pal.id = 'pal';
+  pal.innerHTML = `<div class="pal-box">
+      <input type="text" placeholder="type a command… (esc to close)" aria-label="command palette">
+      <div class="pal-list"></div>
+      <div class="acc-row" aria-label="accent color">
+        ${Object.keys(ACCENTS).map(k => `<span class="acc" data-acc="${k}" title="${k}" style="background:linear-gradient(135deg,${ACCENTS[k].vio},${ACCENTS[k].cyn})"></span>`).join('')}
+      </div>
+      <div class="pal-foot"><span>↑↓ navigate</span><span>⏎ run</span><span>ESC close</span></div>
+    </div>`;
+  document.body.appendChild(pal);
+  applyAccent(savedAccent);
+
+  const input = pal.querySelector('input'), list = pal.querySelector('.pal-list');
+  let view = items, sel = 0;
+
+  const render = () => {
+    list.innerHTML = view.length
+      ? view.map((it,i) => `<div class="pal-item${i===sel?' sel':''}" data-i="${i}"><span class="ic">${it.ic}</span>${it.t}<span class="tag">${it.tag}</span></div>`).join('')
+      : '<div class="pal-empty">no match — try "copy", "github", "aether"</div>';
+  };
+  const filter = q => {
+    q = q.trim().toLowerCase();
+    view = q ? items.filter(it => it.t.toLowerCase().includes(q)) : items;
+    sel = 0; render();
+  };
+  const openPal = () => {
+    pal.classList.add('open');
+    requestAnimationFrame(() => pal.classList.add('show'));
+    input.value = ''; filter(''); setTimeout(() => input.focus(), 40);
+  };
+  const closePal = () => {
+    pal.classList.remove('show');
+    setTimeout(() => pal.classList.remove('open'), 260);
+  };
+  const runSel = () => { const it = view[sel]; if (!it) return; closePal(); setTimeout(it.run, 120); };
+
+  input.addEventListener('input', () => filter(input.value));
+  list.addEventListener('click', e => {
+    const el = e.target.closest('.pal-item'); if (!el) return;
+    sel = +el.dataset.i; runSel();
+  });
+  list.addEventListener('mousemove', e => {
+    const el = e.target.closest('.pal-item'); if (!el) return;
+    sel = +el.dataset.i;
+    list.querySelectorAll('.pal-item').forEach((n,i) => n.classList.toggle('sel', i === sel));
+  });
+  pal.addEventListener('click', e => { if (e.target === pal) closePal(); });
+  pal.querySelectorAll('.acc').forEach(el =>
+    el.addEventListener('click', () => applyAccent(el.dataset.acc)));
+
+  /* ---------- panel shortcut ---------- */
+  function showHelp(){
+    if (typeof toast === 'function')
+      toast('SHORTCUTS — ctrl+k palette · 1-5 section · t top · m motion · / search');
+  }
+
+  /* ---------- keyboard ---------- */
+  addEventListener('keydown', e => {
+    const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); openPal(); return; }
+    if (pal.classList.contains('open')){
+      if (e.key === 'Escape'){ closePal(); }
+      else if (e.key === 'ArrowDown'){ e.preventDefault(); sel = Math.min(sel+1, view.length-1); render(); }
+      else if (e.key === 'ArrowUp'){ e.preventDefault(); sel = Math.max(sel-1, 0); render(); }
+      else if (e.key === 'Enter'){ e.preventDefault(); runSel(); }
+      return;
+    }
+    if (typing) return;
+    if (e.key === '/'){ e.preventDefault(); openPal(); return; }
+    const secs = ['#home','#about','#aether','#repos','#social'];
+    if (/^[1-5]$/.test(e.key)) go(secs[+e.key - 1]);
+    else if (e.key.toLowerCase() === 't') scrollTo({top:0, behavior:'smooth'});
+    else if (e.key.toLowerCase() === 'm') setMotion(!document.body.classList.contains('no-motion'));
+    else if (e.key === '?') showHelp();
+  });
+
+  /* ---------- tombol HUD ---------- */
+  const hud = document.createElement('div');
+  hud.className = 'hud';
+  hud.innerHTML = '<button id="hud-pal" title="command palette (ctrl+k)">⌘K</button>' +
+                  '<button id="hud-help" title="shortcuts">?</button>';
+  document.body.appendChild(hud);
+  hud.querySelector('#hud-pal').addEventListener('click', openPal);
+  hud.querySelector('#hud-help').addEventListener('click', showHelp);
+})();
+
+/* ============================================================
+   v19 — kursor custom, ring progres, statistik GitHub, easter egg
+   ============================================================ */
+(function(){
+  const fine = matchMedia('(pointer:fine)').matches;
+  const still = () => document.body.classList.contains('no-motion');
+
+  /* ---------- kursor custom (ring lag halus) ---------- */
+  if (fine && !reduced){
+    const dot = document.createElement('div'), ring = document.createElement('div');
+    dot.className = 'cur-dot'; ring.className = 'cur-ring';
+    document.body.append(dot, ring);
+    let mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+    addEventListener('pointermove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate3d(${mx}px,${my}px,0)`;
+      const hot = !!e.target.closest('a,button,.repo,.dl-card,.soc,.chip,.pal-item,.acc');
+      ring.classList.toggle('hot', hot);
+    }, {passive:true});
+    (function loop(){
+      rx += (mx - rx) * .16; ry += (my - ry) * .16;
+      ring.style.transform = `translate3d(${rx}px,${ry}px,0)`;
+      requestAnimationFrame(loop);
+    })();
+  }
+
+  /* ---------- ring progres di back-to-top ---------- */
+  const top = document.getElementById('totop');
+  if (top){
+    top.insertAdjacentHTML('afterbegin',
+      `<svg class="ring" viewBox="0 0 60 60" aria-hidden="true">
+         <defs><linearGradient id="totop-grad" x1="0" y1="0" x2="1" y2="1">
+           <stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#22d3ee"/>
+         </linearGradient></defs>
+         <circle class="bg" cx="30" cy="30" r="27"/>
+         <circle class="fg" cx="30" cy="30" r="27" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
+       </svg>`);
+    const fg = top.querySelector('.fg');
+    const upd = () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const p = max > 0 ? Math.min(scrollY / max, 1) : 0;
+      fg.style.strokeDashoffset = (169.6 * (1 - p)).toFixed(1);
+    };
+    addEventListener('scroll', upd, {passive:true}); upd();
+  }
+
+  /* ---------- statistik GitHub ---------- */
+  (async () => {
+    const grid = document.getElementById('repo-grid');
+    if (!grid) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'gh-stats';
+    wrap.innerHTML = [
+      ['gh-repos','PUBLIC REPOS'], ['gh-stars','TOTAL STARS'],
+      ['gh-forks','TOTAL FORKS'], ['gh-follow','FOLLOWERS']
+    ].map(([id,l]) => `<div class="gh-stat"><b id="${id}">—</b><span>${l}</span></div>`).join('');
+    grid.parentNode.insertBefore(wrap, grid);
+
+    const put = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    const paint = d => { put('gh-repos', d.repos); put('gh-follow', d.follow); put('gh-stars', d.stars); put('gh-forks', d.forks); };
+
+    let cached = null;
+    try { cached = JSON.parse(localStorage.getItem('shrp-ghstats') || 'null'); } catch(_){}
+    if (cached) paint(cached);
+
+    try {
+      const [u, r] = await Promise.all([
+        fetch('https://api.github.com/users/AidansQwert').then(x => x.json()),
+        fetch('https://api.github.com/users/AidansQwert/repos?per_page=100').then(x => x.json())
+      ]);
+      if (u && typeof u.public_repos === 'number' && Array.isArray(r)){
+        const data = {
+          repos: u.public_repos, follow: u.followers,
+          stars: r.reduce((a,b) => a + (b.stargazers_count||0), 0),
+          forks: r.reduce((a,b) => a + (b.forks_count||0), 0)
+        };
+        paint(data);
+        try { localStorage.setItem('shrp-ghstats', JSON.stringify(data)); } catch(_){}
+        cached = data;
+      }
+    } catch(_){ /* rate limit / offline */ }
+
+    if (!cached) wrap.remove(); /* nggak ada data → jangan tampilkan strip kosong */
+  })();
+
+  /* ---------- easter egg: konami + ketik "sharp" ---------- */
+  const burst = n => {
+    if (still()) return;
+    let box = document.getElementById('egg');
+    if (!box){ box = document.createElement('div'); box.id = 'egg'; document.body.appendChild(box); }
+    for (let i = 0; i < n; i++){
+      const p = document.createElement('i');
+      p.className = 'egg-p';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = '-10px';
+      p.style.setProperty('--ex', (Math.random() * 120 - 60) + 'px');
+      p.style.animationDuration = (2.4 + Math.random() * 2.6) + 's';
+      p.style.animationDelay = (Math.random() * 1.2) + 's';
+      box.appendChild(p);
+      setTimeout(() => p.remove(), 7000);
+    }
+  };
+  const KONAMI = 'ArrowUp,ArrowUp,ArrowDown,ArrowDown,ArrowLeft,ArrowRight,ArrowLeft,ArrowRight,b,a';
+  let keys = [], word = '';
+  addEventListener('keydown', e => {
+    if (/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
+    keys.push(e.key); keys = keys.slice(-10);
+    if (keys.join(',') === KONAMI){
+      document.body.classList.toggle('rainbow');
+      burst(160);
+      if (typeof toast === 'function') toast('★ KONAMI — wolf pack mode ' + (document.body.classList.contains('rainbow') ? 'ON' : 'OFF'));
+      keys = [];
+    }
+    if (/^[a-z]$/i.test(e.key)){
+      word = (word + e.key.toLowerCase()).slice(-5);
+      if (word === 'sharp'){ burst(70); if (typeof toast === 'function') toast('✧ sharp as crystal, soft as linux'); word = ''; }
+    }
+  });
+})();
