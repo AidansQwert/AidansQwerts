@@ -32,7 +32,8 @@
 
 <nav id="nav">
   <div class="logo"><span class="sq"></span>SHRP_</div>
-  <div class="links">
+  <button id="burger" aria-label="menu" aria-expanded="false"><i></i><i></i><i></i></button>
+  <div class="links" id="nav-links">
     <a href="#home" class="active">HOME</a><a href="#about">ABOUT</a><a href="#aether">AETHERBOX</a><a href="#social">SOCIAL</a>
   </div>
 </nav>
@@ -81,6 +82,12 @@
   environments, and develop <span class="hl">AetherBox</span>. full bio &amp; all my links live at
   <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp</a> — one link, everything.
   <span class="hl">wolf pack 🐺</span>, crystal &lt;3 ▊</div>
+
+  <div class="stack-marquee" data-rv aria-hidden="true">
+    <div class="sm-track" id="sm-track">
+      <span>LINUX</span><span>ANDROID</span><span>TERMUX</span><span>DEBIAN</span><span>XFCE</span><span>HYPRLAND</span><span>MAGISK</span><span>KERNELSU</span><span>APATCH</span><span>SHELL</span><span>PYTHON</span><span>C</span><span>GIT</span><span>PROOT</span><span>NAMESPACES</span><span>AARCH64</span>
+    </div>
+  </div>
 </section>
 
 <!-- AETHERBOX -->
@@ -145,6 +152,24 @@
 <section id="social">
   <div class="sec-label" data-rv><span class="sec-num">.003</span> // FIND ME</div>
   <h2 class="sec-title"><span class="glitch" data-text="SOCIAL">SOCIAL</span> <em>PROFILES</em></h2>
+  <!-- DISCORD PRESENCE -->
+  <div class="dc-card" id="dc-card" data-rv>
+    <i class="c-tl"></i><i class="c-br"></i>
+    <div class="dc-top">
+      <img id="dc-avatar" alt="discord avatar">
+      <div class="dc-id">
+        <b id="dc-name">connecting…</b>
+        <small id="dc-handle">@—</small>
+      </div>
+      <div class="dc-status" id="dc-status"><span class="dc-dot" id="dc-dot"></span><span id="dc-state">…</span></div>
+    </div>
+    <div class="dc-activity" id="dc-activity">—</div>
+    <div class="dc-actions">
+      <button class="chip" id="dc-copy" type="button">⧉ COPY USERNAME</button>
+      <a class="chip" id="dc-open" href="#" target="_blank" rel="noopener">OPEN PROFILE ↗</a>
+    </div>
+  </div>
+
   <div class="socs">
     <a class="soc" href="https://guns.lol/crystalsharp" target="_blank" rel="noopener" data-rv>
       <div class="l"><span class="idx">.01</span><div><b>guns.lol</b><small>ALL LINKS IN ONE — /crystalsharp</small></div></div>
@@ -173,6 +198,8 @@
 </footer>
 
 </main>
+<button id="totop" aria-label="back to top">↑</button>
+<div id="toast" role="status"></div>
 <script src="script.js"></script>
 </body>
 </html>

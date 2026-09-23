@@ -252,3 +252,136 @@ if (matchMedia('(pointer:fine)').matches){
 
 /* ---------- tahun footer ---------- */
 $('#yr').textContent = new Date().getFullYear();
+
+
+/* ============================================================
+   v9 — TOAST · BURGER · TO-TOP · DISCORD PRESENCE (Lanyard)
+   ============================================================ */
+
+/* ---------- toast ---------- */
+function toast(msg){
+  const t = $('#toast'); if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._tm); t._tm = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ---------- burger / mobile menu ---------- */
+(function(){
+  const b = $('#burger'), l = $('#nav-links'); if (!b) return;
+  b.addEventListener('click', () => {
+    const open = l.classList.toggle('open');
+    b.classList.toggle('open', open);
+    b.setAttribute('aria-expanded', open);
+  });
+  l.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    l.classList.remove('open'); b.classList.remove('open');
+    b.setAttribute('aria-expanded', 'false');
+  }));
+})();
+
+/* ---------- back to top ---------- */
+(function(){
+  const b = $('#totop'); if (!b) return;
+  addEventListener('scroll', () => b.classList.toggle('show', scrollY > innerHeight * .8), {passive:true});
+  b.addEventListener('click', () => scrollTo({top:0, behavior: reduced ? 'auto' : 'smooth'}));
+})();
+
+/* ---------- stack marquee: klon biar loop mulus ---------- */
+(function(){
+  const t = $('#sm-track'); if (t) t.innerHTML += t.innerHTML;
+})();
+
+/* ---------- copy guns.lol pakai toast juga ---------- */
+(function(){
+  const chip = $('#copy-link'); if (!chip) return;
+  chip.addEventListener('click', () => toast('✓ LINK COPIED — guns.lol/crystalsharp'));
+})();
+
+/* ---------- cursor glow di discord card ---------- */
+if (matchMedia('(pointer:fine)').matches){
+  const dc = $('#dc-card');
+  if (dc) dc.addEventListener('pointermove', e => {
+    const r = dc.getBoundingClientRect();
+    dc.style.setProperty('--gx', (e.clientX - r.left) + 'px');
+    dc.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+  });
+}
+
+/* ============================================================
+   DISCORD PRESENCE — via Lanyard (api.lanyard.rest)
+   ▸ CARA PAKAI:
+     1. Isi DISCORD_ID di bawah dengan user ID Discord kamu.
+        (Discord → Settings → Advanced → Developer Mode ON,
+         lalu klik kanan profilmu → Copy User ID)
+     2. JOIN server discord Lanyard dulu (discord.gg/lanyard) —
+        wajib, karena presence di-track dari server itu.
+     3. Selesai. Status online/idle/dnd/offline + aktivitas
+        (termasuk Spotify) auto-update tiap 30 detik.
+   ============================================================ */
+const DISCORD_ID = '941358133987643423';
+const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
+
+(function(){
+  const card = $('#dc-card');
+  if (!card) return;
+  if (!/^\d{15,22}$/.test(DISCORD_ID)){ card.classList.add('hidden'); return; }
+
+  const av = $('#dc-avatar'), name = $('#dc-name'), handle = $('#dc-handle'),
+        dot = $('#dc-dot'), state = $('#dc-state'), act = $('#dc-activity'),
+        copyBtn = $('#dc-copy'), openBtn = $('#dc-open');
+
+  const STATE = { online:'ONLINE', idle:'IDLE', dnd:'DO NOT DISTURB', offline:'OFFLINE' };
+
+  function esc(s){ const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  async function sync(){
+    try {
+      const r = await fetch('https://api.lanyard.rest/v1/users/' + DISCORD_ID);
+      const j = await r.json();
+      if (!j.success) throw 0;
+      const d = j.data, u = d.discord_user;
+
+      const uname = u.global_name || u.username;
+      name.textContent = uname;
+      handle.textContent = '@' + u.username;
+      copyBtn.dataset.user = u.username;
+      openBtn.href = 'https://discord.com/users/' + DISCORD_ID;
+
+      av.src = u.avatar
+        ? 'https://cdn.discordapp.com/avatars/' + u.id + '/' + u.avatar + '.png?size=128'
+        : 'https://cdn.discordapp.com/embed/avatars/' + ((Number(u.id) >> 22) % 6) + '.png';
+
+      const st = d.discord_status || 'offline';
+      dot.className = 'dc-dot ' + st;
+      state.textContent = STATE[st] || st.toUpperCase();
+
+      let txt = '—';
+      if (d.listening_to_spotify && d.spotify)
+        txt = '♪ <b>' + esc(d.spotify.song) + '</b> — ' + esc(d.spotify.artist);
+      else if (d.activities && d.activities.length){
+        const c = d.activities.find(a => a.type === 4);
+        txt = c && c.state ? esc(c.state) : esc(d.activities[0].name);
+      } else if (st === 'offline') txt = 'offline — tap profile to message me';
+      act.innerHTML = txt;
+    } catch(e){
+      dot.className = 'dc-dot offline';
+      state.textContent = 'OFFLINE';
+      act.textContent = 'presence unreachable right now';
+    }
+  }
+
+  copyBtn.addEventListener('click', async () => {
+    const u = copyBtn.dataset.user || DISCORD_FALLBACK_HANDLE;
+    try { await navigator.clipboard.writeText(u); }
+    catch(e){
+      const t = document.createElement('textarea');
+      t.value = u; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); } catch(_){}
+      t.remove();
+    }
+    toast('✓ COPIED — ' + u);
+  });
+
+  sync(); setInterval(sync, 30000);
+})();

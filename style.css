@@ -404,3 +404,105 @@ html{overflow-x:hidden}
 }
 /* table tetap bisa di-scroll halus di Android */
 .cmp-wrap{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+
+
+/* ============================================================
+   v9 — DEEP-SPACE UI + DISCORD PRESENCE + MOBILE MENU
+   "background hitam invisible": hitam dibuat berlapis nebula,
+   panel jadi kaca (transparan + blur) biar bg tembus.
+   ============================================================ */
+
+:root{--bg:#07070c}
+html{background:radial-gradient(ellipse 120% 90% at 80% -20%, #12102a 0%, transparent 55%),
+  radial-gradient(ellipse 100% 80% at 0% 110%, #0a1420 0%, transparent 55%), var(--bg)}
+body{background-color:transparent;
+  background-image:radial-gradient(ellipse 70% 45% at 85% -10%, rgba(139,92,246,.10), transparent),
+  radial-gradient(ellipse 55% 35% at 5% 105%, rgba(34,211,238,.07), transparent),
+  radial-gradient(ellipse 40% 30% at 50% 50%, rgba(244,114,182,.03), transparent)}
+
+/* panel jadi kaca: warna alpha + blur, bg di belakang tembus */
+.dl-card,.bio,.cmp,.dc-card{background-color:rgba(14,14,20,.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.dl-card{background:linear-gradient(rgba(14,14,20,.55),rgba(14,14,20,.55)) padding-box,
+  linear-gradient(135deg,rgba(139,92,246,.45),rgba(255,255,255,.07) 45%,rgba(34,211,238,.45)) border-box}
+.bio{background:linear-gradient(rgba(14,14,20,.55),rgba(14,14,20,.55)) padding-box,
+  linear-gradient(120deg,rgba(139,92,246,.4),rgba(34,211,238,.35)) border-box}
+.ticker{background:rgba(13,13,18,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+nav.scrolled{background:rgba(7,7,12,.6)}
+
+/* grid hero lebih halus biar bintang/nebula tetap keliatan */
+.hero::before{opacity:.35}
+
+/* ---------- burger (mobile) ---------- */
+#burger{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;z-index:60}
+#burger i{display:block;width:22px;height:2px;background:var(--txt);transition:transform .3s var(--ease),opacity .2s}
+#burger.open i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#burger.open i:nth-child(2){opacity:0}
+#burger.open i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:640px){
+  #burger{display:flex}
+  #nav-links{position:fixed;top:0;right:0;bottom:0;width:min(240px,72vw);flex-direction:column;gap:0;
+    background:rgba(9,9,14,.9);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    border-left:1px solid var(--line);padding:90px 26px 26px;transform:translateX(102%);
+    transition:transform .45s var(--ease);z-index:55}
+  #nav-links.open{transform:none}
+  #nav-links a{padding:16px 0;border-bottom:1px solid var(--line);font-size:13px}
+}
+
+/* ---------- discord presence card ---------- */
+.dc-card{border:1px solid transparent;border-radius:8px;padding:24px;margin-bottom:34px;display:flex;flex-direction:column;gap:14px;
+  position:relative;overflow:hidden;
+  background:linear-gradient(rgba(14,14,20,.6),rgba(14,14,20,.6)) padding-box,
+  linear-gradient(135deg,rgba(88,101,242,.55),rgba(255,255,255,.06) 50%,rgba(139,92,246,.45)) border-box;
+  box-shadow:0 8px 40px rgba(88,101,242,.08)}
+.dc-card::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(320px circle at var(--gx,50%) var(--gy,50%),rgba(88,101,242,.14),transparent 65%)}
+.dc-card:hover::after{opacity:1}
+.dc-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.dc-top img{width:58px;height:58px;border-radius:50%;border:2px solid var(--line2);background:#1a1a22}
+.dc-id{min-width:0;flex:1}
+.dc-id b{font-family:var(--sans);font-size:19px;display:block}
+.dc-id small{font-size:11px;letter-spacing:.12em;color:var(--dim)}
+.dc-status{display:flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.22em;color:var(--dim);
+  border:1px solid var(--line);border-radius:99px;padding:7px 14px}
+.dc-dot{width:9px;height:9px;border-radius:99px;background:#747f8d;transition:background .3s,box-shadow .3s}
+.dc-dot.online{background:#23a55a;box-shadow:0 0 12px rgba(35,165,90,.8)}
+.dc-dot.idle{background:#f0b232;box-shadow:0 0 12px rgba(240,178,50,.8)}
+.dc-dot.dnd{background:#f23f43;box-shadow:0 0 12px rgba(242,63,67,.8)}
+.dc-dot.offline{background:#747f8d}
+.dc-activity{font-size:12px;color:var(--dim);letter-spacing:.04em;border-left:2px solid #5865f2;padding-left:14px;min-height:1.6em}
+.dc-activity b{color:var(--txt);font-weight:500}
+.dc-actions{display:flex;gap:12px;flex-wrap:wrap}
+#dc-card.hidden{display:none}
+
+/* ---------- stack marquee ---------- */
+.stack-marquee{margin-top:26px;border:1px solid var(--line);border-radius:99px;overflow:hidden;
+  background:rgba(13,13,18,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:13px 0;position:relative}
+.stack-marquee::before,.stack-marquee::after{content:"";position:absolute;top:0;bottom:0;width:60px;z-index:2;pointer-events:none}
+.stack-marquee::before{left:0;background:linear-gradient(90deg,rgba(9,9,14,.9),transparent)}
+.stack-marquee::after{right:0;background:linear-gradient(-90deg,rgba(9,9,14,.9),transparent)}
+.sm-track{display:flex;width:max-content;animation:tick 22s linear infinite}
+.stack-marquee:hover .sm-track{animation-play-state:paused}
+.sm-track span{font-size:11px;letter-spacing:.24em;color:var(--dim);padding-right:44px;white-space:nowrap;transition:color .2s}
+.sm-track span:hover{color:var(--cyn)}
+
+/* ---------- toast ---------- */
+#toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,16px);z-index:90;
+  background:rgba(16,16,22,.92);border:1px solid var(--line2);color:var(--txt);
+  font-size:12px;letter-spacing:.1em;padding:13px 24px;border-radius:99px;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s var(--ease);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- back to top ---------- */
+#totop{position:fixed;bottom:24px;right:24px;z-index:80;width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--line2);background:rgba(13,13,18,.7);color:var(--txt);font-size:16px;cursor:pointer;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);opacity:0;pointer-events:none;transform:translateY(12px);
+  transition:opacity .3s,transform .3s var(--ease),border-color .2s,color .2s}
+#totop.show{opacity:1;pointer-events:auto;transform:none}
+#totop:hover{border-color:var(--cyn);color:var(--cyn)}
+@media(hover:none){#totop:active{border-color:var(--cyn);color:var(--cyn)}}
+@media(max-width:640px){#totop{bottom:18px;right:18px}}
+
+@media(prefers-reduced-motion:reduce){
+  .sm-track{animation:none}
+}
