@@ -1,14 +1,22 @@
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = s => document.querySelector(s);
 
-/* ---------- preloader: boot sequence, baru reveal hero ---------- */
+/* ---------- ANTI-COPY: blokir seleksi & menu konteks ---------- */
+['copy','cut','contextmenu','selectstart'].forEach(ev =>
+  document.addEventListener(ev, e => e.preventDefault())
+);
+document.addEventListener('dragstart', e => e.preventDefault());
+
+/* ---------- preloader: boot sequence ---------- */
 (function(){
   const loader = $('#loader'), lns = [...loader.querySelectorAll('.ln')];
   let fb = null;
   function finish(){
     clearTimeout(fb);
     loader.classList.add('done');
-    document.body.classList.add('ready');   // hero title naik SETELAH loader hilang
+    document.body.classList.add('ready');
+    setTimeout(() => document.querySelectorAll('.hero .glitch')
+      .forEach((el,i) => setTimeout(() => el.classList.add('on'), 200 + i*260)), 350);
   }
   if (reduced){ finish(); return; }
   let i = 0;
@@ -17,7 +25,7 @@ const $ = s => document.querySelector(s);
     lns[i++].classList.add('on');
     setTimeout(next, i === 1 ? 350 : 300);
   })();
-  fb = setTimeout(finish, 4000); // fallback kalau apa pun gagal
+  fb = setTimeout(finish, 4000);
 })();
 
 /* ---------- uptime counter (sejak Feb 10 2022) ---------- */
@@ -30,7 +38,7 @@ const $ = s => document.querySelector(s);
   tick(); setInterval(tick, 60000);
 })();
 
-/* ---------- typewriter terminal di hero ---------- */
+/* ---------- typewriter terminal ---------- */
 (function(){
   const el = $('#typer');
   const lines = [
@@ -56,17 +64,18 @@ const $ = s => document.querySelector(s);
   })();
 })();
 
-/* ---------- ticker: klon konten biar -50% SELALU pas ---------- */
+/* ---------- ticker: klon 2x biar loop mulus ---------- */
 (function(){
   const t = $('#ticker-track');
-  t.innerHTML += t.innerHTML; // exact 2x copy → loop mulus, anti "melompat"
+  t.innerHTML += t.innerHTML;
 })();
 
-/* ---------- dust particles ---------- */
+/* ---------- dust particles (lebih sedikit di HP) ---------- */
 const c = $('#dust'), x = c.getContext('2d'); let W, H, P = [];
 function rs(){
   W = c.width = innerWidth; H = c.height = innerHeight;
-  const n = Math.max(35, Math.min(90, Math.round(W*H/22000)));
+  const isMobile = Math.min(W, H) < 768;
+  const n = isMobile ? 30 : Math.max(35, Math.min(90, Math.round(W*H/22000)));
   P = Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.4,
     vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,o:Math.random()*.45+.1,
     tw:Math.random()*Math.PI*2}));
@@ -92,7 +101,24 @@ if (!reduced){
   })();
 } else drawStatic();
 
-/* ---------- spotlight ngikutin kursor ---------- */
+/* ---------- GLITCH ENGINE: burst random tiap 2,5–5 detik ---------- */
+(function(){
+  if (reduced) return;
+  const targets = () => [...document.querySelectorAll('.glitch')];
+  function burst(){
+    const els = targets();
+    if (!els.length) return;
+    const el = els[Math.floor(Math.random()*els.length)];
+    if (!el.classList.contains('on')){
+      el.classList.add('on');
+      setTimeout(() => el.classList.remove('on'), 450);
+    }
+    setTimeout(burst, 2500 + Math.random()*2500);
+  }
+  setTimeout(burst, 3000);
+})();
+
+/* ---------- spotlight kursor (desktop saja) ---------- */
 if (!reduced && matchMedia('(pointer:fine)').matches){
   let raf = null;
   addEventListener('pointermove', e => {
@@ -105,8 +131,10 @@ if (!reduced && matchMedia('(pointer:fine)').matches){
   }, {passive:true});
 }
 
-/* ---------- scroll progress + nav state ---------- */
+/* ---------- scroll progress + nav state + active link ---------- */
 const prog = $('#progress'), nav = $('#nav'), pctEl = $('#pct');
+const secs = [...document.querySelectorAll('section, header.hero')];
+const links = [...document.querySelectorAll('nav .links a')];
 addEventListener('scroll', () => {
   const h = document.documentElement;
   const max = h.scrollHeight - h.clientHeight;
@@ -114,30 +142,26 @@ addEventListener('scroll', () => {
   prog.style.width = pct + '%';
   if (pctEl) pctEl.textContent = pct + '%';
   nav.classList.toggle('scrolled', scrollY > 40);
-}, {passive:true});
-
-/* ---------- glitch reveal pas masuk viewport ---------- */
-const gio = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting){ e.target.classList.add('fx'); gio.unobserve(e.target); }
-}), {threshold:.4});
-document.querySelectorAll('.gl').forEach(el => gio.observe(el));
-
-/* ---------- scroll reveal umum ---------- */
-const rio = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); }
-}), {threshold:.12, rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('[data-rv]').forEach(el => rio.observe(el));
-
-/* ---------- nav active link ---------- */
-const secs = [...document.querySelectorAll('section, header.hero')];
-const links = [...document.querySelectorAll('nav .links a')];
-addEventListener('scroll', () => {
   let cur = 'home';
   for (const s of secs){ if (scrollY >= s.offsetTop - 140) cur = s.id; }
   links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
 }, {passive:true});
 
-/* ---------- magnetic buttons ---------- */
+/* ---------- glitch reveal lama (.gl) pas masuk viewport ---------- */
+const gio = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting){ e.target.classList.add('fx'); gio.unobserve(e.target); }
+}), {threshold:.4});
+document.querySelectorAll('.gl').forEach(el => gio.observe(el));
+
+/* ---------- scroll reveal umum + fallback anti-elemen-hilang ---------- */
+const rio = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); }
+}), {threshold:.08, rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('[data-rv]').forEach(el => rio.observe(el));
+setTimeout(() => document.querySelectorAll('[data-rv]:not(.in), .sec-label:not(.in)')
+  .forEach(el => el.classList.add('in')), 3000);
+
+/* ---------- magnetic buttons (desktop saja) ---------- */
 if (!reduced && matchMedia('(pointer:fine)').matches){
   document.querySelectorAll('.btn').forEach(b => {
     b.addEventListener('pointermove', e => {
@@ -148,7 +172,7 @@ if (!reduced && matchMedia('(pointer:fine)').matches){
   });
 }
 
-/* ---------- tilt halus di download cards ---------- */
+/* ---------- tilt halus di download cards (desktop saja) ---------- */
 if (!reduced && matchMedia('(pointer:fine)').matches){
   document.querySelectorAll('.dl-card').forEach(card => {
     card.addEventListener('pointermove', e => {
@@ -189,7 +213,7 @@ async function syncRelease(repo, verEl, dateEl, btnEl, stEl){
   } catch(e) {
     try {
       const old = JSON.parse(localStorage.getItem(key) || 'null');
-      if (old) apply(old, true);            // fallback: data cache, bukan "—" selamanya
+      if (old) apply(old, true);
       else { stEl.textContent = 'OFFLINE'; stEl.classList.add('cached'); }
     } catch(_){ stEl.textContent = 'OFFLINE'; stEl.classList.add('cached'); }
   }
@@ -197,24 +221,25 @@ async function syncRelease(repo, verEl, dateEl, btnEl, stEl){
 syncRelease('AetherBox',     $('#ver-root'), $('#date-root'), $('#dl-root'), $('#st-root'));
 syncRelease('AetherBox-Lite',$('#ver-lite'), $('#date-lite'), $('#dl-lite'), $('#st-lite'));
 
-/* ---------- copy guns.lol link ---------- */
+/* ---------- copy guns.lol link (tetap jalan walau anti-copy aktif) ---------- */
 (function(){
   const chip = $('#copy-link');
-  if (!chip) return;
   chip.addEventListener('click', async () => {
     const url = 'https://guns.lol/crystalsharp';
     try { await navigator.clipboard.writeText(url); }
     catch(e){
       const t = document.createElement('textarea');
-      t.value = url; document.body.appendChild(t); t.select();
-      document.execCommand('copy'); t.remove();
+      t.value = url; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); } catch(_){}
+      t.remove();
     }
     chip.textContent = '✓ COPIED'; chip.classList.add('ok');
     setTimeout(() => { chip.textContent = '⧉ COPY GUNS.LOL LINK'; chip.classList.remove('ok'); }, 1600);
   });
 })();
 
-/* ---------- cursor glow di cards & bio ---------- */
+/* ---------- cursor glow di cards & bio (desktop saja) ---------- */
 if (matchMedia('(pointer:fine)').matches){
   document.querySelectorAll('.dl-card,.bio').forEach(el => {
     el.addEventListener('pointermove', e => {

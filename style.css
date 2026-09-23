@@ -32,7 +32,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--cyn);outline-offset
 ::-webkit-scrollbar-thumb:hover{background:var(--vio)}
 
 body{-webkit-tap-highlight-color:transparent}
-/* user-select:none dihapus — semua teks bisa diseleksi & dicopy */
+/* ---- ANTI-COPY: teks tidak bisa diseleksi / dicopy ---- */
+html,body{
+  -webkit-user-select:none!important;-moz-user-select:none!important;user-select:none!important;
+  -webkit-touch-callout:none;-webkit-text-size-adjust:100%;
+}
+::selection{background:transparent;color:inherit}
+img,svg,canvas{-webkit-user-select:none;user-select:none;pointer-events:none}
+a,button{-webkit-user-select:none;user-select:none}
 /* grain halus di atas semuanya */
 .grain{position:fixed;inset:-100px;pointer-events:none;z-index:4;opacity:.05;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");}
@@ -227,7 +234,7 @@ footer a:hover{color:var(--cyn);border-color:var(--cyn)}
 footer .top{display:inline-block;margin-top:26px;padding:10px 22px;border:1px solid var(--line2);border-radius:99px;font-size:11px;letter-spacing:.2em;transition:border-color .2s,color .2s,transform .2s}
 footer .top:hover{border-color:var(--cyn);color:var(--cyn);transform:translateY(-2px)}
 
-@media(max-width:640px){section{padding:80px 20px}.hero{padding:110px 20px 90px}.scrollhint{left:20px;right:20px;font-size:9px;letter-spacing:.2em}}
+@media(max-width:640px){section{padding:56px 20px}.hero{padding:96px 18px 72px}.scrollhint{left:18px;right:18px;font-size:9px;letter-spacing:.2em}.hero .quote{margin-top:30px}.hero .term{margin-top:22px}.sec-title{margin-bottom:38px}}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .hero h1 .row span{transform:none}
@@ -305,3 +312,95 @@ footer .motto i{background-size:220% 100%;animation:shine 6s linear infinite}
 ::-webkit-scrollbar-thumb{background:linear-gradient(var(--vio),var(--cyn))}
 
 @media(prefers-reduced-motion:reduce){.aurora i,.sec-title,footer .motto i{animation:none!important}}
+
+/* ============================================================
+   v8 — GLITCH ENGINE v2 + ANTI-COPY + ANDROID FIXES
+   ============================================================ */
+
+/* ---------- GLITCH: rgb-split burst (class .glitch, teks di data-text) ---------- */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{
+  content:attr(data-text);position:absolute;inset:0;pointer-events:none;
+  opacity:0;visibility:hidden;background:none;
+}
+.glitch.on{animation:gl-jit .42s steps(2) 1}
+.glitch.on::before{
+  visibility:visible;opacity:.9;color:var(--pnk);z-index:2;
+  text-shadow:-2px 0 rgba(244,114,182,.6);
+  animation:gl-a .42s steps(5) 1;
+}
+.glitch.on::after{
+  visibility:visible;opacity:.9;color:var(--cyn);z-index:2;
+  text-shadow:2px 0 rgba(34,211,238,.6);
+  animation:gl-b .42s steps(5) 1;
+}
+/* baris gradasi: layer glitch pakai warna solid, jangan ikut transparan */
+.hero h1 .glitch.grad::before{color:#f472b6;-webkit-text-fill-color:#f472b6}
+.hero h1 .glitch.grad::after{color:#22d3ee;-webkit-text-fill-color:#22d3ee}
+.sec-title .glitch::before{color:var(--pnk);-webkit-text-fill-color:var(--pnk)}
+.sec-title .glitch::after{color:var(--cyn);-webkit-text-fill-color:var(--cyn)}
+
+@keyframes gl-jit{0%{transform:translate(-3px,1px) skewX(-3deg)}30%{transform:translate(3px,-1px) skewX(2deg)}60%{transform:translate(-2px,0) skewX(-1deg)}100%{transform:none}}
+@keyframes gl-a{
+  0%{clip-path:inset(12% 0 64% 0);transform:translate(-8px,2px)}
+  20%{clip-path:inset(58% 0 18% 0);transform:translate(7px,-2px)}
+  40%{clip-path:inset(28% 0 48% 0);transform:translate(-6px,1px)}
+  60%{clip-path:inset(72% 0 6% 0);transform:translate(6px,-1px)}
+  80%{clip-path:inset(6% 0 78% 0);transform:translate(-5px,0)}
+  100%{clip-path:inset(0 0 0 0);opacity:0;transform:none}
+}
+@keyframes gl-b{
+  0%{clip-path:inset(66% 0 10% 0);transform:translate(8px,-2px)}
+  20%{clip-path:inset(8% 0 70% 0);transform:translate(-7px,2px)}
+  40%{clip-path:inset(44% 0 34% 0);transform:translate(5px,-1px)}
+  60%{clip-path:inset(18% 0 60% 0);transform:translate(-6px,1px)}
+  80%{clip-path:inset(80% 0 4% 0);transform:translate(4px,0)}
+  100%{clip-path:inset(0 0 0 0);opacity:0;transform:none}
+}
+
+/* glitch ringan terus di logo (vibe terminal rusak halus) */
+.logo .sq{position:relative}
+@keyframes gl-logo{0%,92%,100%{transform:none;opacity:1}93%{transform:translateX(2px);opacity:.6}95%{transform:translateX(-2px)}97%{transform:none;opacity:1}}
+.logo{animation:gl-logo 6s steps(1) infinite}
+
+/* ---------- ANDROID / MOBILE FIXES ---------- */
+html{overflow-x:hidden}
+/* blur aurora berat di GPU mobile: kecilkan + kurangi blur */
+@media(max-width:768px){
+  .aurora i{filter:blur(55px)}
+  .aurora i:nth-child(1){opacity:.12}
+  .aurora i:nth-child(2){opacity:.08}
+  .aurora i:nth-child(3){opacity:.05}
+  /* scanline + grain: turunkan biar scrolling gak jank */
+  body::before{opacity:.3}
+  .grain{opacity:.035}
+  .spot{display:none} /* spotlight kursor percuma di layar sentuh */
+}
+/* perangkat sentuh: matikan SEMUA efek hover yang nyangkut */
+@media(hover:none){
+  .dl-card,.btn{transform:none!important}
+  .row-item:hover,.soc:hover{padding-left:6px}
+  .soc:hover .arrow{transform:none}
+  .ticker:hover .ticker-track{animation-play-state:running}
+  .dl-card:hover::after,.bio:hover::after{opacity:0}
+}
+/* hero: cegah judul kepotong di layar sempit */
+@media(max-width:400px){
+  .hero h1{font-size:clamp(44px,16vw,72px)}
+  nav .links{gap:10px;font-size:9px}
+  nav .logo{font-size:15px}
+}
+/* safe-area utk hp ber-notch */
+@supports(padding:max(0px)){
+  nav{padding-left:max(32px,env(safe-area-inset-left));padding-right:max(32px,env(safe-area-inset-right))}
+  @media(max-width:640px){nav{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}}
+}
+/* tab press state yang jelas di sentuh */
+@media(hover:none){
+  .btn.solid:active{background:var(--vio);color:#fff}
+  .btn.ghost:active{border-color:var(--cyn);color:var(--cyn)}
+  .chip:active{color:var(--cyn);border-color:var(--cyn)}
+  .soc:active{background:rgba(255,255,255,.03)}
+}
+/* table tetap bisa di-scroll halus di Android */
+.cmp-wrap{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
