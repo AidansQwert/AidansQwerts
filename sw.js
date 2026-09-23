@@ -1,6 +1,6 @@
 /* SHRP_ service worker — offline shell, network-first biar update cepat kebaca */
-const CACHE = 'shrp-v20';
-const ASSETS = ['./', './index.html', './style.css', './script.js', './manifest.webmanifest', './icon.svg'];
+const CACHE = 'shrp-v21';
+const ASSETS = ['./', './index.html', './style.css', './script.js', './manifest.webmanifest', './icon.svg', './og.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

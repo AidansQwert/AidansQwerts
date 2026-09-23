@@ -1364,3 +1364,154 @@ input,textarea{-webkit-user-select:text!important;user-select:text!important}
 
 /* HUD jadi grid kalau tombolnya banyak */
 .hud{max-height:70vh;overflow:visible}
+
+/* ============================================================
+   v21 — LIGHT MODE · CHANGELOG · GH GRAPH · TOP LANGS · NOW PLAYING · CONTACT
+   ============================================================ */
+
+/* ---------- light mode ---------- */
+body.light{
+  --bg:#f5f5f7; --bg2:#ececef; --panel:#ffffff;
+  --line:rgba(10,10,14,.12); --line2:rgba(10,10,14,.22);
+  --txt:#15151a; --dim:#4e4e59; --faint:#6e6e7b;
+  background-image:radial-gradient(ellipse 70% 45% at 85% -10%, rgba(139,92,246,.12), transparent),
+                   radial-gradient(ellipse 55% 35% at 5% 105%, rgba(34,211,238,.10), transparent);
+}
+body.light{background-color:var(--bg)}
+html:has(body.light){background:#f5f5f7}
+body.light::before{opacity:.14;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.05) 3px 4px)}
+body.light::after{background:radial-gradient(ellipse 120% 100% at 50% 40%, transparent 60%, rgba(0,0,0,.10))}
+body.light .grain{opacity:.03}
+body.light .milkyway,body.light canvas#dust,body.light .aurora{opacity:.28}
+body.light .spot{background:radial-gradient(560px circle at var(--mx) var(--my), rgba(139,92,246,.10), transparent 65%)}
+body.light nav.scrolled{background:rgba(245,245,247,.82)}
+body.light #loader{background:var(--bg)}
+body.light .repo,body.light .dl-card,body.light .dc-card,body.light .tool,body.light .snip,
+body.light .cform,body.light .np-card,body.light .log-item .log-body,body.light .gh-wrap,body.light .top-langs,
+body.light .pal-box,body.light .help-box,body.light .fact,body.light .row-item{
+  background:rgba(255,255,255,.72);
+}
+body.light .t-box{background:#ffffff}
+body.light .snip code,body.light .t-out{color:#1a1a20}
+body.light ::-webkit-scrollbar-track{background:var(--bg)}
+body.light ::-webkit-scrollbar-thumb{background:#c9c9d2;border-color:var(--bg)}
+body.light .hud button{background:rgba(255,255,255,.85)}
+
+/* ---------- changelog ---------- */
+.log-filters{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+.lg-f{font:inherit;font-size:10.5px;letter-spacing:.16em;color:var(--dim);background:transparent;
+  border:1px solid var(--line);border-radius:99px;padding:6px 14px;cursor:pointer;transition:.2s}
+.lg-f:hover{color:var(--txt);border-color:var(--line2)}
+.lg-f.on{color:var(--txt);border-color:var(--vio);box-shadow:0 0 0 1px rgba(139,92,246,.25) inset}
+.log-list{position:relative;padding-left:18px}
+.log-list::before{content:"";position:absolute;left:3px;top:6px;bottom:6px;width:1px;
+  background:linear-gradient(180deg,var(--vio),var(--cyn),transparent)}
+.log-item{position:relative;display:flex;gap:14px;margin-bottom:16px;
+  animation:rvUp .5s var(--ease) both;animation-delay:var(--d,0s)}
+.log-dot{position:absolute;left:-18px;top:14px;width:7px;height:7px;border-radius:99px;
+  background:var(--cyn);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+.log-body{flex:1;border:1px solid var(--line);border-radius:12px;background:rgba(16,16,20,.55);
+  padding:14px 16px;transition:border-color .25s,transform .25s}
+.log-body:hover{border-color:var(--line2);transform:translateX(3px)}
+.log-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.log-top b{font-size:14px;letter-spacing:.06em}
+.log-top time{margin-left:auto;font-size:10.5px;color:var(--faint);letter-spacing:.12em}
+.log-tag{font-size:9.5px;letter-spacing:.16em;padding:3px 8px;border-radius:99px;border:1px solid var(--line2);color:var(--dim)}
+.log-tag.site{color:var(--cyn);border-color:rgba(34,211,238,.4)}
+.log-tag.aetherbox{color:var(--vio);border-color:rgba(139,92,246,.45)}
+.log-tag.lite{color:var(--pnk);border-color:rgba(244,114,182,.4)}
+.log-body ul{list-style:none;display:grid;gap:5px}
+.log-body li{font-size:12.5px;color:var(--dim);padding-left:16px;position:relative}
+.log-body li::before{content:"▸";position:absolute;left:0;color:var(--vio)}
+@keyframes rvUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ---------- github contribution graph ---------- */
+.gh-wrap,.top-langs{margin-top:26px;border:1px solid var(--line);border-radius:14px;
+  background:rgba(16,16,20,.5);padding:16px 18px}
+.gh-wrap.hidden,.top-langs.hidden,.np-card.hidden{display:none}
+.gh-head{display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.18em;color:var(--faint);margin-bottom:12px}
+.gh-head span{margin-left:auto;color:var(--dim);letter-spacing:.12em}
+.gh-graph{display:flex;gap:3px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.gh-col{display:grid;grid-template-rows:repeat(7,1fr);gap:3px}
+.gh-graph i,.gh-foot i{display:block;width:10px;height:10px;border-radius:2px;background:rgba(255,255,255,.06)}
+.gh-graph i.lx{background:transparent}
+.gh-graph i.l0,.gh-foot i.l0{background:rgba(255,255,255,.06)}
+.gh-graph i.l1,.gh-foot i.l1{background:rgba(139,92,246,.35)}
+.gh-graph i.l2,.gh-foot i.l2{background:rgba(139,92,246,.6)}
+.gh-graph i.l3,.gh-foot i.l3{background:var(--vio)}
+.gh-graph i.l4,.gh-foot i.l4{background:var(--cyn);box-shadow:0 0 8px rgba(34,211,238,.45)}
+body.light .gh-graph i.l0,body.light .gh-foot i.l0{background:rgba(10,10,14,.08)}
+.gh-foot{display:flex;align-items:center;gap:4px;margin-top:10px;font-size:10px;color:var(--faint);letter-spacing:.14em}
+.gh-foot span{margin:0 4px}
+
+/* ---------- top languages ---------- */
+.tl-rows{display:grid;gap:9px}
+.tl-row{display:grid;grid-template-columns:150px 1fr 62px;align-items:center;gap:12px;
+  animation:rvUp .45s var(--ease) both;animation-delay:var(--d,0s)}
+.tl-k{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--txt)}
+.tl-k i{width:9px;height:9px;border-radius:99px;display:block}
+.tl-bar{height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+body.light .tl-bar{background:rgba(10,10,14,.08)}
+.tl-bar b{display:block;height:100%;border-radius:99px;animation:tlGrow .8s var(--ease) both}
+.tl-n{font-size:10.5px;color:var(--faint);letter-spacing:.1em;text-align:right}
+@keyframes tlGrow{from{width:0 !important}}
+@media(max-width:620px){.tl-row{grid-template-columns:110px 1fr 52px}}
+
+/* ---------- now playing ---------- */
+.np-card{position:relative;display:flex;gap:16px;align-items:center;margin-top:16px;
+  border:1px solid var(--line);border-radius:14px;background:rgba(16,16,20,.6);padding:14px 16px}
+.np-art{width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid var(--line2);flex:none}
+.np-meta{flex:1;min-width:0}
+.np-head{display:flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.18em;color:var(--faint);margin-bottom:5px}
+.np-eq{display:flex;align-items:flex-end;gap:2px;height:11px}
+.np-eq i{width:2px;background:var(--cyn);animation:eq .9s ease-in-out infinite}
+.np-eq i:nth-child(2){animation-delay:.15s}
+.np-eq i:nth-child(3){animation-delay:.3s}
+.np-eq i:nth-child(4){animation-delay:.45s}
+@keyframes eq{0%,100%{height:3px}50%{height:11px}}
+body.no-motion .np-eq i{animation:none;height:7px}
+.np-song{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-artist{display:block;font-size:11.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-track{height:3px;border-radius:99px;background:rgba(255,255,255,.1);margin-top:9px;overflow:hidden}
+.np-fill{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--vio),var(--cyn));transition:width 1s linear}
+.np-time{display:flex;justify-content:space-between;font-size:10px;color:var(--faint);margin-top:4px;letter-spacing:.08em}
+.np-open{position:absolute;top:12px;right:14px;color:var(--dim);font-size:13px;transition:.2s}
+.np-open:hover{color:var(--cyn)}
+
+/* ---------- contact form ---------- */
+.cform{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:14px;
+  border:1px solid var(--line);border-radius:16px;background:rgba(16,16,20,.55);padding:22px}
+.cform .full{grid-column:1/-1}
+.cform label{display:grid;gap:7px;font-size:10px;letter-spacing:.18em;color:var(--faint)}
+.cform input,.cform textarea,.cform select{
+  font:inherit;font-size:13px;color:var(--txt);background:rgba(0,0,0,.25);
+  border:1px solid var(--line);border-radius:10px;padding:11px 13px;transition:border-color .2s,box-shadow .2s;
+  resize:vertical;width:100%}
+body.light .cform input,body.light .cform textarea,body.light .cform select{background:rgba(255,255,255,.9)}
+.cform input:focus,.cform textarea:focus,.cform select:focus{
+  outline:none;border-color:var(--vio);box-shadow:0 0 0 3px rgba(139,92,246,.14)}
+.cform .bad{border-color:var(--pnk);box-shadow:0 0 0 3px rgba(244,114,182,.12)}
+.cform-foot{grid-column:1/-1;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cform-note{font-size:10.5px;color:var(--faint);letter-spacing:.12em}
+.cform-btns{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.cform-btns .btn{cursor:pointer;border:1px solid var(--line2)}
+@media(max-width:700px){.cform{grid-template-columns:1fr;padding:18px}.cform-btns{margin-left:0;width:100%}}
+
+#hud-lang{font-size:10px;letter-spacing:.1em}
+
+/* light-mode touch-ups */
+body.light .hud button{color:var(--dim);border-color:var(--line2);box-shadow:0 6px 18px rgba(10,10,20,.08)}
+body.light .hud button:hover{color:#fff}
+body.light .hero .meta>span{background:rgba(255,255,255,.7);color:var(--dim)}
+body.light .hero .term{background:rgba(20,20,26,.92)}
+body.light .hero .term .ps1{color:var(--cyn)}
+body.light .rail-ico{background:rgba(255,255,255,.75);color:var(--dim)}
+body.light #totop{background:rgba(255,255,255,.85);color:var(--txt)}
+body.light #toast{background:rgba(20,20,26,.94);color:#f4f4f7}
+body.light .cmp th,body.light .cmp td{border-color:var(--line)}
+body.light .repo:hover,body.light .soc:hover{background:rgba(255,255,255,.92)}
+body.light .snip code{background:rgba(10,10,14,.05)}
+body.light .dots a span{color:var(--dim)}
+
+body.light .row-item .k,body.light .sec-label,body.light .scrollhint{color:var(--dim)}
+body.light .fact .l,body.light .tool .tk{color:var(--faint)}

@@ -587,7 +587,7 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
 /* ---------- repositories: live dari GitHub API + cache ---------- */
 (function(){
   const grid = $('#repo-grid'); if (!grid) return;
-  const KEY = 'sh_repos_v2', MAX = 12;
+  const KEY = 'sh_repos_v3', MAX = 12;
 
   const esc = s => { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; };
   const ago = iso => {
@@ -641,7 +641,8 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
     .then(j => {
       const list = j.filter(r => !r.fork).slice(0, MAX).map(r => ({
         name: r.name, desc: r.description, url: r.html_url, lang: r.language,
-        stars: r.stargazers_count, forks: r.forks_count, pushed: r.pushed_at, topics: r.topics
+        stars: r.stargazers_count, forks: r.forks_count, pushed: r.pushed_at, topics: r.topics,
+        size: r.size
       }));
       if (!list.length) throw 0;
       render(list);
@@ -909,7 +910,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     {ic:'›', t:'Go — About',       tag:'2', run:() => go('#about')},
     {ic:'›', t:'Go — AetherBox',   tag:'3', run:() => go('#aether')},
     {ic:'›', t:'Go — Repositories',tag:'4', run:() => go('#repos')},
-    {ic:'›', t:'Go — Social',      tag:'5', run:() => go('#social')},
+    {ic:'›', t:'Go — Social',      tag:'6', run:() => go('#social')},
     {ic:'↓', t:'Download AetherBox APK', tag:'LINK', run:() => open('https://github.com/AidansQwert/AetherBox/releases/latest','_blank')},
     {ic:'↓', t:'Download AetherBox Lite APK', tag:'LINK', run:() => open('https://github.com/AidansQwert/AetherBox-Lite/releases/latest','_blank')},
     {ic:'↗', t:'GitHub — AidansQwert', tag:'LINK', run:() => open('https://github.com/AidansQwert','_blank')},
@@ -922,7 +923,11 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     {ic:'◐', t:'Toggle reduced motion', tag:'M', run:() => setMotion(!document.body.classList.contains('no-motion'))},
     {ic:'?', t:'Keyboard shortcuts', tag:'?', run:() => showHelp()},
     {ic:'>', t:'Open terminal', tag:'~', run:() => window.SHRP_TERM && window.SHRP_TERM()},
-    {ic:'⇪', t:'Share this page', tag:'SHARE', run:() => window.SHRP_SHARE && window.SHRP_SHARE()}
+    {ic:'⇪', t:'Share this page', tag:'SHARE', run:() => window.SHRP_SHARE && window.SHRP_SHARE()},
+    {ic:'›', t:'Go — Changelog', tag:'5', run:() => go('#log')},
+    {ic:'›', t:'Go — Contact', tag:'7', run:() => go('#contact')},
+    {ic:'☾', t:'Toggle light / dark mode', tag:'L', run:() => window.SHRP_THEME && window.SHRP_THEME(document.body.classList.contains('light') ? 'dark' : 'light')},
+    {ic:'文', t:'Switch language ID / EN', tag:'I', run:() => window.SHRP_LANG && window.SHRP_LANG(document.documentElement.lang === 'id' ? 'en' : 'id')}
   ];
 
   const pal = document.createElement('div');
@@ -996,7 +1001,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     }
     if (typing) return;
     if (e.key === '/'){ e.preventDefault(); openPal(); return; }
-    const secs = ['#home','#about','#aether','#repos','#social'];
+    const secs = ['#home','#about','#aether','#repos','#log','#social','#contact'];
     if (/^[1-5]$/.test(e.key)) go(secs[+e.key - 1]);
     else if (e.key.toLowerCase() === 't') scrollTo({top:0, behavior:'smooth'});
     else if (e.key.toLowerCase() === 'm') setMotion(!document.body.classList.contains('no-motion'));
@@ -1245,7 +1250,8 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   const SHORTCUTS = [
     ['ctrl + k', 'command palette'], ['/', 'command palette'], ['~', 'terminal interaktif'],
     ['1 … 5', 'loncat ke section'], ['t', 'kembali ke atas'], ['m', 'reduce motion on/off'],
-    ['?', 'panel ini'], ['esc', 'tutup overlay'], ['konami', 'wolf pack mode']
+    ['?', 'panel ini'], ['esc', 'tutup overlay'], ['l', 'light / dark mode'],
+  ['i', 'bahasa ID / EN'], ['konami', 'wolf pack mode']
   ];
   const help = document.createElement('div');
   help.id = 'help';
@@ -1287,7 +1293,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     discord:'https://discord.com/users/941358133987643423',
     guns:'https://guns.lol/crystalsharp'
   };
-  const SECTIONS = ['home','about','aether','repos','social'];
+  const SECTIONS = ['home','about','aether','repos','log','social','contact'];
 
   const neofetch = () => {
     const days = Math.floor((Date.now() - new Date('2022-02-10T00:00:00+07:00')) / 864e5);
@@ -1320,6 +1326,9 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     ['accent <warna>', 'violet / ocean / ember / forest / rose'],
     ['motion', 'reduce motion on/off'],
     ['theme', 'daftar warna aksen'],
+    ['mode <light|dark>', 'ganti mode terang/gelap'],
+    ['lang <id|en>', 'ganti bahasa situs'],
+    ['changelog', 'rilis terbaru'],
     ['date', 'waktu lokal UTC+7'],
     ['clear', 'bersihkan layar'],
     ['exit', 'tutup terminal']
@@ -1358,6 +1367,25 @@ addEventListener('load', () => document.body.classList.add('loaded'));
         return;
       }
       case 'theme': print('accent: violet · ocean · ember · forest · rose'); return;
+      case 'mode': case 'light': case 'dark': {
+        const want = (cmd || '').toLowerCase() === 'mode' ? arg : (cmd || '').toLowerCase();
+        if (!['light','dark'].includes(want)) return print('mode: pilih light / dark', 'err');
+        if (window.SHRP_THEME) window.SHRP_THEME(want);
+        print('mode → ' + esc(want)); return;
+      }
+      case 'lang': {
+        if (!['id','en'].includes(arg)) return print('lang: pilih id / en', 'err');
+        if (window.SHRP_LANG) window.SHRP_LANG(arg);
+        print('lang → ' + esc(arg)); return;
+      }
+      case 'changelog': case 'log': {
+        document.getElementById('log')?.scrollIntoView({behavior: smooth(), block:'start'});
+        closeTerm(); return;
+      }
+      case 'contact': case 'mail': {
+        document.getElementById('contact')?.scrollIntoView({behavior: smooth(), block:'start'});
+        closeTerm(); return;
+      }
       case 'accent': {
         const ok = ['violet','ocean','ember','forest','rose'].includes(arg);
         if (!ok) return print('accent: pilih violet / ocean / ember / forest / rose', 'err');
@@ -1451,5 +1479,333 @@ addEventListener('load', () => document.body.classList.add('loaded'));
       if (r.outcome === 'accepted'){ say('✓ INSTALLED — SHRP_ is now an app'); document.getElementById('hud-install').remove(); }
       deferred = null;
     });
+  });
+})();
+
+/* ============================================================
+   v21 — THEME · I18N · CHANGELOG · GITHUB GRAPH · NOW PLAYING · CONTACT
+   ============================================================ */
+(function(){
+  const GH_USER = 'AidansQwert';
+  const say = m => { if (typeof toast === 'function') toast(m); };
+  const esc = s => { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; };
+  const ls = {
+    get(k, d){ try { return localStorage.getItem(k) ?? d; } catch(_){ return d; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch(_){} }
+  };
+
+  /* ---------- 1. THEME: light / dark ---------- */
+  const applyTheme = mode => {
+    const light = mode === 'light';
+    document.body.classList.toggle('light', light);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? '#f4f4f6' : '#08080a');
+    ls.set('shrp-theme', light ? 'light' : 'dark');
+    const b = document.getElementById('hud-theme');
+    if (b){ b.textContent = light ? '☀' : '☾'; b.title = light ? 'light mode (klik: dark)' : 'dark mode (klik: light)'; }
+  };
+  const toggleTheme = () => applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+  applyTheme(ls.get('shrp-theme', 'dark'));
+
+  /* ---------- 2. I18N: EN <-> ID ---------- */
+  const DICT = [
+    ['nav .links a[href="#home"]', 'BERANDA'],
+    ['nav .links a[href="#about"]', 'TENTANG'],
+    ['nav .links a[href="#repos"]', 'REPO'],
+    ['nav .links a[href="#log"]', 'CATATAN'],
+    ['nav .links a[href="#social"]', 'SOSIAL'],
+    ['nav .links a[href="#contact"]', 'KONTAK'],
+    ['.hero-cta .btn.solid', '↓ AMBIL AETHERBOX'],
+    ['.hero-cta .btn.ghost', 'JELAJAHI →'],
+    ['.hero .quote', '"<em>menjalankan linux penuh di hp</em> harusnya nggak terasa kayak sihir — tapi ya gitu deh."'],
+    ['#about .bio', 'halo. aku <span class="hl">Sharp</span>. suka gonta-ganti distro, ngoprek linux di android, bikin environment sendiri, dan ngembangin <span class="hl">AetherBox</span>. bio lengkap &amp; semua link ada di <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp</a> — satu link, semuanya. <span class="hl">wolf pack 🐺</span>, crystal &lt;3 ▊'],
+    ['#about .rows .row-item:nth-child(3) .k', 'SETUP SEKARANG'],
+    ['#about .rows .row-item:nth-child(4) .k', 'BERGABUNG SEJAK'],
+    ['#about .facts .fact:nth-child(1) .l', 'TAHUN NGOPREK'],
+    ['#about .facts .fact:nth-child(2) .l', 'APLIKASI RILIS'],
+    ['#about .facts .fact:nth-child(3) .l', 'UKURAN RUNTIME'],
+    ['#about .facts .fact:nth-child(4) .l', 'ARSITEKTUR'],
+    ['#about .tools-head', '// PERKAKAS &amp; TEKNOLOGI'],
+    ['.aether-intro', '<b>AetherBox adalah project buatanku</b> — fork resmi dari Droidspaces (oleh ravindu644; kredit tetap ke yang berhak). Runtime container mungil (&lt;400KB, dikompilasi statis dengan musl libc) yang menjalankan distro Linux penuh di atas Android dengan performa native dan tanpa dependency. <span class="root">Versi penuh butuh root (Magisk / KernelSU / APatch).</span> Nggak punya root? pakai Lite.'],
+    ['.snips-head', '// PASANG CEPAT — TINGGAL SALIN'],
+    ['#repos .repo-intro', 'langsung dari GitHub API — semua yang kubangun secara terbuka, diurut dari push terakhir. <a href="https://github.com/AidansQwert" target="_blank" rel="noopener">github.com/AidansQwert ↗</a>'],
+    ['#gh-wrap .gh-t', '// KONTRIBUSI — 12 BULAN TERAKHIR'],
+    ['#top-langs .gh-t', '// BAHASA TERBANYAK'],
+    ['#log .repo-intro', 'apa yang berubah dan kapan — website &amp; aplikasi dalam satu linimasa.'],
+    ['#contact .repo-intro', 'lapor bug, ide fitur, atau sekadar menyapa — kirim aja. tanpa backend: pesannya dibuka lewat aplikasi email kamu.'],
+    ['#copy-link', '⧉ SALIN LINK GUNS.LOL'],
+    ['#dc-copy', '⧉ SALIN USERNAME'],
+    ['footer .top', '↑ KEMBALI KE ATAS']
+  ];
+  let lang = ls.get('shrp-lang', 'en');
+  const applyLang = code => {
+    lang = code === 'id' ? 'id' : 'en';
+    DICT.forEach(([sel, idText]) => {
+      document.querySelectorAll(sel).forEach(el => {
+        if (!el.dataset.en) el.dataset.en = el.innerHTML;
+        const html = lang === 'id' ? idText : el.dataset.en;
+        if (el.innerHTML !== html) el.innerHTML = html;
+      });
+    });
+    document.documentElement.lang = lang;
+    ls.set('shrp-lang', lang);
+    const b = document.getElementById('hud-lang');
+    if (b) b.textContent = lang.toUpperCase();
+    dispatchEvent(new CustomEvent('lang:change', {detail:{lang}}));
+  };
+  const toggleLang = () => { applyLang(lang === 'id' ? 'en' : 'id'); say(lang === 'id' ? 'BAHASA → INDONESIA' : 'LANGUAGE → ENGLISH'); };
+
+  /* ---------- 3. CHANGELOG ---------- */
+  const LOG = [
+    {v:'ui v21', d:'2026-09-23', tag:'site', items:[
+      'light / dark mode tersimpan + 5 aksen warna',
+      'section changelog & form kontak tanpa backend',
+      'grafik kontribusi GitHub + chart bahasa teratas',
+      'now playing (Spotify via Lanyard) di kartu Discord',
+      'toggle bahasa ID/EN, OG image, lazy-load'
+    ]},
+    {v:'ui v20', d:'2026-09-23', tag:'site', items:[
+      'terminal interaktif (~) dengan 15+ command',
+      'search / filter bahasa / sort di section repositories',
+      'panel shortcut, tombol share, snippet quick install',
+      'PWA: installable + offline lewat service worker'
+    ]},
+    {v:'v1.4.0', d:'2026-09-21', tag:'aetherbox', items:[
+      'Curated Rootfs Repository + theme builder',
+      'fallback Cgroup V1 otomatis untuk kernel 4.x',
+      'dukungan init systemd / OpenRC / runit / s6'
+    ]},
+    {v:'v0.1.5', d:'2026-09-22', tag:'lite', items:[
+      'panel Omarchy desktop (butuh ~8GB storage)',
+      'palet tema: Aether / Nebula / Ocean / Graphite / Forest',
+      'alur instalasi Termux + proot-distro dirapikan'
+    ]},
+    {v:'ui v19', d:'2026-09-20', tag:'site', items:[
+      'command palette (ctrl+k) + aksen warna',
+      'Discord presence via Lanyard, repos live dari GitHub API'
+    ]}
+  ];
+  const TAGLABEL = {site:'SITE', aetherbox:'AETHERBOX', lite:'LITE'};
+  const logList = document.getElementById('log-list');
+  const paintLog = f => {
+    if (!logList) return;
+    const rows = LOG.filter(e => f === 'all' || e.tag === f);
+    logList.innerHTML = rows.map((e, i) => `
+      <article class="log-item" style="--d:${(i * .05).toFixed(2)}s">
+        <div class="log-dot"></div>
+        <div class="log-body">
+          <div class="log-top"><b>${esc(e.v)}</b><span class="log-tag ${e.tag}">${TAGLABEL[e.tag]}</span><time>${esc(e.d)}</time></div>
+          <ul>${e.items.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+        </div>
+      </article>`).join('') || '<div class="repo-err">nothing here yet.</div>';
+  };
+  paintLog('all');
+  document.querySelectorAll('.lg-f').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.lg-f').forEach(x => x.classList.toggle('on', x === b));
+    paintLog(b.dataset.f);
+  }));
+
+  /* ---------- 4a. GITHUB CONTRIBUTION GRAPH ---------- */
+  (async function(){
+    const box = document.getElementById('gh-graph'), total = document.getElementById('gh-total');
+    if (!box) return;
+    const KEY = 'sh_contrib_v1';
+    const paint = data => {
+      const days = data.contributions || [];
+      if (!days.length){ document.getElementById('gh-wrap')?.classList.add('hidden'); return; }
+      const cut = new Date(Date.now() - 371 * 864e5).toISOString().slice(0,10);
+      const recent = days.filter(d => d.date >= cut);
+      const weeks = [];
+      recent.forEach(d => {
+        const wd = new Date(d.date + 'T00:00:00Z').getUTCDay();
+        if (!weeks.length || wd === 0) weeks.push(new Array(7).fill(null));
+        weeks[weeks.length - 1][wd] = d;
+      });
+      box.innerHTML = weeks.map(w => `<div class="gh-col">${
+        w.map(d => d
+          ? `<i class="l${d.level}" title="${d.count} contribution${d.count === 1 ? '' : 's'} · ${d.date}"></i>`
+          : '<i class="lx"></i>').join('')
+      }</div>`).join('');
+      const sum = recent.reduce((a, d) => a + d.count, 0);
+      if (total) total.textContent = sum.toLocaleString() + ' contributions';
+    };
+    try {
+      const cached = JSON.parse(ls.get(KEY, 'null'));
+      if (cached && Date.now() - cached.t < 6 * 36e5) paint(cached.d);
+      const r = await fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}?y=last`);
+      if (!r.ok) throw 0;
+      const j = await r.json();
+      paint(j);
+      ls.set(KEY, JSON.stringify({t: Date.now(), d: j}));
+    } catch(_){
+      if (!box.children.length){
+        if (total) total.textContent = 'graph unreachable';
+        box.innerHTML = '<div class="repo-err">contribution graph offline — check github.com/' + GH_USER + '</div>';
+      }
+    }
+  })();
+
+  /* ---------- 4b. TOP LANGUAGES ---------- */
+  const COLORS = {JavaScript:'#f1e05a',TypeScript:'#3178c6',Python:'#3572A5',C:'#555',"C++":'#f34b7d',Kotlin:'#A97BFF',Java:'#b07219',Shell:'#89e051',HTML:'#e34c26',CSS:'#563d7c',Go:'#00ADD8',Rust:'#dea584',Dart:'#00B4AB',Ruby:'#701516',PHP:'#4F5D95',Makefile:'#427819'};
+  const paintLangs = () => {
+    const rows = document.getElementById('tl-rows');
+    const list = (window.SHRP_REPOS && window.SHRP_REPOS.list) || [];
+    if (!rows) return;
+    const by = {};
+    list.forEach(r => { if (r.lang) by[r.lang] = (by[r.lang] || 0) + Math.max(r.size || 1, 1); });
+    const entries = Object.entries(by).sort((a,b) => b[1] - a[1]).slice(0, 6);
+    if (!entries.length){ document.getElementById('top-langs')?.classList.add('hidden'); return; }
+    document.getElementById('top-langs')?.classList.remove('hidden');
+    const max = entries[0][1];
+    rows.innerHTML = entries.map(([k, v], i) => `
+      <div class="tl-row" style="--d:${(i * .06).toFixed(2)}s">
+        <span class="tl-k"><i style="background:${COLORS[k] || '#8b5cf6'}"></i>${esc(k)}</span>
+        <span class="tl-bar"><b style="width:${Math.round(v / max * 100)}%;background:${COLORS[k] || '#8b5cf6'}"></b></span>
+        <span class="tl-n">${list.filter(r => r.lang === k).length} repo</span>
+      </div>`).join('');
+  };
+  addEventListener('repos:ready', paintLangs);
+  paintLangs();
+
+  /* ---------- 5. NOW PLAYING (Spotify via Lanyard) ---------- */
+  (function(){
+    const anchor = document.getElementById('dc-card');
+    if (!anchor) return;
+    const card = document.createElement('div');
+    card.className = 'np-card hidden';
+    card.id = 'np-card';
+    card.innerHTML = `<i class="c-tl"></i><i class="c-br"></i>
+      <img class="np-art" alt="album art" loading="lazy" decoding="async">
+      <div class="np-meta">
+        <div class="np-head"><span class="np-eq"><i></i><i></i><i></i><i></i></span>NOW PLAYING · SPOTIFY</div>
+        <b class="np-song">—</b>
+        <small class="np-artist">—</small>
+        <div class="np-track"><span class="np-fill"></span></div>
+        <div class="np-time"><span class="np-cur">0:00</span><span class="np-dur">0:00</span></div>
+      </div>
+      <a class="np-open" target="_blank" rel="noopener" title="open in spotify">↗</a>`;
+    anchor.insertAdjacentElement('afterend', card);
+
+    const q = s => card.querySelector(s);
+    const fmt = ms => { const t = Math.max(0, Math.floor(ms / 1000)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+    let sp = null;
+
+    const tick = () => {
+      if (!sp) return;
+      const {start, end} = sp.timestamps || {};
+      if (!start || !end) return;
+      const now = Date.now(), dur = end - start, cur = Math.min(Math.max(now - start, 0), dur);
+      q('.np-fill').style.width = (cur / dur * 100).toFixed(2) + '%';
+      q('.np-cur').textContent = fmt(cur);
+      q('.np-dur').textContent = fmt(dur);
+      if (now > end + 1500) sync();
+    };
+
+    async function sync(){
+      try {
+        const r = await fetch('https://api.lanyard.rest/v1/users/' + (typeof DISCORD_ID !== 'undefined' ? DISCORD_ID : ''));
+        const j = await r.json();
+        const d = j.data;
+        if (!j.success || !d.listening_to_spotify || !d.spotify){ sp = null; card.classList.add('hidden'); return; }
+        sp = d.spotify;
+        q('.np-art').src = sp.album_art_url || '';
+        q('.np-song').textContent = sp.song;
+        q('.np-artist').textContent = sp.artist + (sp.album ? ' · ' + sp.album : '');
+        q('.np-open').href = 'https://open.spotify.com/track/' + sp.track_id;
+        card.classList.remove('hidden');
+        tick();
+      } catch(_){ sp = null; card.classList.add('hidden'); }
+    }
+    sync();
+    setInterval(sync, 30000);
+    setInterval(tick, 1000);
+  })();
+
+  /* ---------- 6. CONTACT FORM (no backend) ---------- */
+  (function(){
+    const form = document.getElementById('cform');
+    if (!form) return;
+    const CONTACT_EMAIL = '';              /* isi kalau mau langsung ke email */
+    const FORM_ENDPOINT = '';              /* opsional: URL formspree/getform */
+    const note = document.getElementById('cform-note');
+    const ta = form.querySelector('textarea');
+    const MAXLEN = 1000;
+    ta.setAttribute('maxlength', MAXLEN);
+    const count = () => { if (note) note.textContent = ta.value.length + ' / ' + MAXLEN; };
+    ta.addEventListener('input', count); count();
+
+    const compose = () => {
+      const f = new FormData(form);
+      return `from: ${f.get('name') || '-'} (${f.get('from') || '-'})\ntopic: ${f.get('topic')}\n\n${f.get('msg') || ''}`;
+    };
+    const valid = () => {
+      let ok = true;
+      form.querySelectorAll('[required]').forEach(el => {
+        const bad = !el.value.trim();
+        el.classList.toggle('bad', bad);
+        if (bad) ok = false;
+      });
+      return ok;
+    };
+
+    document.getElementById('cform-copy').addEventListener('click', async () => {
+      const text = compose();
+      try { await navigator.clipboard.writeText(text); }
+      catch(_){
+        const t = document.createElement('textarea');
+        t.value = text; document.body.appendChild(t); t.select();
+        try { document.execCommand('copy'); } catch(__){}
+        t.remove();
+      }
+      say('✓ MESSAGE COPIED — paste it on Discord');
+    });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!valid()){ say('✗ lengkapi dulu name, contact, dan message'); return; }
+      const body = compose(), subject = 'SHRP_ — ' + form.querySelector('select').value;
+      if (FORM_ENDPOINT){
+        try {
+          const r = await fetch(FORM_ENDPOINT, {method:'POST', headers:{Accept:'application/json'}, body:new FormData(form)});
+          if (!r.ok) throw 0;
+          form.reset(); count(); say('✓ SENT — thanks, i\'ll reply soon');
+          return;
+        } catch(_){ /* jatuh ke mailto / discord */ }
+      }
+      if (CONTACT_EMAIL){
+        location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        say('✓ OPENING YOUR MAIL APP');
+        return;
+      }
+      try { await navigator.clipboard.writeText(subject + '\n' + body); } catch(_){}
+      open('https://discord.com/users/941358133987643423', '_blank');
+      say('✓ COPIED — paste it in my Discord DM');
+    });
+  })();
+
+  /* ---------- 7. PERF: lazy-load + async decode ---------- */
+  document.querySelectorAll('img').forEach(img => {
+    if (!img.hasAttribute('loading')) img.loading = 'lazy';
+    img.decoding = 'async';
+  });
+
+  /* ---------- 8. HUD + palette + terminal hooks ---------- */
+  const hud = document.querySelector('.hud');
+  if (hud){
+    hud.insertAdjacentHTML('beforeend',
+      '<button id="hud-theme" title="light / dark">☾</button>' +
+      '<button id="hud-lang" title="bahasa / language">EN</button>');
+    hud.querySelector('#hud-theme').addEventListener('click', toggleTheme);
+    hud.querySelector('#hud-lang').addEventListener('click', toggleLang);
+  }
+  applyTheme(ls.get('shrp-theme', 'dark'));
+  applyLang(lang);
+
+  window.SHRP_THEME = applyTheme;
+  window.SHRP_LANG = applyLang;
+
+  addEventListener('keydown', e => {
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+    if (e.key === 'l' && !e.ctrlKey && !e.metaKey && !e.altKey){ toggleTheme(); }
+    if (e.key === 'i' && !e.ctrlKey && !e.metaKey && !e.altKey){ toggleLang(); }
   });
 })();

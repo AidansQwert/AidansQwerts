@@ -12,9 +12,21 @@
 <meta property="og:title" content="SHARP — crystalsharps">
 <meta property="og:description" content="developer & linux tinkerer. AetherBox: run full Linux natively on Android.">
 <meta property="og:url" content="https://aidansqwert.github.io/AidansQwerts/">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://aidansqwert.github.io/AidansQwerts/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="SHARP — crystalsharps">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SHARP — crystalsharps">
 <meta name="twitter:description" content="developer & linux tinkerer. AetherBox: run full Linux natively on Android.">
+<meta name="twitter:image" content="https://aidansqwert.github.io/AidansQwerts/og.png">
+<meta name="author" content="Sharp (AidansQwert)">
+<meta name="keywords" content="AetherBox, linux on android, droidspaces, termux, proot, magisk, kernelsu, crystalsharps">
+<meta name="robots" content="index, follow">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Sharp","alternateName":["crystalsharps","AidansQwert"],"url":"https://aidansqwert.github.io/AidansQwerts/","jobTitle":"Developer & Linux tinkerer","sameAs":["https://github.com/AidansQwert","https://guns.lol/crystalsharp","https://discord.com/users/941358133987643423"]}
+</script>
 <!-- inline favicon (no 404) -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2308080a'/%3E%3Crect x='6' y='6' width='8' height='8' fill='%2322d3ee'/%3E%3Crect x='18' y='18' width='8' height='8' fill='%238b5cf6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -68,7 +80,7 @@
   <div class="logo"><span class="sq"></span>SHRP_</div>
   <button id="burger" aria-label="menu" aria-expanded="false"><i></i><i></i><i></i></button>
   <div class="links" id="nav-links">
-    <a href="#home" class="active">HOME</a><a href="#about">ABOUT</a><a href="#aether">AETHERBOX</a><a href="#repos">REPOS</a><a href="#social">SOCIAL</a>
+    <a href="#home" class="active">HOME</a><a href="#about">ABOUT</a><a href="#aether">AETHERBOX</a><a href="#repos">REPOS</a><a href="#log">LOG</a><a href="#social">SOCIAL</a><a href="#contact">CONTACT</a>
   </div>
 </nav>
 
@@ -232,11 +244,34 @@ adb shell pm grant com.aidansqwert.aetherbox android.permission.POST_NOTIFICATIO
     <div class="repo skel"></div><div class="repo skel"></div><div class="repo skel"></div>
     <div class="repo skel"></div><div class="repo skel"></div><div class="repo skel"></div>
   </div>
+  <div class="gh-wrap" id="gh-wrap" data-rv>
+    <div class="gh-head"><span class="gh-t">// CONTRIBUTIONS — LAST 12 MONTHS</span><span id="gh-total">syncing…</span></div>
+    <div class="gh-graph" id="gh-graph"></div>
+    <div class="gh-foot"><span>less</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>more</span></div>
+  </div>
+  <div class="top-langs" id="top-langs" data-rv>
+    <div class="gh-head"><span class="gh-t">// TOP LANGUAGES</span></div>
+    <div class="tl-rows" id="tl-rows"></div>
+  </div>
+</section>
+
+<!-- CHANGELOG -->
+<section id="log">
+  <div class="sec-label" data-rv><span class="sec-num">.004</span> // CHANGELOG</div>
+  <h2 class="sec-title"><span class="glitch" data-text="CHANGELOG">CHANGELOG</span></h2>
+  <p class="repo-intro" data-rv>what changed, when — site &amp; apps in one timeline.</p>
+  <div class="log-filters" data-rv>
+    <button class="lg-f on" data-f="all" type="button">ALL</button>
+    <button class="lg-f" data-f="site" type="button">SITE</button>
+    <button class="lg-f" data-f="aetherbox" type="button">AETHERBOX</button>
+    <button class="lg-f" data-f="lite" type="button">LITE</button>
+  </div>
+  <div class="log-list" id="log-list" data-rv></div>
 </section>
 
 <!-- SOCIAL -->
 <section id="social">
-  <div class="sec-label" data-rv><span class="sec-num">.004</span> // FIND ME</div>
+  <div class="sec-label" data-rv><span class="sec-num">.005</span> // FIND ME</div>
   <h2 class="sec-title"><span class="glitch" data-text="SOCIAL">SOCIAL</span> <em>PROFILES</em></h2>
   <!-- DISCORD PRESENCE -->
   <div class="dc-card" id="dc-card" data-rv>
@@ -271,6 +306,35 @@ adb shell pm grant com.aidansqwert.aetherbox android.permission.POST_NOTIFICATIO
     </a>
   </div>
   <button class="chip" id="copy-link" type="button">⧉ COPY GUNS.LOL LINK</button>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="sec-label" data-rv><span class="sec-num">.006</span> // SAY HI</div>
+  <h2 class="sec-title"><span class="glitch" data-text="CONTACT">CONTACT</span></h2>
+  <p class="repo-intro" data-rv>bug report, ide fitur, atau cuma mau nyapa — kirim aja. no backend: pesannya dibuka lewat email client kamu.</p>
+  <form class="cform" id="cform" data-rv novalidate>
+    <i class="c-tl"></i><i class="c-br"></i>
+    <label>NAME<input type="text" name="name" autocomplete="name" placeholder="your name / handle" required></label>
+    <label>CONTACT<input type="text" name="from" placeholder="email or discord tag" required></label>
+    <label class="full">TOPIC
+      <select name="topic">
+        <option>AetherBox — bug report</option>
+        <option>AetherBox — feature idea</option>
+        <option>Website feedback</option>
+        <option>Collab / project</option>
+        <option>Just saying hi</option>
+      </select>
+    </label>
+    <label class="full">MESSAGE<textarea name="msg" rows="5" placeholder="tulis pesanmu di sini…" required></textarea></label>
+    <div class="cform-foot">
+      <span class="cform-note" id="cform-note">0 / 1000</span>
+      <div class="cform-btns">
+        <button class="btn ghost" id="cform-copy" type="button">⧉ COPY TEXT</button>
+        <button class="btn solid" type="submit">SEND →</button>
+      </div>
+    </div>
+  </form>
 </section>
 
 <footer>
