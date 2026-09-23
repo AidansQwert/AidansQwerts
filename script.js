@@ -366,19 +366,23 @@ syncRelease('AetherBox-Lite',$('#ver-lite'), $('#date-lite'), $('#dl-lite'), $('
 
 /* ---------- copy guns.lol link (tetap jalan walau anti-copy aktif) ---------- */
 (function(){
-  const chip = $('#copy-link');
+  const chip = $('#copy-link'); if (!chip) return;
+  const LABEL = chip.textContent;
   chip.addEventListener('click', async () => {
     const url = 'https://guns.lol/crystalsharp';
+    let ok = true;
     try { await navigator.clipboard.writeText(url); }
     catch(e){
       const t = document.createElement('textarea');
       t.value = url; t.style.position = 'fixed'; t.style.opacity = '0';
       document.body.appendChild(t); t.select();
-      try { document.execCommand('copy'); } catch(_){}
+      try { ok = document.execCommand('copy'); } catch(_){ ok = false; }
       t.remove();
     }
-    chip.textContent = '✓ COPIED'; chip.classList.add('ok');
-    setTimeout(() => { chip.textContent = '⧉ COPY GUNS.LOL LINK'; chip.classList.remove('ok'); }, 1600);
+    chip.textContent = ok ? '✓ COPIED' : '✕ COPY FAILED';
+    chip.classList.toggle('ok', ok);
+    if (ok && typeof toast === 'function') toast('✓ LINK COPIED — guns.lol/crystalsharp');
+    setTimeout(() => { chip.textContent = LABEL; chip.classList.remove('ok'); }, 1600);
   });
 })();
 
@@ -435,12 +439,6 @@ function toast(msg){
 /* ---------- stack marquee: klon biar loop mulus ---------- */
 (function(){
   const t = $('#sm-track'); if (t) t.innerHTML += t.innerHTML;
-})();
-
-/* ---------- copy guns.lol pakai toast juga ---------- */
-(function(){
-  const chip = $('#copy-link'); if (!chip) return;
-  chip.addEventListener('click', () => toast('✓ LINK COPIED — guns.lol/crystalsharp'));
 })();
 
 /* ---------- cursor glow di discord card ---------- */
