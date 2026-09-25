@@ -1724,7 +1724,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   (function(){
     const form = document.getElementById('cform');
     if (!form) return;
-    const CONTACT_EMAIL = '';              /* isi kalau mau langsung ke email */
+    const CONTACT_EMAIL = 'sharpscrutal@gmail.com';              /* isi kalau mau langsung ke email */
     const FORM_ENDPOINT = '';              /* opsional: URL formspree/getform */
     const note = document.getElementById('cform-note');
     const ta = form.querySelector('textarea');

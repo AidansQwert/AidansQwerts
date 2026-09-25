@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#08080a">
+<title>Termux survival kit — the setup I redo on every phone | SHARP</title>
+<meta name="description" content="My standard Termux setup: packages, storage access, SSH in from a laptop, a sane shell, and the settings that stop Android from killing long builds.">
+<link rel="canonical" href="https://crystalsharpss.dpdns.org/post-termux-survival-kit.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Termux survival kit — the setup I redo on every phone">
+<meta property="og:description" content="Packages, storage, SSH, shell, and the settings that stop Android killing your session.">
+<meta property="og:url" content="https://crystalsharpss.dpdns.org/post-termux-survival-kit.html">
+<meta property="og:image" content="https://crystalsharpss.dpdns.org/og.png">
+<meta property="og:site_name" content="SHARP — crystalsharps">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Termux survival kit — the setup I redo on every phone">
+<meta name="twitter:description" content="Packages, storage, SSH, shell, and the settings that stop Android killing your session.">
+<meta name="twitter:image" content="https://crystalsharpss.dpdns.org/og.png">
+<meta name="author" content="Sharp (AidansQwert)">
+<meta name="robots" content="index, follow">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"Termux survival kit — the setup I redo on every phone","datePublished":"2026-08-30","author":{"@type":"Person","name":"Sharp","alternateName":"AidansQwert"},"mainEntityOfPage":"https://crystalsharpss.dpdns.org/post-termux-survival-kit.html","image":"https://crystalsharpss.dpdns.org/og.png"}
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2308080a'/%3E%3Crect x='6' y='6' width='8' height='8' fill='%2322d3ee'/%3E%3Crect x='18' y='18' width='8' height='8' fill='%238b5cf6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+</head>
+<body>
+
+<div class="milkyway" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="pnav">
+  <a class="logo" href="index.html"><span class="sq"></span>SHRP_</a>
+  <div class="plinks">
+    <a href="index.html">HOME</a>
+    <a href="aetherbox.html">AETHERBOX</a>
+    <a href="guide.html">GUIDE &amp; FAQ</a>
+    <a href="blog.html" class="on">NOTES</a>
+    <a href="contact.html">CONTACT</a>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="crumb"><a href="index.html">HOME</a> / <a href="blog.html">NOTES</a> / TERMUX SURVIVAL KIT</div>
+  <h1 class="ptitle">TERMUX <em>SURVIVAL KIT</em></h1>
+  <div class="pmeta" style="font-size:11px;letter-spacing:.16em;color:var(--faint);margin-bottom:26px">
+    2026-08-30 · TERMUX · 5 MIN READ
+  </div>
+
+  <article class="article">
+    <p>Every time I get a new phone I run roughly the same twenty minutes of setup. Here it is, in order, so I stop
+    rewriting it from memory.</p>
+
+    <h3>0. Get the right Termux</h3>
+    <p>F-Droid or the GitHub release. The Play Store build is years old and its repos are dead — 90% of
+    "unable to locate package" posts are this.</p>
+
+    <h3>1. Base packages</h3>
+    <div class="cmd">
+      <div class="cmd-top"><span>BASE</span><button type="button">⧉ COPY</button></div>
+<pre>pkg update -y &amp;&amp; pkg upgrade -y
+pkg install -y git curl wget nano openssh tmux zsh proot-distro
+termux-setup-storage</pre>
+    </div>
+
+    <h3>2. SSH in from a laptop</h3>
+    <p>Typing on glass is misery. Run sshd on the phone and connect over Wi-Fi — Termux uses port 8022.</p>
+    <div class="cmd">
+      <div class="cmd-top"><span>ON THE PHONE</span><button type="button">⧉ COPY</button></div>
+<pre>passwd
+sshd
+ifconfig | grep inet</pre>
+    </div>
+    <div class="cmd">
+      <div class="cmd-top"><span>ON THE LAPTOP</span><button type="button">⧉ COPY</button></div>
+<pre>ssh -p 8022 u0_a123@192.168.1.x</pre>
+    </div>
+    <p>Your username is whatever <code>whoami</code> prints in Termux.</p>
+
+    <h3>3. Stop Android from killing your session</h3>
+    <ul>
+      <li>Battery settings → Termux → <b>Unrestricted</b>.</li>
+      <li>Enable the <b>acquire wakelock</b> action from the Termux notification for long builds.</li>
+      <li>Lock Termux in the recents list on OEM skins that aggressively clean it.</li>
+      <li>Use <code>tmux</code> so a dropped session doesn't kill the job.</li>
+    </ul>
+
+    <h3>4. Make the shell pleasant</h3>
+    <div class="cmd">
+      <div class="cmd-top"><span>ZSH + EXTRA KEYS</span><button type="button">⧉ COPY</button></div>
+<pre>chsh -s zsh
+mkdir -p ~/.termux
+printf 'extra-keys = [["ESC","/","-","HOME","UP","END"],["TAB","CTRL","ALT","LEFT","DOWN","RIGHT"]]\n' > ~/.termux/termux.properties
+termux-reload-settings</pre>
+    </div>
+
+    <h3>5. Then add a real distro</h3>
+    <p>Once the base is comfortable, install Debian through <code>proot-distro</code> — or go rooted with
+    <a href="aetherbox.html">AetherBox</a> for native-speed containers. Both routes are written up on the
+    <a href="guide.html">guide page</a>.</p>
+
+    <blockquote>Backup habit: keep your dotfiles in a git repo. Reinstalling Termux is easy; remembering your own
+    tweaks is not.</blockquote>
+  </article>
+
+  <footer class="pfoot">
+    <span>SHARP / CRYSTALSHARPS — © <span data-year>2026</span></span>
+    <a href="blog.html">← ALL NOTES</a>
+    <a class="sp" href="contact.html">SUGGEST A TOPIC →</a>
+  </footer>
+</main>
+
+<div id="ptoast" role="status"></div>
+<script src="pages.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#08080a">
+<title>Notes — Linux on Android, tinkering logs | SHARP</title>
+<meta name="description" content="Short technical notes from Sharp: Linux on Android, AetherBox internals, Termux tricks, and things I broke and fixed.">
+<link rel="canonical" href="https://crystalsharpss.dpdns.org/blog.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Notes — Linux on Android, tinkering logs">
+<meta property="og:description" content="Short technical notes: Linux on Android, AetherBox internals, Termux tricks.">
+<meta property="og:url" content="https://crystalsharpss.dpdns.org/blog.html">
+<meta property="og:image" content="https://crystalsharpss.dpdns.org/og.png">
+<meta property="og:site_name" content="SHARP — crystalsharps">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Notes — Linux on Android, tinkering logs">
+<meta name="twitter:description" content="Short technical notes: Linux on Android, AetherBox internals, Termux tricks.">
+<meta name="twitter:image" content="https://crystalsharpss.dpdns.org/og.png">
+<meta name="author" content="Sharp (AidansQwert)">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2308080a'/%3E%3Crect x='6' y='6' width='8' height='8' fill='%2322d3ee'/%3E%3Crect x='18' y='18' width='8' height='8' fill='%238b5cf6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+</head>
+<body>
+
+<div class="milkyway" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="pnav">
+  <a class="logo" href="index.html"><span class="sq"></span>SHRP_</a>
+  <div class="plinks">
+    <a href="index.html">HOME</a>
+    <a href="aetherbox.html">AETHERBOX</a>
+    <a href="guide.html">GUIDE &amp; FAQ</a>
+    <a href="blog.html" class="on">NOTES</a>
+    <a href="contact.html">CONTACT</a>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="crumb"><a href="index.html">HOME</a> / NOTES</div>
+  <h1 class="ptitle">NOTE<em>S</em></h1>
+  <p class="plead">Short write-ups about running Linux on phones, how AetherBox works inside, and the dumb bugs
+  that cost me a weekend. No newsletter, no cookies — just text.</p>
+
+  <div class="posts">
+    <a class="post-item" href="post-linux-on-android-101.html">
+      <div class="pmeta"><span>2026-09-20</span><span class="tag cyn">BASICS</span><span>6 min read</span></div>
+      <h4>Linux on Android 101 — PRoot vs real containers</h4>
+      <p>Why proot-distro feels sluggish, what namespaces actually buy you, and how to decide which path fits your
+      device before you waste 8GB of storage.</p>
+      <div class="go">READ →</div>
+    </a>
+    <a class="post-item" href="post-aetherbox-under-the-hood.html">
+      <div class="pmeta"><span>2026-09-12</span><span class="tag vio">AETHERBOX</span><span>7 min read</span></div>
+      <h4>AetherBox under the hood — 400KB of musl and stubbornness</h4>
+      <p>How a static binary boots systemd on a phone, why cgroup v1 fallback exists for kernel 4.x, and what I
+      changed from the Droidspaces fork.</p>
+      <div class="go">READ →</div>
+    </a>
+    <a class="post-item" href="post-termux-survival-kit.html">
+      <div class="pmeta"><span>2026-08-30</span><span class="tag pnk">TERMUX</span><span>5 min read</span></div>
+      <h4>Termux survival kit — the setup I redo on every phone</h4>
+      <p>Packages, storage access, SSH in, a sane shell, and the handful of settings that stop Android from killing
+      your session mid-build.</p>
+      <div class="go">READ →</div>
+    </a>
+  </div>
+
+  <footer class="pfoot">
+    <span>SHARP / CRYSTALSHARPS — © <span data-year>2026</span></span>
+    <a href="contact.html">GOT A TOPIC IDEA?</a>
+    <a class="sp" href="index.html">← BACK HOME</a>
+  </footer>
+</main>
+
+<div id="ptoast" role="status"></div>
+<script src="pages.js"></script>
+</body>
+</html>

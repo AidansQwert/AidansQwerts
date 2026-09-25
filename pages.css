@@ -1,0 +1,146 @@
+/* ============================================================
+   SHRP_ — sub-pages (aetherbox / guide / blog / contact)
+   pakai token warna & font dari style.css
+   ============================================================ */
+
+.page{max-width:1080px;margin:0 auto;padding:118px 22px 90px}
+@media(max-width:700px){ .page{padding:96px 16px 70px} }
+
+/* ---------- top bar ---------- */
+.pnav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;gap:14px;
+  padding:14px 22px;backdrop-filter:blur(14px);background:rgba(8,8,10,.72);
+  border-bottom:1px solid var(--line)}
+.pnav .logo{font-weight:700;letter-spacing:.18em;font-size:13px;display:flex;align-items:center;gap:8px}
+.pnav .logo .sq{width:9px;height:9px;background:linear-gradient(135deg,var(--cyn),var(--vio));display:inline-block}
+.pnav .plinks{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.pnav .plinks::-webkit-scrollbar{display:none}
+.pnav .plinks a{font-size:11px;letter-spacing:.14em;color:var(--dim);padding:7px 10px;border:1px solid transparent;white-space:nowrap}
+.pnav .plinks a:hover{color:var(--txt);border-color:var(--line2)}
+.pnav .plinks a.on{color:var(--txt);border-color:var(--vio)}
+
+/* ---------- page head ---------- */
+.crumb{font-size:11px;letter-spacing:.16em;color:var(--faint);margin-bottom:16px}
+.crumb a:hover{color:var(--cyn)}
+.ptitle{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;line-height:.95;
+  font-size:clamp(34px,8vw,68px);margin-bottom:14px}
+.ptitle em{font-style:normal;background:linear-gradient(90deg,var(--cyn),var(--vio));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.plead{color:var(--dim);max-width:62ch;margin-bottom:34px}
+.plead b{color:var(--txt)}
+
+.pblock{margin:52px 0 0}
+.pblock > h3{font-family:var(--sans);font-size:20px;letter-spacing:.02em;margin-bottom:8px}
+.pblock > p{color:var(--dim);max-width:70ch;margin-bottom:16px}
+.phead{font-size:11px;letter-spacing:.2em;color:var(--faint);margin-bottom:10px}
+.phead i{font-style:normal;color:var(--vio)}
+
+/* ---------- panel / card ---------- */
+.pcard{position:relative;background:var(--panel);border:1px solid var(--line);padding:22px}
+.pcard + .pcard{margin-top:14px}
+.pgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.pcard h4{font-family:var(--sans);font-size:16px;margin-bottom:6px}
+.pcard p,.pcard li{color:var(--dim)}
+.pcard ul{list-style:none;margin-top:10px;display:grid;gap:6px}
+.pcard ul li{padding-left:16px;position:relative;font-size:13px}
+.pcard ul li::before{content:"▸";position:absolute;left:0;color:var(--vio)}
+
+.tag{display:inline-block;font-size:10px;letter-spacing:.14em;padding:3px 7px;border:1px solid var(--line2);color:var(--dim)}
+.tag.vio{border-color:rgba(139,92,246,.5);color:#c4b5fd}
+.tag.cyn{border-color:rgba(34,211,238,.5);color:#a5f3fc}
+.tag.pnk{border-color:rgba(244,114,182,.5);color:#fbcfe8}
+
+/* ---------- steps ---------- */
+.steps{counter-reset:s;display:grid;gap:12px}
+.step{position:relative;border:1px solid var(--line);background:var(--bg2);padding:18px 18px 18px 58px}
+.step::before{counter-increment:s;content:"0" counter(s);position:absolute;left:18px;top:16px;
+  font-size:12px;letter-spacing:.1em;color:var(--vio)}
+.step b{display:block;font-family:var(--sans);font-size:15px;margin-bottom:4px}
+.step p{color:var(--dim);font-size:13px}
+.step .cmd{margin-top:10px}
+
+/* ---------- code block ---------- */
+.cmd{border:1px solid var(--line);background:#0b0b0e}
+.cmd-top{display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:1px solid var(--line);
+  font-size:10px;letter-spacing:.16em;color:var(--faint)}
+.cmd-top button{margin-left:auto;background:none;border:1px solid var(--line2);color:var(--dim);
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:4px 8px;cursor:pointer}
+.cmd-top button:hover{color:var(--txt);border-color:var(--vio)}
+.cmd pre{padding:12px;overflow-x:auto;font-size:12.5px;line-height:1.8;color:#d7d7de;
+  -webkit-user-select:text;user-select:text}
+
+/* ---------- FAQ ---------- */
+.faq{display:grid;gap:8px}
+.faq details{border:1px solid var(--line);background:var(--panel)}
+.faq summary{cursor:pointer;list-style:none;padding:15px 18px;font-size:13.5px;
+  display:flex;align-items:center;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";margin-left:auto;color:var(--vio);font-size:16px}
+.faq details[open] summary::after{content:"–"}
+.faq details[open] summary{color:#fff;border-bottom:1px solid var(--line)}
+.faq .a{padding:14px 18px;color:var(--dim);font-size:13px}
+.faq .a code{color:#a5f3fc}
+
+/* ---------- blog list ---------- */
+.posts{display:grid;gap:12px}
+.post-item{display:block;border:1px solid var(--line);background:var(--panel);padding:20px;transition:.25s var(--ease)}
+.post-item:hover{border-color:var(--vio);transform:translateY(-2px)}
+.post-item .pmeta{font-size:10.5px;letter-spacing:.16em;color:var(--faint);margin-bottom:8px;
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.post-item h4{font-family:var(--sans);font-size:18px;margin-bottom:6px}
+.post-item p{color:var(--dim);font-size:13px}
+.post-item .go{margin-top:12px;font-size:11px;letter-spacing:.16em;color:var(--cyn)}
+
+/* ---------- article ---------- */
+.article{max-width:74ch}
+.article p,.article li{color:#c8c8d2;margin-bottom:14px}
+.article h3{font-family:var(--sans);font-size:20px;color:#fff;margin:34px 0 10px}
+.article ul,.article ol{margin:0 0 16px 20px}
+.article blockquote{border-left:2px solid var(--vio);padding:6px 0 6px 16px;color:var(--dim);margin:0 0 18px}
+.article .cmd{margin-bottom:18px}
+.article a{color:#a5f3fc;border-bottom:1px solid rgba(165,243,252,.3)}
+
+/* ---------- contact ---------- */
+.ways{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.way{border:1px solid var(--line);background:var(--panel);padding:18px;display:block;transition:.25s var(--ease)}
+.way:hover{border-color:var(--cyn);transform:translateY(-2px)}
+.way b{display:block;font-family:var(--sans);font-size:15px;margin-bottom:4px}
+.way small{color:var(--faint);font-size:11px;letter-spacing:.1em}
+
+.pform{border:1px solid var(--line);background:var(--panel);padding:22px;display:grid;gap:14px;
+  grid-template-columns:1fr 1fr}
+.pform label{display:grid;gap:6px;font-size:10.5px;letter-spacing:.18em;color:var(--faint)}
+.pform label.full{grid-column:1/-1}
+.pform input,.pform select,.pform textarea{background:#0b0b0e;border:1px solid var(--line2);color:var(--txt);
+  font-family:var(--mono);font-size:13px;padding:11px 12px;-webkit-user-select:text;user-select:text}
+.pform input:focus,.pform select:focus,.pform textarea:focus{outline:none;border-color:var(--vio)}
+.pform textarea{resize:vertical}
+.pform .foot{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pform .foot .note{font-size:11px;color:var(--faint);margin-right:auto}
+@media(max-width:640px){ .pform{grid-template-columns:1fr} }
+
+.pbtn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.16em;padding:12px 18px;border:1px solid var(--line2);color:var(--txt);
+  background:none;cursor:pointer;transition:.25s var(--ease)}
+.pbtn:hover{border-color:var(--vio);background:rgba(139,92,246,.1)}
+.pbtn.solid{background:linear-gradient(135deg,rgba(139,92,246,.9),rgba(34,211,238,.75));color:#08080a;
+  border-color:transparent;font-weight:700}
+.pbtn.solid:hover{filter:brightness(1.1)}
+.pcta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+
+/* ---------- footer ---------- */
+.pfoot{border-top:1px solid var(--line);margin-top:70px;padding:28px 0;color:var(--faint);font-size:11.5px;
+  letter-spacing:.08em;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.pfoot a{color:var(--dim)}
+.pfoot a:hover{color:var(--cyn)}
+.pfoot .sp{margin-left:auto}
+
+#ptoast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  background:var(--panel);border:1px solid var(--vio);padding:10px 16px;font-size:11.5px;letter-spacing:.12em;
+  z-index:90;transition:.3s var(--ease)}
+#ptoast.on{opacity:1;transform:translate(-50%,0)}
+
+/* section global dari style.css punya padding besar — netralkan di sub-page */
+.page section{max-width:none;margin:0;padding:0}
+.page section+section::before{display:none}
+.page section.pblock{margin-top:52px}
+.pgrid .pcard + .pcard{margin-top:0}
