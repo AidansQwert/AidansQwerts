@@ -4,7 +4,7 @@
    ============================================================ */
 
 .page{max-width:1080px;margin:0 auto;padding:118px 22px 90px}
-@media(max-width:700px){ .page{padding:96px 16px 70px} }
+@media(max-width:700px){ .page{padding:124px 16px 70px} }
 
 /* ---------- top bar ---------- */
 .pnav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;gap:14px;
@@ -144,3 +144,8 @@
 .page section+section::before{display:none}
 .page section.pblock{margin-top:52px}
 .pgrid .pcard + .pcard{margin-top:0}
+@media (max-width:640px){
+  .pnav{flex-wrap:wrap;row-gap:6px}
+  .pnav .plinks{margin-left:0;width:100%;flex-wrap:wrap;overflow:visible}
+  .pnav .plinks a{padding:5px 8px;font-size:10px}
+}
