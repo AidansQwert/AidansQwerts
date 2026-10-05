@@ -34,15 +34,6 @@ document.addEventListener('dragstart', e => e.preventDefault());
   fb = setTimeout(finish, 4000);
 })();
 
-/* ---------- uptime counter (sejak Feb 10 2022) ---------- */
-(function(){
-  const el = $('#uptime'), t0 = new Date('2022-02-10T00:00:00+07:00');
-  function tick(){
-    const d = Math.floor((Date.now() - t0) / 864e5);
-    el.textContent = d.toLocaleString('en-US') + ' DAYS';
-  }
-  tick(); setInterval(tick, 60000);
-})();
 
 /* ---------- typewriter terminal ---------- */
 (function(){
@@ -1296,12 +1287,11 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   const SECTIONS = ['home','about','aether','repos','log','social','contact'];
 
   const neofetch = () => {
-    const days = Math.floor((Date.now() - new Date('2022-02-10T00:00:00+07:00')) / 864e5);
     const rows = [
       ['OS', 'Debian 13 (Trixie) · XFCE'],
       ['HOST', 'aether — android + droidspaces'],
       ['KERNEL', '6.6-aether aarch64'],
-      ['UPTIME', days.toLocaleString('en-US') + ' days'],
+      ['SITE STATUS', 'live badge · Better Stack'],
       ['SHELL', 'sh — web edition'],
       ['PROJECT', 'AetherBox / AetherBox Lite'],
       ['USER', 'crystalsharps (boy ✧)'],
