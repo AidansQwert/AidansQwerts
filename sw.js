@@ -1,5 +1,5 @@
 /* SHRP_ service worker — offline shell, network-first biar update cepat kebaca */
-const CACHE = 'shrp-v21';
+const CACHE = 'shrp-v22';
 const ASSETS = ['./', './index.html', './style.css', './script.js', './manifest.webmanifest', './icon.svg', './og.png'];
 
 self.addEventListener('install', e => {
