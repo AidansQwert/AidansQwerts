@@ -173,3 +173,8 @@ body.ready .hero h1 .row{overflow:visible}
 body.light .pm-lang{border-color:rgba(0,0,0,.16);background:rgba(0,0,0,.03);color:#101015}
 body.light .pm-lang select option{background:#fff;color:#101015}
 .cform label > span{display:block;margin-bottom:6px}
+
+/* ---------- mark novabeast di logo ---------- */
+.nb-mark{width:17px;height:17px;display:inline-block;vertical-align:-3px;margin-right:7px;color:inherit}
+.si-logo .nb-mark,.foot-logo .nb-mark{width:15px;height:15px;vertical-align:-2px;margin-right:6px}
+.lg .nb-mark{width:14px;height:14px;margin-right:8px}

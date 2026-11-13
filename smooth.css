@@ -147,3 +147,10 @@ h1,h2,.sec-label,.sec-title,.hero-eyebrow,.hero-lede,
 /* serial jangan numpuk di border dashed */
 .suit-art{position:relative;padding-bottom:26px!important}
 .suit-serial{position:static!important;align-self:flex-end;margin-top:2px!important;right:auto!important;bottom:auto!important}
+
+/* ---------- hero tampil instan di mobile (jangan kosong saat boot) ---------- */
+@media(max-width:820px){
+  #home .hero-eyebrow,#home .hero-lede,#home .hero-cta,#home .hero-quote,#home .hero-stats{
+    animation:none!important;opacity:1!important;transform:none!important
+  }
+}
