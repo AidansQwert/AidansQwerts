@@ -1,0 +1,153 @@
+/* ============================================================
+   SOFT — sudut membulat, kartu lembut, tanpa kesan kotak
+   ============================================================ */
+:root{
+  --r-xl:22px; --r-lg:18px; --r-md:14px; --r-sm:11px;
+  --hair:rgba(255,255,255,.075);
+  --soft:rgba(255,255,255,.032);
+  --soft2:rgba(255,255,255,.055);
+}
+
+/* ---------- tombol jadi pill ---------- */
+.btn{
+  border-radius:999px!important;
+  padding:13px 26px!important;
+  letter-spacing:.12em;
+}
+.btn.solid{background:#fff;color:#08080a;border-color:#fff}
+.btn.solid:hover{background:#fff;color:#08080a}
+.btn.ghost{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.025)}
+.btn.ghost:hover{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.07);color:#fff}
+
+/* ---------- menu home: kartu membulat, bukan baris bergaris ---------- */
+.home-menu{border-top:0!important;gap:7px;margin-top:30px!important;text-align:left}
+.hm-row{
+  border:1px solid var(--hair)!important;
+  border-radius:15px!important;
+  background:var(--soft);
+  padding:14px 16px!important;
+  transition:background .25s,color .25s,padding .25s,border-color .25s,transform .25s;
+}
+.hm-row:hover{
+  background:#fff;border-color:#fff;padding-left:18px!important;
+  transform:translateY(-1px);
+}
+.hm-n{opacity:.5}
+.hm-a{opacity:.4}
+
+/* ---------- menu tiga titik: kartu, bukan list penuh garis ---------- */
+.pm-list{border-top:0!important;gap:7px;padding-top:4px}
+.pm-list a{
+  border:1px solid var(--hair)!important;
+  border-radius:16px;
+  background:var(--soft);
+  padding:12px 16px!important;
+}
+.pm-list a:hover{border-color:#fff;padding-left:22px!important}
+.pm-n,.pm-a{opacity:.5}
+
+/* ---------- kartu & panel ---------- */
+.hero-card,.fact,.tool,.now-card,.repo,.rs-tile,.gh-wrap,.top-langs,
+.music-card,.music-quote,.dc-card,.cform,.suit-plan,.suit-hero,.suit-file,
+.bio,.pal-box,.help-box,.t-box{
+  border-radius:var(--r-lg)!important;
+  border:1px solid var(--hair)!important;
+  box-shadow:0 24px 60px -40px rgba(0,0,0,.95);
+}
+.hero-card{border-radius:var(--r-xl)!important}
+.terminal-note{border-radius:var(--r-md)!important}
+.pc-mark{border-radius:var(--r-md)!important}
+.pc-links a{border-radius:999px!important;padding:6px 11px!important}
+.chip,.badge,.suit-chips span{border-radius:999px!important}
+.chip{padding:9px 16px!important}
+.suit-tabs button,.rv-btn,.repo-sort button,.repo-langs button{border-radius:999px!important}
+.rv-group{border-radius:999px!important}
+#clock{border-radius:999px!important}
+.menu-btn{border-radius:14px!important}
+.pm-close{border-radius:999px!important}
+.sec-num{border-radius:999px!important}
+.hero-eyebrow{border-radius:999px!important}
+.sp-state{border-radius:999px!important}
+
+/* ---------- about: satu kartu besar, isinya bergaris halus ---------- */
+.rows{
+  border:1px solid var(--hair)!important;
+  border-left:1px solid var(--hair)!important;
+  border-radius:var(--r-xl)!important;
+  overflow:hidden;
+  background:var(--soft);
+}
+.row-item{
+  border-bottom:1px solid rgba(255,255,255,.055)!important;
+  padding:17px 20px!important;
+}
+.row-item:last-child{border-bottom:0!important}
+.row-item:hover{background:var(--soft2);padding-left:20px!important}
+
+/* ---------- grid fakta & tools tetap rapi, tanpa sudut kotak ---------- */
+.facts,.tool-grid{
+  border:1px solid var(--hair)!important;
+  border-radius:var(--r-lg)!important;
+  overflow:hidden;
+  gap:1px;
+}
+.fact,.tool{border:0!important;border-radius:0!important;box-shadow:none!important}
+
+/* ---------- social jadi kartu, bukan baris bergaris ---------- */
+.socs{border-top:0!important;display:flex;flex-direction:column;gap:8px}
+.soc{
+  border:1px solid var(--hair)!important;
+  border-radius:var(--r-md)!important;
+  padding:16px 18px!important;
+  background:var(--soft);
+}
+.soc:hover{padding-left:18px!important;background:var(--soft2);border-color:rgba(255,255,255,.16)!important}
+
+/* ---------- Q&A ---------- */
+.qa-list{border-top:0!important;display:flex;flex-direction:column;gap:8px}
+.qa-item{
+  border:1px solid var(--hair)!important;
+  border-radius:var(--r-md)!important;
+  background:var(--soft);
+  overflow:hidden;
+}
+.qa-item summary{padding:15px 18px!important}
+.qa-item summary:hover{background:var(--soft2)!important}
+.qa-item p{padding:0 18px 16px!important}
+
+/* ---------- NEXT PAGE jadi kartu ---------- */
+.view-next{
+  border-top:0!important;
+  border:1px solid var(--hair);
+  border-radius:var(--r-lg);
+  background:var(--soft);
+  padding:16px 18px!important;
+  margin-top:46px;
+}
+.view-next:hover{background:var(--soft2);padding-left:22px!important}
+
+/* ---------- ticker: pill, bukan band kotak ---------- */
+main > .ticker{
+  margin:16px clamp(14px,3vw,26px) 0!important;
+  border:1px solid var(--hair)!important;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,.025);
+}
+
+/* ---------- form ---------- */
+input,textarea,select,.cform input,.cform textarea{
+  border-radius:var(--r-md)!important;
+}
+
+/* ---------- sidebar & halaman ---------- */
+.side-index{border-right:1px solid rgba(255,255,255,.06);background:rgba(9,9,11,.55)}
+.si-list{gap:4px}
+.si-list a{border-radius:12px!important}
+.si-logo .sq{border-radius:2px}
+
+/* ---------- perbaikan kecil ---------- */
+.sec-label .sec-num{border-color:rgba(255,255,255,.12)}
+.repo{padding:20px}
+::-webkit-scrollbar-thumb{border-radius:999px!important}
+::selection{background:#fff;color:#08080a}

@@ -1,15 +1,6 @@
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = s => document.querySelector(s);
 
-/* ---------- ANTI-COPY: blokir seleksi & menu konteks ---------- */
-['copy','cut','contextmenu','selectstart'].forEach(ev =>
-  document.addEventListener(ev, e => {
-    if (e.target.closest('input, textarea')) return; /* field tetap bisa dipakai */
-    e.preventDefault();
-  })
-);
-document.addEventListener('dragstart', e => e.preventDefault());
-
 /* ---------- preloader: boot sequence ---------- */
 (function(){
   const loader = $('#loader'), lns = [...loader.querySelectorAll('.ln')];
@@ -39,8 +30,8 @@ document.addEventListener('dragstart', e => e.preventDefault());
 (function(){
   const el = $('#typer');
   const lines = [
-    'uname -a → Linux aether 6.6-aether aarch64 GNU/Linux',
-    'aetherbox --version → checking releases…',
+    'uname -a → Linux crystal 6.6-crystal aarch64 GNU/Linux',
+    'fursuit --status → sharp, crystal wolf, ready',
     'whoami → sharp (boy ✧, not a girl)',
     'cat /etc/motd → stay sharp, stay crystal. wolf pack 🐺'
   ];
@@ -122,7 +113,7 @@ function makeStars(){
     o: Math.random() * .5 + .12,
     tw: Math.random() * Math.PI * 2,
     sp: Math.random() * .015 + .004,
-    hue: Math.random() < .12 ? (Math.random() < .5 ? '139,92,246' : '34,211,238') : '220,222,235'
+    hue: Math.random() < .2 ? '255,255,255' : '212,212,220'
   }));
 }
 
@@ -140,14 +131,14 @@ function drawDraco(t){
     /* glow lebar tipis */
     x.beginPath();
     line.forEach((ni, i) => { const p = project(DRACO.nodes[ni]); i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); });
-    x.strokeStyle = 'rgba(139,92,246,.07)';
+    x.strokeStyle = 'rgba(255,255,255,.05)';
     x.lineWidth = 5;
     x.stroke();
     /* garis utama */
     x.beginPath();
     line.forEach((ni, i) => { const p = project(DRACO.nodes[ni]); i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); });
     const shimmer = .24 + .08 * Math.sin(t / 1400);
-    x.strokeStyle = 'rgba(178,168,255,' + shimmer + ')';
+    x.strokeStyle = 'rgba(235,235,240,' + shimmer + ')';
     x.lineWidth = 1.1;
     x.stroke();
   }
@@ -161,16 +152,16 @@ function drawDraco(t){
     const tw = .75 + .25 * Math.sin(t / 700 + node[0]);
     /* halo */
     x.globalAlpha = .14 * tw;
-    x.fillStyle = '#b9a8ff';
+    x.fillStyle = '#ffffff';
     x.beginPath(); x.arc(p[0], p[1], r * 3.2, 0, 7); x.fill();
     /* inti */
     x.globalAlpha = .95 * tw;
-    x.fillStyle = '#f2f0ff';
+    x.fillStyle = '#ffffff';
     x.beginPath(); x.arc(p[0], p[1], r, 0, 7); x.fill();
     /* flare utk bintang terang */
     if (node[2] < 3.3){
       x.globalAlpha = .35 * tw;
-      x.strokeStyle = '#cfc4ff'; x.lineWidth = .8;
+      x.strokeStyle = '#ffffff'; x.lineWidth = .8;
       x.beginPath();
       x.moveTo(p[0] - r * 4, p[1]); x.lineTo(p[0] + r * 4, p[1]);
       x.moveTo(p[0], p[1] - r * 4); x.lineTo(p[0], p[1] + r * 4);
@@ -179,7 +170,7 @@ function drawDraco(t){
     /* label nama */
     if (showLabels && node[3]){
       x.globalAlpha = .4;
-      x.fillStyle = '#9d97b8';
+      x.fillStyle = '#9a9aa4';
       x.fillText(node[3], p[0] + 9, p[1] - 7);
     }
     x.globalAlpha = 1;
@@ -200,8 +191,8 @@ function drawScene(t){
   /* meteor */
   for (const m of meteors){
     const g = x.createLinearGradient(m.x, m.y, m.x - m.vx * 14, m.y - m.vy * 14);
-    g.addColorStop(0, 'rgba(230,228,255,' + (.7 * m.life) + ')');
-    g.addColorStop(1, 'rgba(139,92,246,0)');
+    g.addColorStop(0, 'rgba(255,255,255,' + (.7 * m.life) + ')');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
     x.strokeStyle = g; x.lineWidth = 1.4;
     x.beginPath(); x.moveTo(m.x, m.y); x.lineTo(m.x - m.vx * 14, m.y - m.vy * 14); x.stroke();
   }
@@ -284,7 +275,8 @@ addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', scrollY > 40);
   let cur = 'home';
   for (const s of secs){ if (scrollY >= s.offsetTop - 140) cur = s.id; }
-  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+  if (!document.body.classList.contains('routed'))
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
 }, {passive:true});
 
 /* ---------- glitch reveal lama (.gl) pas masuk viewport ---------- */
@@ -325,41 +317,6 @@ if (!reduced && matchMedia('(pointer:fine)').matches){
   });
 }
 
-/* ---------- auto-update versi dari GitHub API + cache ---------- */
-async function syncRelease(repo, verEl, dateEl, btnEl, stEl){
-  const key = 'ab_rel_' + repo;
-  const apply = (d, cached) => {
-    if (d.tag){ verEl.textContent = 'v' + d.tag.replace(/^v/i,''); }
-    if (d.date){ dateEl.textContent = new Date(d.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
-    if (d.apk){ btnEl.href = d.apk; }
-    else if (d.url){ btnEl.href = d.url; }
-    stEl.textContent = cached ? 'CACHED' : 'LIVE';
-    stEl.classList.toggle('cached', cached);
-    stEl.classList.toggle('live', !cached);
-  };
-  try {
-    const r = await fetch(`https://api.github.com/repos/AidansQwert/${repo}/releases/latest`);
-    if (!r.ok) throw 0;
-    const j = await r.json();
-    const apk = (j.assets || []).find(a => /\.apk$/i.test(a.name));
-    const data = {
-      tag: j.tag_name || '',
-      date: j.published_at || '',
-      apk: apk ? apk.browser_download_url : '',
-      url: j.html_url || ''
-    };
-    try { localStorage.setItem(key, JSON.stringify({...data, ts: Date.now()})); } catch(_){}
-    apply(data, false);
-  } catch(e) {
-    try {
-      const old = JSON.parse(localStorage.getItem(key) || 'null');
-      if (old) apply(old, true);
-      else { stEl.textContent = 'OFFLINE'; stEl.classList.add('cached'); }
-    } catch(_){ stEl.textContent = 'OFFLINE'; stEl.classList.add('cached'); }
-  }
-}
-syncRelease('AetherBox',     $('#ver-root'), $('#date-root'), $('#dl-root'), $('#st-root'));
-syncRelease('AetherBox-Lite',$('#ver-lite'), $('#date-lite'), $('#dl-lite'), $('#st-lite'));
 
 /* ---------- copy guns.lol link (tetap jalan walau anti-copy aktif) ---------- */
 (function(){
@@ -613,15 +570,9 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
   };
 
   const SEED = [
-    { name:'AetherBox', desc:'run full Linux distros natively on Android — tiny musl-static container runtime. needs root.',
-      url:'https://github.com/AidansQwert/AetherBox', lang:'C', stars:'—', forks:'—', pushed:new Date().toISOString(),
-      topics:['android','linux','container'] },
-    { name:'AetherBox-Lite', desc:'no-root companion — Termux + proot-distro / Omarchy, same UI shape as the full app.',
-      url:'https://github.com/AidansQwert/AetherBox-Lite', lang:'Shell', stars:'—', forks:'—', pushed:new Date().toISOString(),
-      topics:['android','termux','proot'] },
     { name:'AidansQwerts', desc:'this website — hand-built, no frameworks, pure HTML/CSS/JS.',
       url:'https://github.com/AidansQwert/AidansQwerts', lang:'CSS', stars:'—', forks:'—', pushed:new Date().toISOString(),
-      topics:['website','portfolio'] }
+      topics:['website','portfolio','fursuit'] }
   ];
 
   const cached = (() => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(_){ return null; } })();
@@ -840,38 +791,59 @@ addEventListener('load', () => document.body.classList.add('loaded'));
    v18 — FITUR BARU
    ============================================================ */
 (function(){
-  /* ---------- jam lokal UTC+7 ---------- */
-  const nav = document.getElementById('nav');
-  if (nav){
+  /* ---------- jam pengunjung: ikut zona waktu mereka ---------- */
+  const pad2 = n => String(n).padStart(2, '0');
+  const visitorTZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch(_){ return ''; } })();
+  const tzShort = (() => {
+    try {
+      const p = new Intl.DateTimeFormat(undefined, {timeZoneName:'short'}).formatToParts(new Date());
+      return (p.find(x => x.type === 'timeZoneName') || {}).value || '';
+    } catch(_){ return ''; }
+  })();
+  const tzOffset = (() => {
+    const min = -new Date().getTimezoneOffset();
+    const sign = min >= 0 ? '+' : '-';
+    const a = Math.abs(min);
+    return 'UTC' + sign + pad2(Math.floor(a / 60)) + (a % 60 ? ':' + pad2(a % 60) : '');
+  })();
+  const tzLabel = (tzShort && !/^(GMT|UTC)/i.test(tzShort)) ? tzShort : tzOffset;
+  const clockText = () => { const d = new Date(); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ':' + pad2(d.getSeconds()); };
+
+  const navEl = document.getElementById('nav');
+  if (navEl){
     const c = document.createElement('div');
     c.id = 'clock';
-    c.innerHTML = '<span class="dot"></span>JKT <b>--:--:--</b>';
-    nav.insertBefore(c, nav.querySelector('.links'));
+    c.title = 'your local time' + (visitorTZ ? ' · ' + visitorTZ : '');
+    c.innerHTML = '<span class="dot"></span><span class="clock-tz">' + tzLabel + '</span> <b>--:--:--</b>';
+    navEl.insertBefore(c, navEl.querySelector('.links'));
     const b = c.querySelector('b');
-    const tick = () => {
-      const d = new Date(Date.now() + 7*3600*1000);
-      b.textContent = d.toISOString().slice(11,19);
-    };
+    const tick = () => { b.textContent = clockText(); };
     tick(); setInterval(tick, 1000);
+  }
+
+  /* jam lokal di kartu profil */
+  const clockInline = document.getElementById('clock-inline');
+  if (clockInline){
+    const tickInline = () => {
+      const d = new Date();
+      clockInline.textContent = pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ' · ' + tzLabel;
+    };
+    clockInline.title = visitorTZ || 'your local timezone';
+    tickInline(); setInterval(tickInline, 1000 * 15);
   }
 
   /* ---------- aksen warna (tersimpan) ---------- */
   const ACCENTS = {
-    violet:{vio:'#8b5cf6',cyn:'#22d3ee',pnk:'#f472b6'},
-    ocean :{vio:'#3b82f6',cyn:'#2dd4bf',pnk:'#60a5fa'},
-    ember :{vio:'#f97316',cyn:'#fbbf24',pnk:'#fb7185'},
-    forest:{vio:'#22c55e',cyn:'#a3e635',pnk:'#34d399'},
-    rose  :{vio:'#e879f9',cyn:'#f472b6',pnk:'#c084fc'}
+    mono:{vio:'var(--mono-1)',cyn:'var(--mono-0)',pnk:'var(--mono-2)'}
   };
   const applyAccent = name => {
-    const a = ACCENTS[name] || ACCENTS.violet;
+    /* situs monokrom: warna aksen dipegang CSS (dark/light), bukan inline style */
     const r = document.documentElement.style;
-    r.setProperty('--vio', a.vio); r.setProperty('--cyn', a.cyn); r.setProperty('--pnk', a.pnk);
-    try { localStorage.setItem('shrp-accent', name); } catch(_){}
-    document.querySelectorAll('.acc').forEach(el => el.classList.toggle('on', el.dataset.acc === name));
+    r.removeProperty('--vio'); r.removeProperty('--cyn'); r.removeProperty('--pnk');
+    try { localStorage.setItem('shrp-accent', 'mono'); } catch(_){}
   };
-  let savedAccent = 'violet';
-  try { savedAccent = localStorage.getItem('shrp-accent') || 'violet'; } catch(_){}
+  let savedAccent = 'mono';
+  try { savedAccent = localStorage.getItem('shrp-accent') || 'mono'; } catch(_){}
 
   /* ---------- reduce motion manual ---------- */
   const setMotion = off => {
@@ -882,6 +854,8 @@ addEventListener('load', () => document.body.classList.add('loaded'));
 
   /* ---------- command palette ---------- */
   const go = sel => {
+    const rid = String(sel).replace('#','');
+    if (window.SHRP_ROUTE && window.SHRP_ROUTE(rid)) return;
     const t = document.querySelector(sel);
     if (t) t.scrollIntoView({behavior: document.body.classList.contains('no-motion') ? 'auto' : 'smooth', block:'start'});
   };
@@ -899,23 +873,9 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   const items = [
     {ic:'›', t:'Go — Home',        tag:'1', run:() => go('#home')},
     {ic:'›', t:'Go — About',       tag:'2', run:() => go('#about')},
-    {ic:'›', t:'Go — AetherBox',   tag:'3', run:() => go('#aether')},
+    {ic:'›', t:'Go — Fursuit',     tag:'3', run:() => go('#fursuit')},
     {ic:'›', t:'Go — Repositories',tag:'4', run:() => go('#repos')},
     {ic:'›', t:'Go — Social',      tag:'6', run:() => go('#social')},
-    {ic:'↓', t:'Download AetherBox APK', tag:'LINK', run:() => open('https://github.com/AidansQwert/AetherBox/releases/latest','_blank')},
-    {ic:'↓', t:'Download AetherBox Lite APK', tag:'LINK', run:() => open('https://github.com/AidansQwert/AetherBox-Lite/releases/latest','_blank')},
-    {ic:'↗', t:'GitHub — AidansQwert', tag:'LINK', run:() => open('https://github.com/AidansQwert','_blank')},
-    {ic:'↗', t:'Discord — crystalsharps', tag:'LINK', run:() => open('https://discord.com/users/941358133987643423','_blank')},
-    {ic:'↗', t:'guns.lol/crystalsharp', tag:'LINK', run:() => open('https://guns.lol/crystalsharp','_blank')},
-    {ic:'[]', t:'Copy guns.lol link', tag:'COPY', run:() => copy('https://guns.lol/crystalsharp','LINK COPIED')},
-    {ic:'[]', t:'Copy Discord username', tag:'COPY', run:() => copy('crystalsharps','COPIED — crystalsharps')},
-    {ic:'[]', t:'Copy page URL', tag:'COPY', run:() => copy(location.href,'URL COPIED')},
-    {ic:'↑', t:'Back to top', tag:'T', run:() => scrollTo({top:0, behavior:'smooth'})},
-    {ic:'◐', t:'Toggle reduced motion', tag:'M', run:() => setMotion(!document.body.classList.contains('no-motion'))},
-    {ic:'?', t:'Keyboard shortcuts', tag:'?', run:() => showHelp()},
-    {ic:'>', t:'Open terminal', tag:'~', run:() => window.SHRP_TERM && window.SHRP_TERM()},
-    {ic:'⇪', t:'Share this page', tag:'SHARE', run:() => window.SHRP_SHARE && window.SHRP_SHARE()},
-    {ic:'›', t:'Go — Changelog', tag:'5', run:() => go('#log')},
     {ic:'›', t:'Go — Contact', tag:'7', run:() => go('#contact')},
     {ic:'☾', t:'Toggle light / dark mode', tag:'L', run:() => window.SHRP_THEME && window.SHRP_THEME(document.body.classList.contains('light') ? 'dark' : 'light')},
     {ic:'文', t:'Switch language ID / EN', tag:'I', run:() => window.SHRP_LANG && window.SHRP_LANG(document.documentElement.lang === 'id' ? 'en' : 'id')}
@@ -926,9 +886,6 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   pal.innerHTML = `<div class="pal-box">
       <input type="text" placeholder="type a command… (esc to close)" aria-label="command palette">
       <div class="pal-list"></div>
-      <div class="acc-row" aria-label="accent color">
-        ${Object.keys(ACCENTS).map(k => `<span class="acc" data-acc="${k}" title="${k}" style="background:linear-gradient(135deg,${ACCENTS[k].vio},${ACCENTS[k].cyn})"></span>`).join('')}
-      </div>
       <div class="pal-foot"><span>↑↓ navigate</span><span>⏎ run</span><span>ESC close</span></div>
     </div>`;
   document.body.appendChild(pal);
@@ -940,7 +897,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   const render = () => {
     list.innerHTML = view.length
       ? view.map((it,i) => `<div class="pal-item${i===sel?' sel':''}" data-i="${i}"><span class="ic">${it.ic}</span>${it.t}<span class="tag">${it.tag}</span></div>`).join('')
-      : '<div class="pal-empty">no match — try "copy", "github", "aether"</div>';
+      : '<div class="pal-empty">no match — try "copy", "github", "fursuit"</div>';
   };
   const filter = q => {
     q = q.trim().toLowerCase();
@@ -992,8 +949,10 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     }
     if (typing) return;
     if (e.key === '/'){ e.preventDefault(); openPal(); return; }
-    const secs = ['#home','#about','#aether','#repos','#log','#social','#contact'];
-    if (/^[1-5]$/.test(e.key)) go(secs[+e.key - 1]);
+    const secs = ['#home','#about','#fursuit','#repos','#social','#music','#contact'];
+    if (/^[1-6]$/.test(e.key) && window.SHRP_ROUTE){
+      window.SHRP_ROUTE(['about','fursuit','repos','social','music','contact'][+e.key - 1]); return;
+    }
     else if (e.key.toLowerCase() === 't') scrollTo({top:0, behavior:'smooth'});
     else if (e.key.toLowerCase() === 'm') setMotion(!document.body.classList.contains('no-motion'));
     else if (e.key === '?') showHelp();
@@ -1261,9 +1220,9 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   const term = document.createElement('div');
   term.id = 'term20';
   term.innerHTML = `<div class="t-box">
-      <div class="t-top"><span class="t-dots"><i></i><i></i><i></i></span>sharp@aether: ~<button class="t-x" type="button" aria-label="close">✕</button></div>
+      <div class="t-top"><span class="t-dots"><i></i><i></i><i></i></span>sharp@crystal: ~<button class="t-x" type="button" aria-label="close">✕</button></div>
       <div class="t-out" id="t-out"></div>
-      <div class="t-in"><span class="t-ps1">sharp@aether:~$</span><input id="t-cmd" autocomplete="off" spellcheck="false" aria-label="terminal input"></div>
+      <div class="t-in"><span class="t-ps1">sharp@crystal:~$</span><input id="t-cmd" autocomplete="off" spellcheck="false" aria-label="terminal input"></div>
     </div>`;
   document.body.appendChild(term);
   const out = term.querySelector('#t-out'), cmdEl = term.querySelector('#t-cmd');
@@ -1279,26 +1238,25 @@ addEventListener('load', () => document.body.classList.add('loaded'));
 
   const LINKS = {
     github:'https://github.com/AidansQwert',
-    aetherbox:'https://github.com/AidansQwert/AetherBox',
-    lite:'https://github.com/AidansQwert/AetherBox-Lite',
+    telegram:'https://t.me/CrystalSharps',
     discord:'https://discord.com/users/941358133987643423',
     guns:'https://guns.lol/crystalsharp'
   };
-  const SECTIONS = ['home','about','aether','repos','log','social','contact'];
+  const SECTIONS = ['home','about','fursuit','repos','social','music','contact'];
 
   const neofetch = () => {
     const rows = [
       ['OS', 'Debian 13 (Trixie) · XFCE'],
-      ['HOST', 'aether — android + droidspaces'],
-      ['KERNEL', '6.6-aether aarch64'],
+      ['HOST', 'crystal — linux box'],
+      ['KERNEL', '6.6-crystal aarch64'],
       ['SITE STATUS', 'live badge · Better Stack'],
       ['SHELL', 'sh — web edition'],
-      ['PROJECT', 'AetherBox / AetherBox Lite'],
+      ['FURSONA', 'sharp — crystal wolf'],
       ['USER', 'crystalsharps (boy ✧)'],
       ['THEME', 'monochrome terminal']
     ];
     print(`<pre class="t-fetch">   ▄▄▄▄▄▄
-  █ ▄▄▄  █   <b>sharp</b>@<b>aether</b>
+  █ ▄▄▄  █   <b>sharp</b>@<b>crystal</b>
   █ ███  █   ─────────────────────
   █ ▀▀▀  █   ${rows.map(r => `<span class="k">${r[0]}</span> ${esc(r[1])}`).join('\n              ')}
    ▀▀▀▀▀▀</pre>`);
@@ -1313,13 +1271,11 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     ['repos', 'repo teratas'],
     ['open <name>', 'buka link: ' + Object.keys(LINKS).join(' / ')],
     ['copy <name>', 'copy link ke clipboard'],
-    ['accent <warna>', 'violet / ocean / ember / forest / rose'],
     ['motion', 'reduce motion on/off'],
-    ['theme', 'daftar warna aksen'],
+    ['theme', 'monokrom — hitam / putih'],
     ['mode <light|dark>', 'ganti mode terang/gelap'],
     ['lang <id|en>', 'ganti bahasa situs'],
-    ['changelog', 'rilis terbaru'],
-    ['date', 'waktu lokal UTC+7'],
+    ['date', 'waktu lokal kamu'],
     ['clear', 'bersihkan layar'],
     ['exit', 'tutup terminal']
   ];
@@ -1334,11 +1290,12 @@ addEventListener('load', () => document.body.classList.add('loaded'));
         return;
       case 'neofetch': case 'fetch': return neofetch();
       case 'whoami':
-        print('sharp — developer &amp; linux tinkerer. boy ✧, not a girl. wolf pack 🐺'); return;
-      case 'uname': print('Linux aether 6.6-aether aarch64 GNU/Linux'); return;
+        print('sharp — developer &amp; linux tinkerer, crystal wolf fursuiter. boy ✧, not a girl. wolf pack 🐺'); return;
+      case 'uname': print('Linux crystal 6.6-crystal aarch64 GNU/Linux'); return;
       case 'ls': print(SECTIONS.map(s => `<span class="k">${s}/</span>`).join('  ')); return;
       case 'cd': case 'goto':
         if (!SECTIONS.includes(arg)) return print(`cd: ${esc(arg || '')}: no such section`, 'err');
+        if (window.SHRP_ROUTE && window.SHRP_ROUTE(arg)) { closeTerm(); return; }
         document.getElementById(arg).scrollIntoView({behavior: smooth(), block:'start'});
         closeTerm(); return;
       case 'repos': {
@@ -1356,7 +1313,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
         copyText(url).then(ok => print(ok ? '✓ copied — ' + esc(url) : '✕ copy failed', ok ? '' : 'err'));
         return;
       }
-      case 'theme': print('accent: violet · ocean · ember · forest · rose'); return;
+      case 'theme': print('tema: monokrom — hitam &amp; putih'); return;
       case 'mode': case 'light': case 'dark': {
         const want = (cmd || '').toLowerCase() === 'mode' ? arg : (cmd || '').toLowerCase();
         if (!['light','dark'].includes(want)) return print('mode: pilih light / dark', 'err');
@@ -1368,27 +1325,23 @@ addEventListener('load', () => document.body.classList.add('loaded'));
         if (window.SHRP_LANG) window.SHRP_LANG(arg);
         print('lang → ' + esc(arg)); return;
       }
-      case 'changelog': case 'log': {
-        document.getElementById('log')?.scrollIntoView({behavior: smooth(), block:'start'});
-        closeTerm(); return;
-      }
       case 'contact': case 'mail': {
-        document.getElementById('contact')?.scrollIntoView({behavior: smooth(), block:'start'});
+        if (window.SHRP_ROUTE) window.SHRP_ROUTE('contact');
         closeTerm(); return;
       }
-      case 'accent': {
-        const ok = ['violet','ocean','ember','forest','rose'].includes(arg);
-        if (!ok) return print('accent: pilih violet / ocean / ember / forest / rose', 'err');
-        const swatch = document.querySelector(`.acc[data-acc="${arg}"]`);
-        if (swatch) swatch.click();
-        print('accent → ' + esc(arg)); return;
-      }
+      case 'accent': return print('accent: situs ini monokrom — hitam &amp; putih', 'err');
       case 'motion':
         document.body.classList.toggle('no-motion');
         print('reduce motion: ' + (document.body.classList.contains('no-motion') ? 'ON' : 'OFF')); return;
       case 'date':
-        print(new Date(Date.now() + 7 * 3600e3).toISOString().replace('T', ' ').slice(0, 19) + ' UTC+7'); return;
-      case 'sudo': print('nice try. this shell has no root — grab AetherBox instead ;)', 'err'); return;
+        {
+          const d = new Date();
+          let tz = 'local';
+          try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'local'; } catch(_){}
+          print(d.toLocaleString('en-GB', {dateStyle:'medium', timeStyle:'medium'}) + ' · ' + tz);
+          return;
+        }
+      case 'sudo': print('nice try. this shell has no root ;)', 'err'); return;
       case 'sharp': print('✧ sharp as crystal, soft as linux'); return;
       case 'clear': out.innerHTML = ''; return;
       case 'exit': case 'q': closeTerm(); return;
@@ -1411,7 +1364,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   cmdEl.addEventListener('keydown', e => {
     if (e.key === 'Enter'){
       const v = cmdEl.value;
-      print(`<span class="t-ps1">sharp@aether:~$</span> ${esc(v)}`, 'echo');
+      print(`<span class="t-ps1">sharp@crystal:~$</span> ${esc(v)}`, 'echo');
       if (v.trim()){ hist.unshift(v); hi = -1; }
       cmdEl.value = '';
       run(v);
@@ -1427,7 +1380,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
 
   /* ---------- share ---------- */
   const share = async () => {
-    const data = { title: 'SHARP — crystalsharps', text: 'developer & linux tinkerer · AetherBox', url: location.href };
+    const data = { title: 'SHARP — crystalsharps', text: 'developer · linux tinkerer · crystal wolf fursuiter', url: location.href };
     if (navigator.share){ try { await navigator.share(data); return; } catch(_){ return; } }
     say((await copyText(location.href)) ? '✓ LINK COPIED — ' + location.host : '✕ SHARE FAILED');
   };
@@ -1500,27 +1453,26 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   const DICT = [
     ['nav .links a[href="#home"]', 'BERANDA'],
     ['nav .links a[href="#about"]', 'TENTANG'],
-    ['nav .links a[href="#repos"]', 'REPO'],
-    ['nav .links a[href="#log"]', 'CATATAN'],
+    ['nav .links a[href="#repos"]', 'KARYA'],
     ['nav .links a[href="#social"]', 'SOSIAL'],
     ['nav .links a[href="#contact"]', 'KONTAK'],
-    ['.hero-cta .btn.solid', '↓ AMBIL AETHERBOX'],
+    ['.hero-cta .btn.solid', '↓ KENALAN SANG FURSONA'],
     ['.hero-cta .btn.ghost', 'JELAJAHI →'],
-    ['.hero .quote', '"<em>menjalankan linux penuh di hp</em> harusnya nggak terasa kayak sihir — tapi ya gitu deh."'],
-    ['#about .bio', 'halo. aku <span class="hl">Sharp</span>. suka gonta-ganti distro, ngoprek linux di android, bikin environment sendiri, dan ngembangin <span class="hl">AetherBox</span>. bio lengkap &amp; semua link ada di <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp</a> — satu link, semuanya. <span class="hl">wolf pack 🐺</span>, crystal &lt;3 ▊'],
+    ['.hero .quote', '"<em>serigala dengan terminal terbuka</em> — sabtu pakai suit, minggu ngoprek kernel."'],
+    ['#about .bio', 'halo. aku <span class="hl">Sharp</span>. suka gonta-ganti distro, ngoprek linux, bikin environment sendiri, nulis tool kecil-kecilan, dan sisanya dipakai buat fursuit. bio lengkap &amp; semua link ada di <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp</a> — satu link, semuanya. <span class="hl">di luar layar</span> aku fursuiter wolf kristal — dossier lengkapnya di <a href="#fursuit">section .002</a>. <span class="hl">wolf pack 🐺</span>, crystal &lt;3 ▊'],
     ['#about .rows .row-item:nth-child(3) .k', 'SETUP SEKARANG'],
     ['#about .rows .row-item:nth-child(4) .k', 'BERGABUNG SEJAK'],
+    ['#about .rows .row-item:nth-child(5) .k', 'DOMISILI'],
+    ['#about .rows .row-item:nth-child(6) .k', 'BAHASA'],
+    ['#about .rows .row-item:nth-child(7) .k', 'DI LUAR LAYAR'],
     ['#about .facts .fact:nth-child(1) .l', 'TAHUN NGOPREK'],
-    ['#about .facts .fact:nth-child(2) .l', 'APLIKASI RILIS'],
-    ['#about .facts .fact:nth-child(3) .l', 'UKURAN RUNTIME'],
+    ['#about .facts .fact:nth-child(2) .l', 'SERIGALA KRISTAL'],
+    ['#about .facts .fact:nth-child(3) .l', 'WOLF PACK'],
     ['#about .facts .fact:nth-child(4) .l', 'ARSITEKTUR'],
     ['#about .tools-head', '// PERKAKAS &amp; TEKNOLOGI'],
-    ['.aether-intro', '<b>AetherBox adalah project buatanku</b> — fork resmi dari Droidspaces (oleh ravindu644; kredit tetap ke yang berhak). Runtime container mungil (&lt;400KB, dikompilasi statis dengan musl libc) yang menjalankan distro Linux penuh di atas Android dengan performa native dan tanpa dependency. <span class="root">Versi penuh butuh root (Magisk / KernelSU / APatch).</span> Nggak punya root? pakai Lite.'],
-    ['.snips-head', '// PASANG CEPAT — TINGGAL SALIN'],
     ['#repos .repo-intro', 'langsung dari GitHub API — semua yang kubangun secara terbuka, diurut dari push terakhir. <a href="https://github.com/AidansQwert" target="_blank" rel="noopener">github.com/AidansQwert ↗</a>'],
     ['#gh-wrap .gh-t', '// KONTRIBUSI — 12 BULAN TERAKHIR'],
     ['#top-langs .gh-t', '// BAHASA TERBANYAK'],
-    ['#log .repo-intro', 'apa yang berubah dan kapan — website &amp; aplikasi dalam satu linimasa.'],
     ['#contact .repo-intro', 'lapor bug, ide fitur, atau sekadar menyapa — kirim aja. tanpa backend: pesannya dibuka lewat aplikasi email kamu.'],
     ['#copy-link', '⧉ SALIN LINK GUNS.LOL'],
     ['#dc-copy', '⧉ SALIN USERNAME'],
@@ -1543,56 +1495,6 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     dispatchEvent(new CustomEvent('lang:change', {detail:{lang}}));
   };
   const toggleLang = () => { applyLang(lang === 'id' ? 'en' : 'id'); say(lang === 'id' ? 'BAHASA → INDONESIA' : 'LANGUAGE → ENGLISH'); };
-
-  /* ---------- 3. CHANGELOG ---------- */
-  const LOG = [
-    {v:'ui v21', d:'2026-09-23', tag:'site', items:[
-      'light / dark mode tersimpan + 5 aksen warna',
-      'section changelog & form kontak tanpa backend',
-      'grafik kontribusi GitHub + chart bahasa teratas',
-      'now playing (Spotify via Lanyard) di kartu Discord',
-      'toggle bahasa ID/EN, OG image, lazy-load'
-    ]},
-    {v:'ui v20', d:'2026-09-23', tag:'site', items:[
-      'terminal interaktif (~) dengan 15+ command',
-      'search / filter bahasa / sort di section repositories',
-      'panel shortcut, tombol share, snippet quick install',
-      'PWA: installable + offline lewat service worker'
-    ]},
-    {v:'v1.4.0', d:'2026-09-21', tag:'aetherbox', items:[
-      'Curated Rootfs Repository + theme builder',
-      'fallback Cgroup V1 otomatis untuk kernel 4.x',
-      'dukungan init systemd / OpenRC / runit / s6'
-    ]},
-    {v:'v0.1.5', d:'2026-09-22', tag:'lite', items:[
-      'panel Omarchy desktop (butuh ~8GB storage)',
-      'palet tema: Aether / Nebula / Ocean / Graphite / Forest',
-      'alur instalasi Termux + proot-distro dirapikan'
-    ]},
-    {v:'ui v19', d:'2026-09-20', tag:'site', items:[
-      'command palette (ctrl+k) + aksen warna',
-      'Discord presence via Lanyard, repos live dari GitHub API'
-    ]}
-  ];
-  const TAGLABEL = {site:'SITE', aetherbox:'AETHERBOX', lite:'LITE'};
-  const logList = document.getElementById('log-list');
-  const paintLog = f => {
-    if (!logList) return;
-    const rows = LOG.filter(e => f === 'all' || e.tag === f);
-    logList.innerHTML = rows.map((e, i) => `
-      <article class="log-item" style="--d:${(i * .05).toFixed(2)}s">
-        <div class="log-dot"></div>
-        <div class="log-body">
-          <div class="log-top"><b>${esc(e.v)}</b><span class="log-tag ${e.tag}">${TAGLABEL[e.tag]}</span><time>${esc(e.d)}</time></div>
-          <ul>${e.items.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
-        </div>
-      </article>`).join('') || '<div class="repo-err">nothing here yet.</div>';
-  };
-  paintLog('all');
-  document.querySelectorAll('.lg-f').forEach(b => b.addEventListener('click', () => {
-    document.querySelectorAll('.lg-f').forEach(x => x.classList.toggle('on', x === b));
-    paintLog(b.dataset.f);
-  }));
 
   /* ---------- 4a. GITHUB CONTRIBUTION GRAPH ---------- */
   (async function(){
@@ -1798,4 +1700,299 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     if (e.key === 'l' && !e.ctrlKey && !e.metaKey && !e.altKey){ toggleTheme(); }
     if (e.key === 'i' && !e.ctrlKey && !e.metaKey && !e.altKey){ toggleLang(); }
   });
+})();
+
+/* ============================================================
+   v22 — FURSUIT DOSSIER · REPO VIEW OPTIONS (grid / list / stats)
+   ============================================================ */
+(function(){
+  const say = m => { if (typeof toast === 'function') toast(m); };
+  const ls = {
+    get(k, d){ try { const v = localStorage.getItem(k); return v === null ? d : v; } catch(_){ return d; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch(_){} }
+  };
+
+  /* ---------- fursuit: tab spec / fursona / etiket ---------- */
+  const tabs = [...document.querySelectorAll('.suit-tabs button')];
+  const panes = [...document.querySelectorAll('.suit-pane')];
+  if (tabs.length && panes.length){
+    const setTab = name => {
+      tabs.forEach(b => {
+        const on = b.dataset.suit === name;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panes.forEach(p => p.classList.toggle('on', p.dataset.pane === name));
+    };
+    tabs.forEach(b => b.addEventListener('click', () => {
+      setTab(b.dataset.suit);
+      ls.set('shrp-suit-tab', b.dataset.suit);
+    }));
+    const saved = ls.get('shrp-suit-tab', 'specs');
+    setTab(tabs.some(b => b.dataset.suit === saved) ? saved : 'specs');
+  }
+
+  /* ---------- repositories: pilihan tampilan ---------- */
+  (function(){
+    const grid = document.getElementById('repo-grid');
+    const opts = document.getElementById('repo-opts');
+    const stats = document.getElementById('repo-stats');
+    const count = document.getElementById('rv-count');
+    if (!grid || !opts || !stats) return;
+
+    const btns = [...opts.querySelectorAll('[data-view]')];
+    const COLORS = {JavaScript:'#f1e05a',TypeScript:'#3178c6',Python:'#3572a5',C:'#8b8b96','C++':'#f34b7d',
+      Shell:'#89e051',HTML:'#e34c26',CSS:'#8b5cf6',Java:'#b07219',Kotlin:'#a97bff',Rust:'#dea584',
+      Go:'#00add8',Dart:'#00b4ab',Makefile:'#427819'};
+    let view = ls.get('shrp-repo-view', 'grid');
+    if (!['grid','list','stats'].includes(view)) view = 'grid';
+
+    const fmt = n => Number(n || 0).toLocaleString('en-US');
+    const esc = s => { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; };
+    const ago = iso => {
+      if (!iso) return '—';
+      const d = Math.floor((Date.now() - new Date(iso)) / 864e5);
+      if (d <= 0) return 'TODAY';
+      if (d < 30) return d + 'D AGO';
+      if (d < 365) return Math.floor(d / 30) + 'MO AGO';
+      return Math.floor(d / 365) + 'Y AGO';
+    };
+
+    const paintStats = () => {
+      const list = (window.SHRP_REPOS && window.SHRP_REPOS.list) || [];
+      if (!list.length){
+        stats.innerHTML = '<div class="rs-tile rs-wide"><span class="l">WAITING FOR GITHUB…</span></div>';
+        return;
+      }
+      const by = {};
+      list.forEach(r => { if (r.lang) by[r.lang] = (by[r.lang] || 0) + 1; });
+      const langs = Object.entries(by).sort((a, b) => b[1] - a[1]).slice(0, 4);
+      const max = langs.length ? langs[0][1] : 1;
+      const stars = list.reduce((a, r) => a + (Number(r.stars) || 0), 0);
+      const forks = list.reduce((a, r) => a + (Number(r.forks) || 0), 0);
+      const active = list.filter(r => r.pushed && Date.now() - new Date(r.pushed) < 60 * 864e5).length;
+      const latest = list.slice().sort((a, b) => new Date(b.pushed || 0) - new Date(a.pushed || 0))[0];
+
+      stats.innerHTML = `
+        <div class="rs-tile"><span class="n">${fmt(list.length)}</span><span class="l">PUBLIC REPOS</span></div>
+        <div class="rs-tile"><span class="n">${fmt(stars)}</span><span class="l">TOTAL STARS</span></div>
+        <div class="rs-tile"><span class="n">${fmt(forks)}</span><span class="l">TOTAL FORKS</span></div>
+        <div class="rs-tile"><span class="n">${fmt(active)}</span><span class="l">ACTIVE IN 60 DAYS</span></div>
+        <div class="rs-tile"><span class="n">${langs.length}</span><span class="l">LANGUAGES IN USE</span></div>
+        <div class="rs-tile"><span class="n sm">${esc(ago(latest && latest.pushed))}</span><span class="l">LAST PUSH</span></div>
+        <div class="rs-tile rs-wide">
+          <div class="rs-head">// LANGUAGE MIX</div>
+          ${langs.map(([l, n]) => `<div class="rs-lang"><span>${esc(l)}</span><span class="bar"><b style="width:${Math.round(n / max * 100)}%;background:${COLORS[l] || '#8b5cf6'}"></b></span><em>${n}</em></div>`).join('')}
+          ${latest ? `<a class="rs-link" href="${esc(latest.url)}" target="_blank" rel="noopener">LATEST · ${esc(latest.name)} ↗</a>` : ''}
+        </div>`;
+    };
+
+    const paint = () => {
+      btns.forEach(b => {
+        const on = b.dataset.view === view;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      grid.classList.toggle('mode-list', view === 'list');
+      grid.hidden = view === 'stats';
+      stats.hidden = view !== 'stats';
+      if (view === 'stats') paintStats();
+    };
+
+    btns.forEach(b => b.addEventListener('click', () => {
+      view = b.dataset.view;
+      ls.set('shrp-repo-view', view);
+      paint();
+      say('REPO VIEW → ' + view.toUpperCase());
+    }));
+
+    const refresh = () => {
+      const list = (window.SHRP_REPOS && window.SHRP_REPOS.list) || [];
+      if (count) count.textContent = list.length ? list.length + ' REPOS · LIVE' : 'SYNCING…';
+      if (view === 'stats') paintStats();
+    };
+
+    addEventListener('repos:ready', refresh);
+    refresh();
+    paint();
+  })();
+})();
+
+/* ============================================================
+   v24 — EDITORIAL MOTION : wipe judul, cursor ring, tilt, plan
+   ============================================================ */
+(function(){
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = !calm && matchMedia('(pointer:fine)').matches;
+
+  /* tanggal di blok NOW */
+  const nowEl = document.getElementById('now-date');
+  if (nowEl){
+    nowEl.textContent = new Date().toLocaleDateString('en-GB', {month:'short', year:'numeric'}).toUpperCase();
+  }
+
+  /* wipe reveal judul section */
+  const titles = [...document.querySelectorAll('.sec-title')];
+  if (titles.length){
+    if (calm){ titles.forEach(t => t.classList.add('in')); }
+    else {
+      const tio = new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        tio.unobserve(e.target);
+      }), {threshold:.3});
+      titles.forEach(t => tio.observe(t));
+    }
+  }
+
+  /* progress rencana fursuit */
+  const plan = document.querySelector('.suit-plan');
+  if (plan){
+    const fill = () => {
+      plan.classList.add('in');
+      const bar = document.getElementById('sp-bar');
+      if (bar) bar.style.width = '25%';
+    };
+    if (calm) fill();
+    else {
+      const pio = new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting) return;
+        fill(); pio.unobserve(plan);
+      }), {threshold:.25});
+      pio.observe(plan);
+    }
+  }
+
+  /* stagger untuk grid baru */
+  const grids = [...document.querySelectorAll('.now-grid, .qa-list, .sp-steps')];
+  grids.forEach(g => {
+    [...g.children].forEach((c, i) => {
+      c.classList.add('stagger-item');
+      c.style.setProperty('--sd', (i * 65) + 'ms');
+    });
+  });
+  if (grids.length){
+    if (calm){ grids.forEach(g => [...g.children].forEach(c => c.classList.add('in'))); }
+    else {
+      const gio = new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting) return;
+        [...e.target.children].forEach(c => c.classList.add('in'));
+        gio.unobserve(e.target);
+      }), {threshold:.1});
+      grids.forEach(g => gio.observe(g));
+    }
+  }
+
+  /* tilt kartu terminal */
+  const card = document.querySelector('.hero-card');
+  if (fine && card){
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      const rx = ((e.clientY - r.top) / r.height - .5) * -6;
+      const ry = ((e.clientX - r.left) / r.width - .5) * 8;
+      card.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+    });
+    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+  }
+})();
+
+/* ============================================================
+   v26 — HOME SCREEN + PAGE ROUTER + 3-DOT MENU
+   ============================================================ */
+(function(){
+  const views = [...document.querySelectorAll('.view')];
+  const ids = views.map(v => v.id);
+  const TITLES = {home:'Home',about:'About me',fursuit:'Fursuit',repos:'Work',social:'Social',music:'Music',contact:'Contact'};
+  const SUBS = {home:'the front door',about:'who, where, what',fursuit:'sharp the crystal wolf',repos:'repos · stats · contributions',social:'discord · telegram · links',music:'after midnight',contact:'say hi'};
+  const menu = document.getElementById('page-menu');
+  const btn = document.getElementById('menu-btn');
+  const closeBtn = document.getElementById('pm-close');
+  let current = null;
+
+  const bar = document.createElement('div'); bar.id = 'route-bar'; document.body.appendChild(bar);
+  const grid = document.createElement('div'); grid.className = 'bg-grid'; grid.setAttribute('aria-hidden','true'); document.body.appendChild(grid);
+
+  const openMenu = () => { if(!menu) return; menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); btn && btn.setAttribute('aria-expanded','true'); document.body.classList.add('menu-open'); };
+  const closeMenu = () => { if(!menu) return; menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); btn && btn.setAttribute('aria-expanded','false'); document.body.classList.remove('menu-open'); };
+  btn && btn.addEventListener('click', () => menu.classList.contains('open') ? closeMenu() : openMenu());
+  closeBtn && closeBtn.addEventListener('click', closeMenu);
+  menu && menu.addEventListener('click', e => { if (e.target === menu) closeMenu(); });
+
+  function reveal(v){
+    if (!v) return;
+    const items = v.querySelectorAll('[data-rv], .sec-label, .sec-title, .gl, .anim-stag > *, .stagger-item, .now-card, .qa, .repo, .soc');
+    items.forEach((el, i) => {
+      setTimeout(() => { el.classList.add('in'); if (el.classList.contains('gl')) el.classList.add('fx'); }, Math.min(i * 24, 400));
+    });
+  }
+
+  function show(id, first){
+    if (!ids.includes(id)) id = 'home';
+    const next = document.getElementById(id);
+    if (!next) return;
+    if (current === id && !first){ closeMenu(); return; }
+    closeMenu();
+    const apply = () => {
+      views.forEach(v => v.classList.toggle('active', v.id === id));
+      current = id;
+      document.body.classList.add('routed');
+      document.title = (TITLES[id] || 'Sharp') + ' — Sharp / crystalsharps';
+      document.querySelectorAll('[data-p]').forEach(a => a.classList.toggle('on', a.dataset.p === id));
+      document.querySelectorAll('nav .links a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+      window.scrollTo(0, 0);
+      setTimeout(() => window.scrollTo(0, 0), 60);
+      bar.classList.remove('run'); void bar.offsetWidth; bar.classList.add('run');
+      requestAnimationFrame(() => reveal(next));
+    };
+    if (!first && window.SHRP_TRANSITION) window.SHRP_TRANSITION(apply);
+    else apply();
+  }
+
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const id = a.getAttribute('href').slice(1);
+    if (!ids.includes(id)) return;
+    e.preventDefault(); e.stopPropagation();
+    closeMenu();
+    if (id === current) return;
+    if (location.hash !== '#' + id) location.hash = id; else show(id);
+  }, true);
+
+  addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return;
+    if (e.key === 'Escape' && menu && menu.classList.contains('open')){ closeMenu(); return; }
+    if (/^[0-6]$/.test(e.key)){
+      e.preventDefault();
+      show(['home','about','fursuit','repos','social','music','contact'][+e.key]);
+    }
+  });
+
+  addEventListener('hashchange', () => show(location.hash.slice(1) || 'home'));
+
+  window.SHRP_ROUTE = function(id){
+    if (!ids.includes(id)) return false;
+    if (location.hash.slice(1) !== id) location.hash = id; else show(id);
+    return true;
+  };
+
+  views.forEach((v, i) => {
+    if (v.id === 'home') return;
+    const n = views[i+1] || views[0];
+    const a = document.createElement('a');
+    a.className = 'view-next'; a.href = '#' + n.id;
+    a.innerHTML = '<span>NEXT PAGE →</span><b>' + TITLES[n.id] + '</b><small>' + (SUBS[n.id] || '') + '</small>';
+    v.appendChild(a);
+  });
+
+  /* jam kecil di sidebar */
+  const sideTime = document.getElementById('side-time');
+  if (sideTime){
+    const tick = () => { sideTime.textContent = new Intl.DateTimeFormat([], {hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date()); };
+    tick(); setInterval(tick, 15000);
+  }
+
+  show(location.hash.slice(1) || 'home', true);
 })();
