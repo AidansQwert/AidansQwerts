@@ -339,7 +339,7 @@
       'N:Sharp;;;;',
       'NICKNAME:crystalsharps',
       'NOTE:Developer & Linux tinkerer from Bali. Crystal wolf fursona.',
-      'URL:https://crystalsharpss.dpdns.org/',
+      'URL:https://kays.my.id/',
       'X-SOCIALPROFILE;type=github:https://github.com/AidansQwert',
       'X-SOCIALPROFILE;type=telegram:https://t.me/CrystalSharps',
       'X-SOCIALPROFILE;type=discord:https://discord.com/users/941358133987643423',
