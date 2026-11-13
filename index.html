@@ -37,11 +37,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script>document.documentElement.classList.add('js');</script>
-<link rel="stylesheet" href="style.css?v=37">
-<link rel="stylesheet" href="soft.css?v=37">
-<link rel="stylesheet" href="motion.css?v=37">
-<link rel="stylesheet" href="smooth.css?v=37">
-<link rel="stylesheet" href="features.css?v=37">
+<link rel="stylesheet" href="style.css?v=39">
+<link rel="stylesheet" href="soft.css?v=39">
+<link rel="stylesheet" href="motion.css?v=39">
+<link rel="stylesheet" href="smooth.css?v=39">
+<link rel="stylesheet" href="features.css?v=39">
 </head>
 <body>
 
@@ -117,9 +117,16 @@
     <a href="#contact" style="--i:6"><span class="pm-n">06</span><span class="pm-t">Contact<small>say hi</small></span><span class="pm-a">↗</span></a>
   </nav>
   <div class="pm-actions">
-    <button id="pm-share" type="button">↗ SHARE SITE</button>
-    <button id="pm-theme" type="button">☾ TEMA GELAP</button>
-    <button id="pm-lang" type="button">文 BAHASA ID</button>
+    <button id="pm-share" type="button" data-i18n="menu.share">↗ SHARE SITE</button>
+    <button id="pm-theme" type="button">☾ DARK THEME</button>
+    <label class="pm-lang"><span>文</span>
+      <select id="pm-lang" aria-label="language">
+        <option value="en">English</option>
+        <option value="id">Indonesia</option>
+        <option value="zh">中文</option>
+        <option value="ja">日本語</option>
+      </select>
+    </label>
   </div>
   <div class="pm-foot"><span>KEYS 0–6 TO JUMP · ESC TO CLOSE</span><span>SHARP / CRYSTALSHARPS</span></div>
 </div>
@@ -130,7 +137,7 @@
   <div class="logo"><span class="sq"></span>SHRP_</div>
   <button id="burger" aria-label="menu" aria-expanded="false"><i></i><i></i><i></i></button>
   <div class="links" id="nav-links">
-    <a href="#home" class="active">HOME</a><a href="#about">ABOUT</a><a href="#fursuit">FURSUIT</a><a href="#repos">WORK</a><a href="#social">SOCIAL</a><a href="#music">MUSIC</a><a href="#contact">CONTACT</a>
+    <a href="#home" class="active" data-i18n="nav.home">HOME</a><a href="#about" data-i18n="nav.about">ABOUT</a><a href="#fursuit" data-i18n="nav.fursuit">FURSUIT</a><a href="#repos" data-i18n="nav.work">WORK</a><a href="#social" data-i18n="nav.social">SOCIAL</a><a href="#music" data-i18n="nav.music">MUSIC</a><a href="#contact" data-i18n="nav.contact">CONTACT</a>
   </div>
   <button id="menu-btn" class="menu-btn" type="button" aria-label="open page menu" aria-expanded="false"><i></i><i></i><i></i></button>
 </nav>
@@ -139,15 +146,15 @@
 <header class="hero view active" id="home" data-page="00">
   <div class="hero-grid">
     <div class="hero-main">
-      <span class="hero-eyebrow"><i></i>available for collabs &amp; small builds</span>
+      <span class="hero-eyebrow" data-i18n="hero.badge"><i></i>available for collabs &amp; small builds</span>
       <h1>
         <span class="row"><span class="glitch" data-text="Sharp">Sharp</span></span>
         <span class="row"><span class="glitch grad" data-text="Crystal">Crystal</span></span>
       </h1>
-      <p class="hero-lede">Developer and Linux tinkerer from Bali. I build small, fast, hand-written websites — and a crystal wolf fursona on the side.</p>
+      <p class="hero-lede" data-i18n="hero.lede">Developer and Linux tinkerer from Bali. I build small, fast, hand-written websites — and a crystal wolf fursona on the side.</p>
       <div class="hero-cta">
-        <a class="btn solid" href="#repos">SEE MY WORK</a>
-        <a class="btn ghost" href="#contact">GET IN TOUCH →</a>
+        <a class="btn solid" href="#repos" data-i18n="hero.work">SEE MY WORK</a>
+        <a class="btn ghost" href="#contact" data-i18n="hero.touch">GET IN TOUCH →</a>
       </div>
       <nav class="home-menu" aria-label="choose a page">
         <a class="hm-row" href="#about"><span class="hm-n">01</span><span class="hm-t">About me<small>who, where, what</small></span><span class="hm-a">↗</span></a>
@@ -157,7 +164,7 @@
         <a class="hm-row" href="#music"><span class="hm-n">05</span><span class="hm-t">Music<small>after midnight</small></span><span class="hm-a">↗</span></a>
         <a class="hm-row" href="#contact"><span class="hm-n">06</span><span class="hm-t">Contact<small>say hi</small></span><span class="hm-a">↗</span></a>
       </nav>
-      <p class="quote hero-quote">"<em>a wolf with a terminal open</em> — suit on saturday, kernel on sunday."</p>
+      <p class="quote hero-quote" data-i18n="hero.quote">"<em>a wolf with a terminal open</em> — suit on saturday, kernel on sunday."</p>
     </div>
     <aside class="hero-side">
       <div class="hero-card profile-card">
@@ -209,7 +216,7 @@
     <div class="row-item" data-rv style="--d:.3s"><span class="k">LANGUAGES</span><span class="v">ID · EN<small>Bahasa Indonesia, English</small></span></div>
     <div class="row-item" data-rv style="--d:.36s"><span class="k">OFF-SCREEN</span><span class="v">Wolf in a suit<small>crystal fursona — <a href="#fursuit" style="color:var(--cyn)">meet sharp ↗</a></small></span></div>
   </div>
-  <div class="bio" data-rv style="--d:.1s">hey. i'm <span class="hl">Sharp</span>. i distro-hop, tinker with linux on android, build my own
+  <div class="bio" data-rv style="--d:.1s" data-i18n="about.bio">hey. i'm <span class="hl">Sharp</span>. i distro-hop, tinker with linux on android, build my own
   environments, write small tools, and spend the rest of my free time in suit. full bio &amp; all my links live at
   <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp</a> — one link, everything.
   <span class="hl">off-screen</span> i'm a crystal wolf fursuiter — the whole dossier lives in
@@ -256,24 +263,24 @@
     <div class="qa-head">// Q&amp;A — the stuff people actually ask</div>
     <div class="qa-list">
       <details class="qa-item" open>
-        <summary>who are you, in one line?</summary>
-        <p>sharp — a developer from bali who runs linux, writes small tools, and is a crystal wolf on the side.</p>
+        <summary data-i18n="qa1s">who are you, in one line?</summary>
+        <p data-i18n="qa1p">sharp — a developer from bali who runs linux, writes small tools, and is a crystal wolf on the side.</p>
       </details>
       <details class="qa-item">
-        <summary>what do you actually do?</summary>
-        <p>tinker with linux (sometimes on android), build this site by hand, break my own configs, and take photos of operating systems nobody asked about.</p>
+        <summary data-i18n="qa2s">what do you actually do?</summary>
+        <p data-i18n="qa2p">tinker with linux (sometimes on android), build this site by hand, break my own configs, and take photos of operating systems nobody asked about.</p>
       </details>
       <details class="qa-item">
-        <summary>do you have a fursuit?</summary>
-        <p>not yet — the design is locked and the plan is on this page. until then the fursona lives in code and sketches.</p>
+        <summary data-i18n="qa3s">do you have a fursuit?</summary>
+        <p data-i18n="qa3p">not yet — the design is locked and the plan is on this page. until then the fursona lives in code and sketches.</p>
       </details>
       <details class="qa-item">
-        <summary>can i use your code?</summary>
-        <p>the site is public on github. read it, fork it, learn from it — a link back is nice but not required.</p>
+        <summary data-i18n="qa4s">can i use your code?</summary>
+        <p data-i18n="qa4p">the site is public on github. read it, fork it, learn from it — a link back is nice but not required.</p>
       </details>
       <details class="qa-item">
-        <summary>how do i say hi?</summary>
-        <p>discord or telegram are fastest. the contact form below also works — it just opens your mail app.</p>
+        <summary data-i18n="qa5s">how do i say hi?</summary>
+        <p data-i18n="qa5p">discord or telegram are fastest. the contact form below also works — it just opens your mail app.</p>
       </details>
     </div>
   </div>
@@ -291,7 +298,7 @@
             <div class="suit-photo-slot" role="img" aria-label="foto fursuit menyusul">
         <span class="sps-badge">PHOTO / 001</span>
         <span class="sps-soon">Soon</span>
-        <span class="sps-note">foto fursuit muncul di sini<br>begitu suit-nya jadi</span>
+        <span class="sps-note" data-i18n="fursuit.soon">the fursuit photo lands here<br>once the suit is built</span>
       </div>
       <span class="suit-serial">CRYSTAL WOLF · ID 001</span>
     </div>
@@ -301,7 +308,7 @@
       <p>Same name, same person — just with better ears. <b>Sharp</b> is the character i'm building:
       ice-white fur, a crystal crest, pale eyes, and absolutely zero patience for standing still in photos.
       out of suit i write C and break kernels; one day i'll be the one handing out stickers on the con floor.</p>
-      <p class="suit-note">no suit yet — this page is the design doc. refs, maker and the eventual build all land here.</p>
+      <p class="suit-note" data-i18n="fursuit.note">no suit yet — this page is the design doc. refs, maker and the eventual build all land here.</p>
       <div class="suit-chips">
         <span>WOLF</span><span>CRYSTAL FUR</span><span>HE / HIM</span><span>BALI · UTC+7</span><span>FURSUIT PLANNED</span>
       </div>
@@ -470,43 +477,43 @@
   <section id="contact" class="view" data-page="06">
   <div class="sec-label" data-rv><span class="sec-num">.006</span> // SAY HI</div>
   <h2 class="sec-title"><span class="glitch" data-text="CONTACT">CONTACT</span></h2>
-  <p class="repo-intro" data-rv>bug report, ide fitur, atau cuma mau nyapa — kirim aja. no backend: pesannya dibuka lewat email client kamu.</p>
+  <p class="repo-intro" data-rv data-i18n="contact.intro">bug report, feature idea, or just want to say hi — send it. no backend: your message opens in your own email app.</p>
   <form class="cform" id="cform" data-rv novalidate>
     <i class="c-tl"></i><i class="c-br"></i>
-    <label>NAME<input type="text" name="name" autocomplete="name" placeholder="your name / handle" required></label>
-    <label>CONTACT<input type="text" name="from" placeholder="email or discord tag" required></label>
-    <label class="full">TOPIC
+    <label><span data-i18n="contact.name">NAME</span><input type="text" name="name" autocomplete="name" placeholder="your name / handle" data-i18n-ph="contact.ph.name" required></label>
+    <label><span data-i18n="contact.contact">CONTACT</span><input type="text" name="from" placeholder="email or discord tag" data-i18n-ph="contact.ph.contact" required></label>
+    <label class="full"><span data-i18n="contact.topic">TOPIC</span>
       <select name="topic">
-        <option>Say hi / meetup</option>
-        <option>Fursuit question</option>
-        <option>Website feedback</option>
-        <option>Collab / project</option>
-        <option>Just saying hi</option>
+        <option data-i18n="contact.topic1">Say hi / meetup</option>
+        <option data-i18n="contact.topic2">Fursuit question</option>
+        <option data-i18n="contact.topic3">Website feedback</option>
+        <option data-i18n="contact.topic4">Collab / project</option>
+        <option data-i18n="contact.topic5">Just saying hi</option>
       </select>
     </label>
-    <label class="full">MESSAGE<textarea name="msg" rows="5" placeholder="tulis pesanmu di sini…" required></textarea></label>
+    <label class="full"><span data-i18n="contact.msg">MESSAGE</span><textarea name="msg" rows="5" placeholder="write your message here…" data-i18n-ph="contact.ph.msg" required></textarea></label>
     <div class="cform-foot">
       <span class="cform-note" id="cform-note">0 / 1000</span>
       <div class="cform-btns">
-        <button class="btn ghost" id="cform-copy" type="button">⧉ COPY TEXT</button>
-        <button class="btn solid" type="submit">SEND →</button>
+        <button class="btn ghost" id="cform-copy" type="button" data-i18n="contact.copy">⧉ COPY TEXT</button>
+        <button class="btn solid" type="submit" data-i18n="contact.send">SEND →</button>
       </div>
     </div>
   </form>
 
   <div class="contact-tools">
-    <button class="chip" id="vcard" type="button">⤓ SAVE CONTACT (.VCF)</button>
-    <button class="chip" id="contact-share" type="button">↗ SHARE SITE</button>
+    <button class="chip" id="vcard" type="button" data-i18n="contact.vcard">⤓ SAVE CONTACT (.VCF)</button>
+    <button class="chip" id="contact-share" type="button" data-i18n="contact.share">↗ SHARE SITE</button>
   </div>
   <div class="guestbook" data-rv>
     <div class="gb-head"><span>// GUESTBOOK</span><b id="gb-count">0 notes</b></div>
     <form class="gb-form" id="gb-form">
-      <input id="gb-name" type="text" maxlength="24" placeholder="nama / handle" required>
-      <input id="gb-msg" type="text" maxlength="140" placeholder="tulis sesuatu…" required>
-      <button type="submit">TULIS →</button>
+      <input id="gb-name" type="text" maxlength="24" placeholder="name / handle" data-i18n-ph="gb.name" required>
+      <input id="gb-msg" type="text" maxlength="140" placeholder="write something…" data-i18n-ph="gb.msg" required>
+      <button type="submit" data-i18n="gb.submit">WRITE →</button>
     </form>
     <ul class="gb-list" id="gb-list"></ul>
-    <p class="gb-note">disimpan di browser kamu sendiri (localStorage), bukan di server.</p>
+    <p class="gb-note" data-i18n="gb.note">saved in your own browser (localStorage), not on a server.</p>
   </div>
 </section>
 
@@ -514,7 +521,7 @@
   <div class="foot-grid">
     <div class="foot-brand">
       <div class="foot-logo"><span class="sq"></span>SHRP_</div>
-      <p>Developer and Linux tinkerer from Bali. Hand-written websites, small tools, and a crystal wolf fursona.</p>
+      <p data-i18n="foot.desc">Developer and Linux tinkerer from Bali. Hand-written websites, small tools, and a crystal wolf fursona.</p>
       <span class="foot-badge"><i></i>available for collabs</span>
     </div>
     <div class="foot-col">
@@ -535,16 +542,16 @@
   </div>
   <div class="foot-bottom">
     <span>© <span id="yr">2026</span> Sharp / crystalsharps — <b>All rights reserved.</b></span>
-    <span>art, fursona &amp; code © sharp · credit before reposting · no tracking</span>
-    <a class="top" href="#home">BACK TO TOP ↑</a>
+    <span data-i18n="foot.legal">art, fursona &amp; code © sharp · credit before reposting · no tracking</span>
+    <a class="top" href="#home" data-i18n="foot.top">BACK TO TOP ↑</a>
   </div>
 </footer>
 
 </main>
 <button id="totop" aria-label="back to top">↑</button>
 <div id="toast" role="status"></div>
-<script src="script.js?v=37"></script>
-<script src="motion.js?v=37"></script>
-<script src="features.js?v=37"></script>
+<script src="script.js?v=39"></script>
+<script src="motion.js?v=39"></script>
+<script src="features.js?v=39"></script>
 </body>
 </html>

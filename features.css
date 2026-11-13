@@ -163,3 +163,13 @@ body.ready .hero h1 .row{overflow:visible}
 .contact-tools{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
 .contact-tools .chip{font-size:8.5px;letter-spacing:.14em;padding:10px 16px}
 @media (max-width:560px){.contact-tools .chip{flex:1 1 auto;justify-content:center}}
+
+/* ---------- pemilih bahasa ---------- */
+.pm-lang{display:flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(255,255,255,.03);font-size:8px;letter-spacing:.14em;color:var(--txt,#f4f4f6)}
+.pm-lang > span{opacity:.6;font-size:10px}
+.pm-lang select{-webkit-appearance:none;appearance:none;background:transparent;border:0;outline:none;color:inherit;font:inherit;letter-spacing:.12em;cursor:pointer;padding:0 2px}
+.pm-lang select option{background:#101015;color:#f4f4f6;font-size:12px}
+.pm-lang select:focus-visible{outline:1px solid rgba(255,255,255,.4);outline-offset:3px;border-radius:4px}
+body.light .pm-lang{border-color:rgba(0,0,0,.16);background:rgba(0,0,0,.03);color:#101015}
+body.light .pm-lang select option{background:#fff;color:#101015}
+.cform label > span{display:block;margin-bottom:6px}

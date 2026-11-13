@@ -728,7 +728,7 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 /* scrollbar senada tema */
-*{scrollbar-width:thin;scrollbar-color:rgba(124,92,255,.5) transparent}
+*{scrollbar-width:thin;scrollbar-color:#2b2b33 #08080a}
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:linear-gradient(var(--vio),var(--cyn));border-radius:99px;
@@ -1393,6 +1393,7 @@ body.light .t-box{background:#ffffff}
 body.light .snip code,body.light .t-out{color:#1a1a20}
 body.light ::-webkit-scrollbar-track{background:var(--bg)}
 body.light ::-webkit-scrollbar-thumb{background:#c9c9d2;border-color:var(--bg)}
+body.light *{scrollbar-color:#c9c9d2 #f4f4f6}
 body.light .hud button{background:rgba(255,255,255,.85)}
 
 /* ---------- changelog ---------- */

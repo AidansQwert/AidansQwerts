@@ -477,7 +477,7 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
   copyBtn.addEventListener('click', async () => {
     const u = copyBtn.dataset.user || DISCORD_FALLBACK_HANDLE;
     const ok = window.SHRP_COPY ? await window.SHRP_COPY('@' + u) : false;
-    toast(ok ? '✓ COPIED — @' + u : '✕ COPY GAGAL — salin manual: @' + u);
+    toast(ok ? '✓ COPIED — @' + u : '✕ COPY FAILED — copy manually: @' + u);
   });
 
   sync(); setInterval(sync, 30000);
@@ -877,7 +877,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     {ic:'›', t:'Go — Social',      tag:'6', run:() => go('#social')},
     {ic:'›', t:'Go — Contact', tag:'7', run:() => go('#contact')},
     {ic:'☾', t:'Toggle light / dark mode', tag:'L', run:() => window.SHRP_THEME && window.SHRP_THEME(document.body.classList.contains('light') ? 'dark' : 'light')},
-    {ic:'文', t:'Switch language ID / EN', tag:'I', run:() => window.SHRP_LANG && window.SHRP_LANG(document.documentElement.lang === 'id' ? 'en' : 'id')}
+    {ic:'文', t:'Switch language', tag:'I', run:() => window.SHRP_LANG_NEXT && window.SHRP_LANG_NEXT()}
   ];
 
   const pal = document.createElement('div');
@@ -1209,7 +1209,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     ['ctrl + k', 'command palette'], ['/', 'command palette'], ['~', 'terminal interaktif'],
     ['1 … 5', 'loncat ke section'], ['t', 'kembali ke atas'], ['m', 'reduce motion on/off'],
     ['?', 'panel ini'], ['esc', 'tutup overlay'], ['l', 'light / dark mode'],
-  ['i', 'bahasa ID / EN'], ['konami', 'wolf pack mode']
+  ['i', 'language'], ['konami', 'wolf pack mode']
   ];
   const help = document.createElement('div');
   help.id = 'help';
@@ -1282,7 +1282,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     ['motion', 'reduce motion on/off'],
     ['theme', 'monokrom — hitam / putih'],
     ['mode <light|dark>', 'ganti mode terang/gelap'],
-    ['lang <id|en>', 'ganti bahasa situs'],
+    ['lang <en|id|zh|ja>', 'change site language'],
     ['date', 'waktu lokal kamu'],
     ['clear', 'bersihkan layar'],
     ['exit', 'tutup terminal']
@@ -1308,7 +1308,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
         closeTerm(); return;
       case 'repos': {
         const list = (window.SHRP_REPOS && window.SHRP_REPOS.list) || [];
-        if (!list.length) return print('repo list belum kebaca — coba lagi sebentar.', 'err');
+        if (!list.length) return print('repo list not loaded yet — try again in a moment.', 'err');
         list.slice(0, 8).forEach(r => print(`<span class="k">${esc(r.name)}</span> — ${esc(r.desc || 'no description')}`));
         return;
       }
@@ -1321,15 +1321,15 @@ addEventListener('load', () => document.body.classList.add('loaded'));
         copyText(url).then(ok => print(ok ? '✓ copied — ' + esc(url) : '✕ copy failed', ok ? '' : 'err'));
         return;
       }
-      case 'theme': print('tema: monokrom — hitam &amp; putih'); return;
+      case 'theme': print('theme: monochrome — black &amp; white'); return;
       case 'mode': case 'light': case 'dark': {
         const want = (cmd || '').toLowerCase() === 'mode' ? arg : (cmd || '').toLowerCase();
-        if (!['light','dark'].includes(want)) return print('mode: pilih light / dark', 'err');
+        if (!['light','dark'].includes(want)) return print('mode: pick light / dark', 'err');
         if (window.SHRP_THEME) window.SHRP_THEME(want);
         print('mode → ' + esc(want)); return;
       }
       case 'lang': {
-        if (!['id','en'].includes(arg)) return print('lang: pilih id / en', 'err');
+        if (!['en','id','zh','ja'].includes(arg)) return print('lang: pick en / id / zh / ja', 'err');
         if (window.SHRP_LANG) window.SHRP_LANG(arg);
         print('lang → ' + esc(arg)); return;
       }
@@ -1337,7 +1337,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
         if (window.SHRP_ROUTE) window.SHRP_ROUTE('contact');
         closeTerm(); return;
       }
-      case 'accent': return print('accent: situs ini monokrom — hitam &amp; putih', 'err');
+      case 'accent': return print('accent: this site is monochrome — black &amp; white', 'err');
       case 'motion':
         document.body.classList.toggle('no-motion');
         print('reduce motion: ' + (document.body.classList.contains('no-motion') ? 'ON' : 'OFF')); return;
@@ -1457,52 +1457,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   const toggleTheme = () => applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
   applyTheme(ls.get('shrp-theme', 'dark'));
 
-  /* ---------- 2. I18N: EN <-> ID ---------- */
-  const DICT = [
-    ['nav .links a[href="#home"]', 'BERANDA'],
-    ['nav .links a[href="#about"]', 'TENTANG'],
-    ['nav .links a[href="#repos"]', 'KARYA'],
-    ['nav .links a[href="#social"]', 'SOSIAL'],
-    ['nav .links a[href="#contact"]', 'KONTAK'],
-    ['.hero-cta .btn.solid', '↓ KENALAN SANG FURSONA'],
-    ['.hero-cta .btn.ghost', 'JELAJAHI →'],
-    ['.hero .quote', '"<em>serigala dengan terminal terbuka</em> — sabtu pakai suit, minggu ngoprek kernel."'],
-    ['#about .bio', 'halo. aku <span class="hl">Sharp</span>. suka gonta-ganti distro, ngoprek linux, bikin environment sendiri, nulis tool kecil-kecilan, dan sisanya dipakai buat fursuit. bio lengkap &amp; semua link ada di <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol/crystalsharp</a> — satu link, semuanya. <span class="hl">di luar layar</span> aku fursuiter wolf kristal — dossier lengkapnya di <a href="#fursuit">section .002</a>. <span class="hl">wolf pack 🐺</span>, crystal &lt;3 ▊'],
-    ['#about .rows .row-item:nth-child(3) .k', 'SETUP SEKARANG'],
-    ['#about .rows .row-item:nth-child(4) .k', 'BERGABUNG SEJAK'],
-    ['#about .rows .row-item:nth-child(5) .k', 'DOMISILI'],
-    ['#about .rows .row-item:nth-child(6) .k', 'BAHASA'],
-    ['#about .rows .row-item:nth-child(7) .k', 'DI LUAR LAYAR'],
-    ['#about .facts .fact:nth-child(1) .l', 'TAHUN NGOPREK'],
-    ['#about .facts .fact:nth-child(2) .l', 'SERIGALA KRISTAL'],
-    ['#about .facts .fact:nth-child(3) .l', 'WOLF PACK'],
-    ['#about .facts .fact:nth-child(4) .l', 'ARSITEKTUR'],
-    ['#about .tools-head', '// PERKAKAS &amp; TEKNOLOGI'],
-    ['#repos .repo-intro', 'langsung dari GitHub API — semua yang kubangun secara terbuka, diurut dari push terakhir. <a href="https://github.com/AidansQwert" target="_blank" rel="noopener">github.com/AidansQwert ↗</a>'],
-    ['#gh-wrap .gh-t', '// KONTRIBUSI — 12 BULAN TERAKHIR'],
-    ['#top-langs .gh-t', '// BAHASA TERBANYAK'],
-    ['#contact .repo-intro', 'lapor bug, ide fitur, atau sekadar menyapa — kirim aja. tanpa backend: pesannya dibuka lewat aplikasi email kamu.'],
-    ['#copy-link', '⧉ SALIN LINK GUNS.LOL'],
-    ['#dc-copy', '⧉ SALIN USERNAME'],
-    ['footer .top', '↑ KEMBALI KE ATAS']
-  ];
-  let lang = ls.get('shrp-lang', 'en');
-  const applyLang = code => {
-    lang = code === 'id' ? 'id' : 'en';
-    DICT.forEach(([sel, idText]) => {
-      document.querySelectorAll(sel).forEach(el => {
-        if (!el.dataset.en) el.dataset.en = el.innerHTML;
-        const html = lang === 'id' ? idText : el.dataset.en;
-        if (el.innerHTML !== html) el.innerHTML = html;
-      });
-    });
-    document.documentElement.lang = lang;
-    ls.set('shrp-lang', lang);
-    const b = document.getElementById('hud-lang');
-    if (b) b.textContent = lang.toUpperCase();
-    dispatchEvent(new CustomEvent('lang:change', {detail:{lang}}));
-  };
-  const toggleLang = () => { applyLang(lang === 'id' ? 'en' : 'id'); say(lang === 'id' ? 'BAHASA → INDONESIA' : 'LANGUAGE → ENGLISH'); };
+  /* i18n (EN / ID / 中文 / 日本語) ditangani features.js */
 
   /* ---------- 4a. GITHUB CONTRIBUTION GRAPH ---------- */
   (async function(){
@@ -1650,7 +1605,7 @@ addEventListener('load', () => document.body.classList.add('loaded'));
     document.getElementById('cform-copy').addEventListener('click', async () => {
       const text = compose();
       const ok = window.SHRP_COPY ? await window.SHRP_COPY(text) : false;
-      say(ok ? '✓ MESSAGE COPIED — paste it on Discord' : '✕ copy gagal — salin manual ya');
+      say(ok ? '✓ MESSAGE COPIED — paste it on Discord' : '✕ copy failed — copy it manually');
     });
 
     form.addEventListener('submit', async e => {
@@ -1689,18 +1644,16 @@ addEventListener('load', () => document.body.classList.add('loaded'));
       '<button id="hud-theme" title="light / dark">☾</button>' +
       '<button id="hud-lang" title="bahasa / language">EN</button>');
     hud.querySelector('#hud-theme').addEventListener('click', toggleTheme);
-    hud.querySelector('#hud-lang').addEventListener('click', toggleLang);
+    const hb = hud.querySelector('#hud-lang');
+    hb && hb.addEventListener('click', () => window.SHRP_LANG_NEXT && window.SHRP_LANG_NEXT());
   }
   applyTheme(ls.get('shrp-theme', 'dark'));
-  applyLang(lang);
 
   window.SHRP_THEME = applyTheme;
-  window.SHRP_LANG = applyLang;
 
   addEventListener('keydown', e => {
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
     if (e.key === 'l' && !e.ctrlKey && !e.metaKey && !e.altKey){ toggleTheme(); }
-    if (e.key === 'i' && !e.ctrlKey && !e.metaKey && !e.altKey){ toggleLang(); }
   });
 })();
 
