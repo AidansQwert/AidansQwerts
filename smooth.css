@@ -43,44 +43,60 @@ h1,h2,.sec-label,.sec-title,.hero-eyebrow,.hero-lede,
   .card,.repo,.hero-card{contain:paint}
 }
 
-/* ---------- 3. foto fursuit: tag "Soon" di kartu crest ---------- */
-.suit-photo-tag{
-  position:absolute;
-  top:16px;right:14px;
-  z-index:2;
-  display:inline-flex;
+/* ---------- 3. foto fursuit: slot "Soon" di kartu crest ---------- */
+.suit-art{
+  display:flex!important;
+  flex-direction:column;
   align-items:center;
-  gap:7px;
-  padding:6px 11px;
-  border:1px solid rgba(255,255,255,.18);
-  border-radius:999px;
-  background:rgba(8,8,10,.55);
-  -webkit-backdrop-filter:blur(6px);
-  backdrop-filter:blur(6px);
+  justify-content:center;
+  gap:16px;
+  padding:34px 22px!important;
+  min-height:390px;
+}
+.suit-photo-slot{
+  width:100%;
+  max-width:286px;
+  aspect-ratio:4/5;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:26px 20px;
+  border:1px dashed rgba(255,255,255,.22);
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(255,255,255,.075),transparent 66%),
+    linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0));
+  -webkit-user-select:none;user-select:none;
+}
+.sps-badge{
   font-family:var(--mono,monospace);
-  font-size:8px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
+  font-size:8px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--faint,#6e6e79);
+}
+.sps-soon{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-style:italic;
+  font-size:clamp(46px,11vw,64px);
+  line-height:1;
   color:#fff;
-  -webkit-user-select:none;
-  user-select:none;
+  letter-spacing:-.01em;
 }
-.suit-photo-tag i{
-  width:5px;height:5px;border-radius:50%;
-  background:#fff;
-  animation:tagPing 2.4s ease-out infinite;
+.sps-note{
+  font-size:8.5px;
+  line-height:1.9;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  text-align:center;
+  color:var(--faint,#6e6e79);
 }
-@keyframes tagPing{
-  0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}
-  70%{box-shadow:0 0 0 7px rgba(255,255,255,0)}
-  100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}
+@media (max-width:760px){
+  .suit-art{min-height:0!important;padding:26px 18px!important}
+  .suit-photo-slot{max-width:240px;aspect-ratio:4/5;padding:20px 16px}
+  .sps-soon{font-size:52px}
 }
-@media (max-width:560px){
-  .suit-photo-tag{top:12px;right:12px;font-size:7.5px;padding:5px 9px}
-}
-@media (prefers-reduced-motion:reduce){
-  .suit-photo-tag i{animation:none}
-}
+@media (prefers-reduced-motion:reduce){ .suit-photo-slot{animation:none} }
 
 /* ---------- 4. sisa aksen ungu/cyan jadi monokrom ---------- */
 #nav.scrolled{box-shadow:0 1px 0 rgba(255,255,255,.10),0 12px 40px rgba(0,0,0,.35)!important}
@@ -127,3 +143,7 @@ h1,h2,.sec-label,.sec-title,.hero-eyebrow,.hero-lede,
 /* ---------- 7. rapikan sisa detail kartu Discord ---------- */
 .dc-card .c-tl,.dc-card .c-br{display:none!important}
 .dc-status{border-radius:999px!important}
+
+/* serial jangan numpuk di border dashed */
+.suit-art{position:relative;padding-bottom:26px!important}
+.suit-serial{position:static!important;align-self:flex-end;margin-top:2px!important;right:auto!important;bottom:auto!important}
