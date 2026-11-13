@@ -1,27 +1,49 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 64 64" role="img" aria-label="Sharp — novabeast mark">
-  <rect width="64" height="64" rx="15" fill="#f4f4f6"/>
-  <g fill="#08080a">
-    <!-- ears -->
-    <path d="M18 25 L11 3 L29 15 Z"/>
-    <path d="M46 25 L53 3 L35 15 Z"/>
-    <!-- head -->
-    <ellipse cx="32" cy="32" rx="14" ry="12"/>
-    <!-- cheek fluff + mane -->
-    <circle cx="14" cy="39" r="7"/>
-    <circle cx="50" cy="39" r="7"/>
-    <circle cx="20" cy="47" r="6.5"/>
-    <circle cx="44" cy="47" r="6.5"/>
-    <circle cx="32" cy="50" r="10"/>
-    <!-- muzzle -->
-    <path d="M26 39 Q32 36 38 39 L38 45 Q32 50 26 45 Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 64 64" role="img" aria-label="Sharp — novabeast">
+  <defs>
+    <radialGradient id="fur" cx="40%" cy="30%" r="85%">
+      <stop offset="0" stop-color="#141c3c"/>
+      <stop offset=".65" stop-color="#0a0e22"/>
+      <stop offset="1" stop-color="#05070f"/>
+    </radialGradient>
+  </defs>
+
+  <!-- head + muzzle -->
+  <path d="M6 41 C3 33 7 24 15 19.5 C23 15 33 14 39 17.5 L43 8 L47.5 19.5 C53.5 22 57 28 55.5 35 C54 44 46 50.5 35.5 52.5 C25 54.5 14 50 6 41 Z"
+        fill="url(#fur)" stroke="#8b9ccb" stroke-width="1.7" stroke-linejoin="round"/>
+
+  <!-- horn -->
+  <path d="M38 17 q4 -8 10 -11 q-1 8 -6 13 z" fill="#efe2c8"/>
+  <path d="M40 16.5 q3 -6 7 -8.5 q-1 6 -4.5 10 z" fill="#c9b995" opacity=".55"/>
+
+  <!-- ear/brow ridge -->
+  <path d="M43 19 q6 2 8.5 7" fill="none" stroke="#1d2647" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- eye -->
+  <path d="M28 27.5 q9 -8.5 18.5 -2 q-5 10 -16 7.3 q-4.6 -1.5 -2.5 -5.3 Z" fill="#3aa0ff"/>
+  <path d="M32 27 q6 -5.5 12 -2 q-3 5.5 -9.5 5 q-3.4 -.5 -2.5 -3 Z" fill="#183257"/>
+  <ellipse cx="38.5" cy="27.4" rx="2.2" ry="4.4" fill="#06080f"/>
+  <circle cx="44.2" cy="24.4" r="1.8" fill="#d8ecff" opacity=".95"/>
+
+  <!-- cheek spikes -->
+  <g fill="#f2e6cd">
+    <path d="M15.5 32 l5 1.4 l-3.6 4.4 z"/>
+    <path d="M12.5 38.5 l5 1.4 l-3.6 4.4 z"/>
+    <path d="M17.5 44 l4.6 1.4 l-3.4 4 z"/>
   </g>
-  <!-- goggles -->
-  <rect x="16" y="21.5" width="32" height="6.5" rx="3.25" fill="#f4f4f6"/>
-  <circle cx="24" cy="24.7" r="3.2" fill="#08080a"/>
-  <circle cx="40" cy="24.7" r="3.2" fill="#08080a"/>
-  <!-- nose -->
-  <path d="M30 41 L34 41 L32 43.6 Z" fill="#f4f4f6"/>
-  <!-- mane notches -->
-  <path d="M19 42.5 Q22 45 21 48" stroke="#f4f4f6" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-  <path d="M45 42.5 Q42 45 43 48" stroke="#f4f4f6" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+
+  <!-- fang -->
+  <path d="M11 43 l3.4 1.2 l-2.4 3.6 z" fill="#f6f2e8"/>
+
+  <!-- chain collar -->
+  <g fill="none" stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round">
+    <circle cx="34" cy="55" r="1.9"/>
+    <circle cx="39.5" cy="55.8" r="1.9"/>
+    <circle cx="45" cy="54.4" r="1.9"/>
+    <circle cx="50" cy="51.6" r="1.9"/>
+  </g>
+  <g fill="#f2a9c4" opacity=".85">
+    <circle cx="37" cy="55.4" r="1"/>
+    <circle cx="42.3" cy="55.2" r="1"/>
+    <circle cx="47.6" cy="53" r="1"/>
+  </g>
 </svg>
