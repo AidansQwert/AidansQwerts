@@ -56,7 +56,7 @@
     body.classList.remove('booting');
     body.classList.add('booted');
     boot.classList.add('done');
-    window.scrollTo(0, 0);
+    window.scrollTo({top:0,left:0,behavior:'instant'});
     setTimeout(() => boot.remove(), 1000);
   }
 

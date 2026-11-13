@@ -106,7 +106,7 @@ function project(node){
 /* bintang ambient */
 let STARS = [];
 function makeStars(){
-  const n = Math.min(W, H) < 768 ? 110 : 220;
+  const n = Math.min(W, H) < 768 ? 64 : 180;
   STARS = Array.from({length: n}, () => ({
     x: Math.random() * W, y: Math.random() * H,
     r: Math.random() * 1.2 + .3,
@@ -216,8 +216,15 @@ if (!reduced && matchMedia('(pointer:fine)').matches){
 addEventListener('scroll', () => { DRA.sy = Math.min(scrollY * .045, H * .18); }, {passive: true});
 
 if (!reduced){
-  let last = performance.now();
+  const small = matchMedia('(max-width: 820px)').matches;
+  const minGap = small ? 34 : 0;
+  let last = performance.now(), painted = 0;
+  document.addEventListener('visibilitychange', () => { last = performance.now(); });
   (function loop(now){
+    requestAnimationFrame(loop);
+    if (document.hidden) return;
+    if (minGap && now - painted < minGap) return;
+    painted = now;
     const dt = Math.min((now - last) / 16.7, 3); last = now;
     /* update meteor */
     nextMeteor -= dt * 16.7;
@@ -228,7 +235,6 @@ if (!reduced){
       if (m.life <= 0 || m.y > H + 40) meteors.splice(i, 1);
     }
     drawScene(now);
-    requestAnimationFrame(loop);
   })(performance.now());
 } else drawScene(0);
 
@@ -1939,8 +1945,8 @@ addEventListener('load', () => document.body.classList.add('loaded'));
       document.title = (TITLES[id] || 'Sharp') + ' — Sharp / crystalsharps';
       document.querySelectorAll('[data-p]').forEach(a => a.classList.toggle('on', a.dataset.p === id));
       document.querySelectorAll('nav .links a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
-      window.scrollTo(0, 0);
-      setTimeout(() => window.scrollTo(0, 0), 60);
+      window.scrollTo({top:0,left:0,behavior:'instant'});
+      setTimeout(() => window.scrollTo({top:0,left:0,behavior:'instant'}), 60);
       bar.classList.remove('run'); void bar.offsetWidth; bar.classList.add('run');
       requestAnimationFrame(() => reveal(next));
     };
