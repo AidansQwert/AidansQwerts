@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#08080a">
+<meta name="copyright" content="© 2026 Sharp / crystalsharps. All rights reserved.">
 <meta name="description" content="SHARP — crystalsharps. developer, linux tinkerer and crystal wolf fursuiter from Bali. sites, suits and open source.">
 <title>SHARP — crystalsharps</title>
 <link rel="canonical" href="https://aidansqwert.github.io/AidansQwerts/">
@@ -36,10 +37,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script>document.documentElement.classList.add('js');</script>
-<link rel="stylesheet" href="style.css?v=35">
-<link rel="stylesheet" href="soft.css?v=35">
-<link rel="stylesheet" href="motion.css?v=35">
-<link rel="stylesheet" href="smooth.css?v=35">
+<link rel="stylesheet" href="style.css?v=37">
+<link rel="stylesheet" href="soft.css?v=37">
+<link rel="stylesheet" href="motion.css?v=37">
+<link rel="stylesheet" href="smooth.css?v=37">
+<link rel="stylesheet" href="features.css?v=37">
 </head>
 <body>
 
@@ -114,6 +116,11 @@
     <a href="#music" style="--i:5"><span class="pm-n">05</span><span class="pm-t">Music<small>after midnight</small></span><span class="pm-a">↗</span></a>
     <a href="#contact" style="--i:6"><span class="pm-n">06</span><span class="pm-t">Contact<small>say hi</small></span><span class="pm-a">↗</span></a>
   </nav>
+  <div class="pm-actions">
+    <button id="pm-share" type="button">↗ SHARE SITE</button>
+    <button id="pm-theme" type="button">☾ TEMA GELAP</button>
+    <button id="pm-lang" type="button">文 BAHASA ID</button>
+  </div>
   <div class="pm-foot"><span>KEYS 0–6 TO JUMP · ESC TO CLOSE</span><span>SHARP / CRYSTALSHARPS</span></div>
 </div>
 
@@ -486,6 +493,21 @@
       </div>
     </div>
   </form>
+
+  <div class="contact-tools">
+    <button class="chip" id="vcard" type="button">⤓ SAVE CONTACT (.VCF)</button>
+    <button class="chip" id="contact-share" type="button">↗ SHARE SITE</button>
+  </div>
+  <div class="guestbook" data-rv>
+    <div class="gb-head"><span>// GUESTBOOK</span><b id="gb-count">0 notes</b></div>
+    <form class="gb-form" id="gb-form">
+      <input id="gb-name" type="text" maxlength="24" placeholder="nama / handle" required>
+      <input id="gb-msg" type="text" maxlength="140" placeholder="tulis sesuatu…" required>
+      <button type="submit">TULIS →</button>
+    </form>
+    <ul class="gb-list" id="gb-list"></ul>
+    <p class="gb-note">disimpan di browser kamu sendiri (localStorage), bukan di server.</p>
+  </div>
 </section>
 
 <footer>
@@ -512,8 +534,8 @@
     </div>
   </div>
   <div class="foot-bottom">
-    <span>© <span id="yr">2026</span> Sharp / crystalsharps</span>
-    <span>built by hand · no frameworks · no tracking</span>
+    <span>© <span id="yr">2026</span> Sharp / crystalsharps — <b>All rights reserved.</b></span>
+    <span>art, fursona &amp; code © sharp · credit before reposting · no tracking</span>
     <a class="top" href="#home">BACK TO TOP ↑</a>
   </div>
 </footer>
@@ -521,7 +543,8 @@
 </main>
 <button id="totop" aria-label="back to top">↑</button>
 <div id="toast" role="status"></div>
-<script src="script.js?v=35"></script>
-<script src="motion.js?v=35"></script>
+<script src="script.js?v=37"></script>
+<script src="motion.js?v=37"></script>
+<script src="features.js?v=37"></script>
 </body>
 </html>

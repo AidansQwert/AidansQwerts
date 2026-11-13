@@ -476,15 +476,8 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
 
   copyBtn.addEventListener('click', async () => {
     const u = copyBtn.dataset.user || DISCORD_FALLBACK_HANDLE;
-    try { await navigator.clipboard.writeText(u); }
-    catch(e){
-      const t = document.createElement('textarea');
-      t.value = u; t.style.position = 'fixed'; t.style.opacity = '0';
-      document.body.appendChild(t); t.select();
-      try { document.execCommand('copy'); } catch(_){}
-      t.remove();
-    }
-    toast('✓ COPIED — ' + u);
+    const ok = window.SHRP_COPY ? await window.SHRP_COPY('@' + u) : false;
+    toast(ok ? '✓ COPIED — @' + u : '✕ COPY GAGAL — salin manual: @' + u);
   });
 
   sync(); setInterval(sync, 30000);
@@ -1102,17 +1095,26 @@ addEventListener('load', () => document.body.classList.add('loaded'));
   const say = m => { if (typeof toast === 'function') toast(m); };
   const smooth = () => document.body.classList.contains('no-motion') ? 'auto' : 'smooth';
   const copyText = async text => {
-    try { await navigator.clipboard.writeText(text); return true; }
-    catch(_){
+    try {
+      if (navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch(_){}
+    try {
       const ta = document.createElement('textarea');
-      ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
-      document.body.appendChild(ta); ta.select();
+      ta.value = text;
+      ta.setAttribute('readonly','');
+      ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:.01;font-size:16px';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select(); ta.setSelectionRange(0, ta.value.length);
       let ok = false;
       try { ok = document.execCommand('copy'); } catch(__){}
       ta.remove();
       return ok;
-    }
+    } catch(_){ return false; }
   };
+  window.SHRP_COPY = copyText;
 
   /* ---------- copy di blok snippet ---------- */
   document.querySelectorAll('.snip').forEach(box => {
@@ -1647,14 +1649,8 @@ addEventListener('load', () => document.body.classList.add('loaded'));
 
     document.getElementById('cform-copy').addEventListener('click', async () => {
       const text = compose();
-      try { await navigator.clipboard.writeText(text); }
-      catch(_){
-        const t = document.createElement('textarea');
-        t.value = text; document.body.appendChild(t); t.select();
-        try { document.execCommand('copy'); } catch(__){}
-        t.remove();
-      }
-      say('✓ MESSAGE COPIED — paste it on Discord');
+      const ok = window.SHRP_COPY ? await window.SHRP_COPY(text) : false;
+      say(ok ? '✓ MESSAGE COPIED — paste it on Discord' : '✕ copy gagal — salin manual ya');
     });
 
     form.addEventListener('submit', async e => {

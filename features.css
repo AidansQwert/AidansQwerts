@@ -1,0 +1,165 @@
+/* ============================================================
+   FEATURES — guestbook, share, theme/lang, copyright, title fix
+   ============================================================ */
+
+/* ---------- judul hero jangan kepotong (descender "y") ---------- */
+#home h1{padding-bottom:.08em}
+body.ready .hero h1 .row{overflow:visible}
+.hero h1 .row{padding-bottom:.02em}
+
+/* ---------- aksi di menu tiga titik ---------- */
+.pm-actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-top:16px;
+}
+.pm-actions button{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;
+  background:rgba(255,255,255,.03);
+  color:#fff;
+  font-family:var(--mono,monospace);
+  font-size:8px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:10px 15px;
+  cursor:pointer;
+  transition:background .2s,color .2s,border-color .2s,transform .2s;
+}
+.pm-actions button:hover{background:#fff;color:#08080a;border-color:#fff;transform:translateY(-1px)}
+.pm-actions button:active{transform:translateY(0)}
+
+/* ---------- guestbook ---------- */
+.guestbook{
+  margin-top:20px;
+  padding:18px;
+  border:1px solid var(--hair,rgba(255,255,255,.075));
+  border-radius:var(--r-lg,18px);
+  background:rgba(255,255,255,.025);
+}
+.gb-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+  font-family:var(--mono,monospace);
+  font-size:8.5px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--faint,#6e6e79);
+}
+.gb-head b{color:#fff;font-weight:400;letter-spacing:.1em}
+.gb-form{
+  display:grid;
+  grid-template-columns:minmax(0,.85fr) minmax(0,1.6fr) auto;
+  gap:8px;
+  margin-top:12px;
+}
+.gb-form input{
+  width:100%;
+  padding:11px 14px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:999px;
+  background:rgba(0,0,0,.28);
+  color:#fff;
+  font-family:var(--sans,'Inter',sans-serif);
+  font-size:12px;
+  outline:none;
+  transition:border-color .2s,background .2s;
+}
+.gb-form input::placeholder{color:var(--faint,#6e6e79)}
+.gb-form input:focus{border-color:rgba(255,255,255,.45);background:rgba(0,0,0,.4)}
+.gb-form button{
+  border:1px solid #fff;
+  background:#fff;
+  color:#08080a;
+  border-radius:999px;
+  font-family:var(--mono,monospace);
+  font-size:8.5px;
+  letter-spacing:.16em;
+  padding:0 18px;
+  cursor:pointer;
+  transition:opacity .2s,transform .2s;
+}
+.gb-form button:hover{opacity:.85;transform:translateY(-1px)}
+.gb-list{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:14px;
+  max-height:340px;
+  overflow:auto;
+  padding-right:4px;
+}
+.gb-item{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;
+  background:rgba(255,255,255,.03);
+}
+.gb-item b{display:block;font-size:12.5px;font-weight:600;letter-spacing:-.01em;color:#fff}
+.gb-item span{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint,#6e6e79);margin-top:3px}
+.gb-item p{margin-top:6px;font-size:12px;line-height:1.7;color:var(--dim,#a1a1ab);overflow-wrap:anywhere}
+.gb-del{
+  flex:0 0 auto;
+  width:26px;height:26px;
+  display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:50%;
+  background:transparent;
+  color:var(--faint,#6e6e79);
+  font-size:10px;
+  cursor:pointer;
+  transition:background .2s,color .2s,border-color .2s;
+}
+.gb-del:hover{background:#fff;color:#08080a;border-color:#fff}
+.gb-empty{
+  padding:16px;
+  text-align:center;
+  font-size:10.5px;
+  letter-spacing:.08em;
+  color:var(--faint,#6e6e79);
+  border:1px dashed rgba(255,255,255,.14);
+  border-radius:14px;
+}
+.gb-note{
+  margin-top:12px;
+  font-size:9px;
+  letter-spacing:.1em;
+  color:var(--faint,#6e6e79);
+}
+
+/* ---------- copyright ---------- */
+.foot-legal{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 18px;
+  margin-top:6px;
+  font-size:9px;
+  letter-spacing:.06em;
+  color:var(--faint,#6e6e79);
+}
+.foot-legal b{font-weight:500;color:var(--dim,#a1a1ab)}
+
+@media (max-width:600px){
+  .gb-form{grid-template-columns:1fr}
+  .gb-form button{padding:11px 16px}
+  .pm-actions{justify-content:flex-start}
+  .pm-actions button{flex:1 1 auto;justify-content:center}
+}
+
+/* ---------- tombol kontak ekstra ---------- */
+.contact-tools{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.contact-tools .chip{font-size:8.5px;letter-spacing:.14em;padding:10px 16px}
+@media (max-width:560px){.contact-tools .chip{flex:1 1 auto;justify-content:center}}
