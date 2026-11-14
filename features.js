@@ -59,6 +59,7 @@
       'menu.hint': 'TOMBOL 0–6 UNTUK LOMPAT · ESC UNTUK TUTUP',
       'nav.home': 'BERANDA', 'nav.about': 'TENTANG', 'nav.fursuit': 'FURSUIT',
       'nav.work': 'KARYA', 'nav.social': 'SOSIAL', 'nav.music': 'MUSIK', 'nav.contact': 'KONTAK',
+      'nav.github': 'GitHub ↗',
       'foot.top': '↑ KEMBALI KE ATAS',
       'gb.empty': 'belum ada yang nulis — jadi yang pertama ✧',
       'gb.thanks': '✓ makasih sudah mampir ✧',

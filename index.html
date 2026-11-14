@@ -148,7 +148,7 @@
 <header class="hero view active" id="home" data-page="00">
   <div class="hero-grid">
     <div class="hero-main">
-      <span class="hero-eyebrow" data-i18n="hero.badge"><i></i>available for collabs &amp; small builds</span>
+      <span class="hero-eyebrow" data-i18n="hero.badge"><i></i>available for collabs &amp; small builds</span> data-i18n-ph="hero-ph.badge"
       <h1>
         <span class="row"><span class="glitch" data-text="Sharp">Sharp</span></span>
         <span class="row"><span class="glitch grad" data-text="Crystal">Crystal</span></span>
@@ -169,10 +169,10 @@
       <p class="quote hero-quote" data-i18n="hero.quote">"<em>a wolf with a terminal open</em> — suit on saturday, kernel on sunday."</p>
     </div>
     <aside class="hero-side">
-      <div class="hero-card profile-card">
+      <div class="hero-card profile-card"> data-i18n="hero-card"
         <div class="pc-top">
           <span class="pc-mark">S<span>_</span></span>
-          <div class="pc-id"><b>Sharp</b><small>@crystalsharps</small></div>
+          <div class="pc-id"><b>Sharp</b><small>@crystalsharps</small></div> data-i18n="hero-card.id"
           <span class="pc-live"><i></i>online</span>
         </div>
         <div class="terminal-note" aria-hidden="true"><span class="ps1">sharp@crystal:~$ </span><span id="typer"></span><span class="cur"></span></div>
@@ -232,7 +232,7 @@
   </div>
 
   <div class="tools" data-rv style="--d:.08s">
-    <div class="tools-head">// TOOLS &amp; TECHNOLOGIES</div>
+    <div class="tools-head"> data-i18n-root// TOOLS &amp; TECHNOLOGIES</div>
     <div class="tool-grid">
       <div class="tool"><span class="tk">RUNTIME</span><span class="tv">bash / zsh / node</span></div>
       <div class="tool"><span class="tk">DISTRO</span><span class="tv">Debian / Arch / Alpine</span></div>
@@ -253,7 +253,7 @@
 
   <div class="now">
     <div class="now-head">// NOW <span id="now-date">—</span></div>
-    <div class="now-grid">
+    <div class="now-grid"> <article class="now-card"><span class="now-k" data-i18n="now.building">BUILDING</span>
       <article class="now-card"><span class="now-k">BUILDING</span><h4>this website</h4><p>hand-written HTML, CSS and JS — no framework, no build step, no tracking.</p><span class="now-tag">ACTIVE</span></article>
       <article class="now-card"><span class="now-k">LEARNING</span><h4>C &amp; the kernel</h4><p>low-level things on linux, one segfault at a time. shell scripts when i'm lazy.</p><span class="now-tag">ONGOING</span></article>
       <article class="now-card"><span class="now-k">LISTENING</span><h4>late-night synth</h4><p>the kind of music you put on at 2am while the terminal compiles.</p><span class="now-tag">LOOP</span></article>
@@ -263,7 +263,7 @@
 
   <div class="qa">
     <div class="qa-head">// Q&amp;A — the stuff people actually ask</div>
-    <div class="qa-list">
+    <div class="qa-list"> data-i18n-root
       <details class="qa-item" open>
         <summary data-i18n="qa1s">who are you, in one line?</summary>
         <p data-i18n="qa1p">sharp — a developer from bali who runs linux, writes small tools, and is a crystal wolf on the side.</p>
@@ -519,6 +519,7 @@
   </div>
 </section>
 
+  <div class="foot-deploy" data-lastdeploy="2026-11-13T15:22:00+07:00" data-shrp-version="42"></div>
 <footer>
   <div class="foot-grid">
     <div class="foot-brand">
@@ -526,7 +527,7 @@
       <p data-i18n="foot.desc">Developer and Linux tinkerer from Bali. Hand-written websites, small tools, and a crystal wolf fursona.</p>
       <span class="foot-badge"><i></i>available for collabs</span>
     </div>
-    <div class="foot-col">
+    <div class="foot-col"> <h5 data-i18n="foot.elsewhere">ELSEWHERE</h5><a href="https://github.com/AidansQwert" target="_blank" rel="noopener" data-i18n="nav.github">GitHub ↗</a> <h5 data-i18n="foot.pages">PAGES</h5><a href="#about" data-i18n="nav.about">About</a><a href="#fursuit" data-i18n="nav.fursuit">Fursuit</a>
       <h5>PAGES</h5>
       <a href="#about">About</a>
       <a href="#fursuit">Fursuit</a>
@@ -542,7 +543,7 @@
       <a href="https://guns.lol/crystalsharp" target="_blank" rel="noopener">guns.lol ↗</a>
     </div>
   </div>
-  <div class="foot-bottom">
+  <div class="foot-bottom"> <span data-i18n="foot.legal">art, fursona &amp; code © sharp · credit before reposting · no tracking</span>
     <span>© <span id="yr">2026</span> Sharp / crystalsharps — <b>All rights reserved.</b></span>
     <span data-i18n="foot.legal">art, fursona &amp; code © sharp · credit before reposting · no tracking</span>
     <a class="top" href="#home" data-i18n="foot.top">BACK TO TOP ↑</a>
