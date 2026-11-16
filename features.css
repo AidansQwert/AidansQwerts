@@ -193,3 +193,7 @@ body.light .pm-lang select option{background:#fff;color:#101015}
 .pt-rows{margin-top:12px}
 body.light .pt-mono,body.light .pt-tag{border-color:rgba(0,0,0,.16)}
 @media (max-width:760px){.partner-card{margin-top:12px}}
+
+/* ---------- kartu discord partner ---------- */
+.dc-partner .dc-kicker{font-size:8px;letter-spacing:.22em;color:var(--faint,#7a7a84);margin-bottom:2px}
+.dc-partner .dc-kicker{display:flex;align-items:center;gap:6px}

@@ -424,15 +424,18 @@ if (matchMedia('(pointer:fine)').matches){
    ============================================================ */
 const DISCORD_ID = '941358133987643423';
 const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
+const DISCORD_PARTNER_ID = '1321312071605944360';
+const DISCORD_PARTNER_HANDLE = 'hawksv2';
 
-(function(){
-  const card = $('#dc-card');
+function mountDiscordCard(sel, discordId, fallbackHandle){
+  const card = document.querySelector(sel.card);
   if (!card) return;
-  if (!/^\d{15,22}$/.test(DISCORD_ID)){ card.classList.add('hidden'); return; }
+  if (!/^\d{15,22}$/.test(discordId)){ card.classList.add('hidden'); return; }
 
-  const av = $('#dc-avatar'), name = $('#dc-name'), handle = $('#dc-handle'),
-        dot = $('#dc-dot'), state = $('#dc-state'), act = $('#dc-activity'),
-        copyBtn = $('#dc-copy'), openBtn = $('#dc-open');
+  const av = document.querySelector(sel.avatar), name = document.querySelector(sel.name),
+        handle = document.querySelector(sel.handle), dot = document.querySelector(sel.dot),
+        state = document.querySelector(sel.state), act = document.querySelector(sel.act),
+        copyBtn = document.querySelector(sel.copy), openBtn = document.querySelector(sel.open);
 
   const STATE = { online:'ONLINE', idle:'IDLE', dnd:'DO NOT DISTURB', offline:'OFFLINE' };
 
@@ -440,7 +443,7 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
 
   async function sync(){
     try {
-      const r = await fetch('https://api.lanyard.rest/v1/users/' + DISCORD_ID);
+      const r = await fetch('https://api.lanyard.rest/v1/users/' + discordId);
       const j = await r.json();
       if (!j.success) throw 0;
       const d = j.data, u = d.discord_user;
@@ -449,7 +452,7 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
       name.textContent = uname;
       handle.textContent = '@' + u.username;
       copyBtn.dataset.user = u.username;
-      openBtn.href = 'https://discord.com/users/' + DISCORD_ID;
+      openBtn.href = 'https://discord.com/users/' + discordId;
 
       av.src = u.avatar
         ? 'https://cdn.discordapp.com/avatars/' + u.id + '/' + u.avatar + '.png?size=128'
@@ -470,18 +473,21 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
     } catch(e){
       dot.className = 'dc-dot offline';
       state.textContent = 'OFFLINE';
-      act.textContent = 'presence unreachable right now';
+      act.textContent = card.dataset.offline || 'presence unreachable right now';
     }
   }
 
   copyBtn.addEventListener('click', async () => {
-    const u = copyBtn.dataset.user || DISCORD_FALLBACK_HANDLE;
+    const u = copyBtn.dataset.user || fallbackHandle;
     const ok = window.SHRP_COPY ? await window.SHRP_COPY('@' + u) : false;
     toast(ok ? '✓ COPIED — @' + u : '✕ COPY FAILED — copy manually: @' + u);
   });
 
   sync(); setInterval(sync, 30000);
-})();
+}
+
+mountDiscordCard({card:'#dc-card',avatar:'#dc-avatar',name:'#dc-name',handle:'#dc-handle',dot:'#dc-dot',state:'#dc-state',act:'#dc-activity',copy:'#dc-copy',open:'#dc-open'}, DISCORD_ID, DISCORD_FALLBACK_HANDLE);
+mountDiscordCard({card:'#dc-card-2',avatar:'#dc2-avatar',name:'#dc2-name',handle:'#dc2-handle',dot:'#dc2-dot',state:'#dc2-state',act:'#dc2-activity',copy:'#dc2-copy',open:'#dc2-open'}, DISCORD_PARTNER_ID, DISCORD_PARTNER_HANDLE);
 
 /* ============================================================
    v11 — SECTION DOTS · RAIL INDEX · COUNTERS · LIVE REPOS
