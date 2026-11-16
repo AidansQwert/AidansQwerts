@@ -427,6 +427,16 @@ const DISCORD_FALLBACK_HANDLE = 'crystalsharp';
 const DISCORD_PARTNER_ID = '1321312071605944360';
 const DISCORD_PARTNER_HANDLE = 'hawksv2';
 
+function monoAvatar(letter){
+  const ch = (letter || '?').trim().charAt(0).toUpperCase() || '?';
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">' +
+    '<rect width="96" height="96" fill="#0c0c0f"/>' +
+    '<circle cx="48" cy="48" r="45" fill="none" stroke="#3a3a44" stroke-width="2"/>' +
+    '<text x="48" y="49" text-anchor="middle" dominant-baseline="central" font-family="system-ui,-apple-system,sans-serif" font-size="38" fill="#e8e8ee">' +
+    ch + '</text></svg>';
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
 function mountDiscordCard(sel, discordId, fallbackHandle){
   const card = document.querySelector(sel.card);
   if (!card) return;
@@ -474,6 +484,7 @@ function mountDiscordCard(sel, discordId, fallbackHandle){
       dot.className = 'dc-dot offline';
       state.textContent = 'OFFLINE';
       act.textContent = card.dataset.offline || 'presence unreachable right now';
+      av.src = monoAvatar(name.textContent);
     }
   }
 
@@ -483,6 +494,7 @@ function mountDiscordCard(sel, discordId, fallbackHandle){
     toast(ok ? '✓ COPIED — @' + u : '✕ COPY FAILED — copy manually: @' + u);
   });
 
+  av.src = monoAvatar(name.textContent);
   sync(); setInterval(sync, 30000);
 }
 
