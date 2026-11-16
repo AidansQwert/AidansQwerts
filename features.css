@@ -178,3 +178,18 @@ body.light .pm-lang select option{background:#fff;color:#101015}
 .nb-mark{width:17px;height:17px;display:inline-block;vertical-align:-3px;margin-right:7px;color:inherit}
 .si-logo .nb-mark,.foot-logo .nb-mark{width:15px;height:15px;vertical-align:-2px;margin-right:6px}
 .lg .nb-mark{width:14px;height:14px;margin-right:8px}
+
+/* ---------- kartu partner / ayang ---------- */
+.partner-card{margin-top:14px}
+.pt-top{display:flex;align-items:center;justify-content:space-between;font-size:8.5px;letter-spacing:.22em;color:var(--faint,#7a7a84)}
+.pt-heart{font-size:11px;opacity:.8;letter-spacing:0}
+.pt-body{display:flex;align-items:center;gap:12px;margin-top:14px}
+.pt-mono{width:42px;height:42px;flex:none;display:grid;place-items:center;border:1px solid rgba(255,255,255,.2);border-radius:50%;font-size:15px;letter-spacing:.02em}
+.pt-id{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pt-id b{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+.pt-id small{font-size:9px;letter-spacing:.12em;color:var(--faint,#7a7a84)}
+.pt-tag{margin-left:auto;font-size:7.5px;letter-spacing:.16em;padding:4px 8px;border:1px solid rgba(255,255,255,.18);border-radius:999px;color:var(--faint,#7a7a84)}
+.pt-note{margin-top:12px;font-size:11px;line-height:1.7;color:var(--dim,#a0a0aa)}
+.pt-rows{margin-top:12px}
+body.light .pt-mono,body.light .pt-tag{border-color:rgba(0,0,0,.16)}
+@media (max-width:760px){.partner-card{margin-top:12px}}
