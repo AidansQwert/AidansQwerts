@@ -363,6 +363,7 @@
       'FN:Sharp',
       'N:Sharp;;;;',
       'NICKNAME:crystalsharps',
+      'EMAIL;type=INTERNET:kays@kays.my.id',
       'NOTE:Developer & Linux tinkerer from Bali. Crystal wolf fursona.',
       'URL:https://kays.my.id/',
       'X-SOCIALPROFILE;type=github:https://github.com/AidansQwert',
